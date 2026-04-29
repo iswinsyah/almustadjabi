@@ -66,6 +66,11 @@
       cursor:pointer;
     }
 
+    /* Tambahan Warna Jawaban Benar dan Salah */
+    .grid-item.benar { background-color: #0D6EFD !important; border: 2px solid #fff; } /* Biru */
+    .grid-item.salah { background-color: #DC3545 !important; border: 2px solid #fff; } /* Merah */
+    .grid-item.terjawab { cursor: default; } /* Kursor mati setelah dijawab */
+
     /* Sesuaikan font dan padding di HP agar 5 kolom tetap proporsional */
     @media (max-width: 768px) {
       .grid-item {
@@ -111,6 +116,20 @@
     }
     .btn-ai:hover { background-color: #3a8a86; }
 
+    /* Papan Skor AI */
+    .skor-papan {
+      background-color: #fff;
+      border: 2px solid #4FB7B3;
+      border-radius: 8px;
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      display: none; /* Sembunyikan secara default */
+      width: 100%; max-width: 800px; box-sizing: border-box;
+    }
+
     .halaman { display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:100px; }
     .halaman input { padding:8px; border-radius:5px; border:1px solid #ccc; width:150px; }
 
@@ -118,12 +137,28 @@
     footer button { background-color:white; border:none; border-radius:5px; padding:8px 12px; font-size:14px; cursor:pointer; transition: background-color 0.2s; }
     footer button:hover { background-color:#e0e0e0; }
 
+    /* Tombol Khusus Imtihan */
+    .btn-imtihan {
+      background-color: #f39c12 !important; color: white !important; font-weight: bold;
+    }
+    .btn-imtihan:hover { background-color: #d68910 !important; }
+    .btn-imtihan.active {
+      background-color: #e74c3c !important;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); }
+    }
+
   </style>
 </head>
 <body>
   <h1>QIROATUL KUTUB METODE AL MUSTADJABI</h1>
   <h2>Cara Mudah Bisa Baca Kitab Secara Alami Tanpa Ribet</h2>
   <h3 id="judul-h3">Judul Halaman Placeholder</h3>
+
+  <!-- Tempat Papan Skor -->
+  <div class="skor-papan" id="skor-papan">Skor Benar: 0/30 | Predikat: Aadi</div>
 
   <div class="kotak-besar" id="kotak-besar">Kotak Besar Kosong</div>
   
@@ -139,6 +174,7 @@
     <button id="btnMundur">⬅ Mundur</button>
     <button id="btnRefresh">🔄 Refresh</button>
     <button id="btnMaju">➡ Maju</button>
+    <button id="btnImtihan" class="btn-imtihan">🎓 Mode Imtihan: OFF</button>
   </footer>
 
   <script>
@@ -148,6 +184,10 @@
 
     let dataPelajaran = [];
     let indexSaatIni = 0;
+    let dataBabGlobal = []; // Untuk menyimpan data murni agar cepat saat ganti mode
+    let modeImtihan = false;
+    let skorBenar = 0;
+    let skorSalah = 0;
 
     // Fungsi untuk memuat data dari Google Apps Script
     async function muatDataPelajaran() {
@@ -157,9 +197,10 @@
         const response = await fetch(gasApiUrl, { cache: 'no-store' });
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const dataBab = await response.json();
+        dataBabGlobal = dataBab; // Simpan data utuh
         
         // === MAGIC SCRIPT: Mengubah Bab menjadi Halaman (3 Fase) secara Otomatis ===
-        prosesDataBab(dataBab);
+        prosesDataBab(dataBabGlobal);
         renderHalaman();
 
       } catch (error) {
@@ -178,10 +219,10 @@
       dataBab.forEach(bab => {
         dataPelajaran.push({
           halaman: nomorHalaman++,
-          judul: bab.judul + " (Fase 1: Harokat Lengkap)",
-          penjelasan: bab.penjelasan + " 💡 Klik kotak untuk mendengarkan bacaan.",
-          fase: 1,
-          kosakata: bab.kosakata
+          judul: bab.judul + (modeImtihan ? " (Mode Imtihan)" : " (Fase 1: Harokat Lengkap)"),
+          penjelasan: modeImtihan ? "UJIAN: Tebak bacaan Arab Gundul. Benar = Biru, Salah = Merah." : bab.penjelasan + " 💡 Klik kotak untuk mendengarkan bacaan.",
+          fase: modeImtihan ? 3 : 1,
+          kosakata: modeImtihan ? bab.kosakata.map(k => ({kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), arti: k.arti, kataAsli: k.kata})) : bab.kosakata
         });
       });
 
@@ -189,11 +230,11 @@
       dataBab.forEach(bab => {
         dataPelajaran.push({
           halaman: nomorHalaman++,
-          judul: bab.judul + " (Fase 2: Harokat Akhir Saja)",
-          penjelasan: "Latih insting I'rob Anda. Harokat di tengah kata dihilangkan, sisa harokat akhirnya saja.",
-          fase: 2,
-          kosakata: bab.kosakata.map(k => ({
-            kata: k.kata.replace(/[\u064B-\u065F\u0670]+(?=[^\s\u064B-\u065F\u0670])/g, ''), // Hapus harokat tengah
+          judul: bab.judul + (modeImtihan ? " (Mode Imtihan)" : " (Fase 2: Harokat Akhir Saja)"),
+          penjelasan: modeImtihan ? "UJIAN: Tebak bacaan Arab Gundul. Benar = Biru, Salah = Merah." : "Latih insting I'rob Anda. Harokat di tengah kata dihilangkan, sisa harokat akhirnya saja.",
+          fase: modeImtihan ? 3 : 2,
+          kosakata: modeImtihan ? bab.kosakata.map(k => ({kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), arti: k.arti, kataAsli: k.kata})) : bab.kosakata.map(k => ({
+            kata: k.kata.replace(/[\u064B-\u065F\u0670]+(?=[^\s\u064B-\u065F\u0670])/g, ''), 
             arti: k.arti,
             kataAsli: k.kata
           }))
@@ -204,11 +245,11 @@
       dataBab.forEach(bab => {
         dataPelajaran.push({
           halaman: nomorHalaman++,
-          judul: bab.judul + " (Fase 3: Gundul Total + Cek Suara AI)",
-          penjelasan: "Tebak bacaan Arab Gundul ini, lalu klik kotak dan tekan tombol 🎤 untuk dikoreksi AI.",
+          judul: bab.judul + (modeImtihan ? " (Mode Imtihan)" : " (Fase 3: Gundul Total + Cek Suara AI)"),
+          penjelasan: modeImtihan ? "UJIAN: Tebak bacaan Arab Gundul. Benar = Biru, Salah = Merah." : "Tebak bacaan Arab Gundul ini, lalu klik kotak dan tekan tombol 🎤 untuk dikoreksi AI.",
           fase: 3,
           kosakata: bab.kosakata.map(k => ({
-            kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), // Hapus SEMUA harokat
+            kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), 
             arti: k.arti,
             kataAsli: k.kata
           }))
@@ -226,8 +267,24 @@
       return arr;
     }
 
+    // Fungsi Papan Skor
+    function updateSkor() {
+      let predikat = "Aadi";
+      if (skorBenar === 30) predikat = "Mumtaz 🌟";
+      else if (skorBenar >= 21) predikat = "Jayyid 👍";
+      else if (skorBenar >= 11) predikat = "Aslaha 🙂";
+      
+      document.getElementById('skor-papan').innerHTML = `Skor Benar: <span style="color:#0d6efd">${skorBenar}</span>/30 | Predikat: <span style="color:#e74c3c">${predikat}</span>`;
+    }
+
     // Fungsi AI Voice Recognition (Web Speech API)
-    function cekBacaanAI(kataTargetAsli, btnElement) {
+    function cekBacaanAI(kataTargetAsli, btnElement, gridItem) {
+      // Cek apakah kotak ini sudah pernah dijawab
+      if (gridItem.classList.contains('terjawab')) {
+        alert("Kotak ini sudah dinilai! Silakan lanjut ke kotak lain untuk mengumpulkan skor.");
+        return;
+      }
+
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
         alert("Browser Anda tidak mendukung AI Suara. Mohon gunakan Google Chrome.");
@@ -247,10 +304,15 @@
         const targetGundul = kataTargetAsli.replace(/[\u064B-\u065F\u0670]/g, '').trim();
         
         if (hasilGundul === targetGundul) {
-          alert(`✅ LUAR BIASA! Bacaan Anda benar.\n\nBacaan Anda: ${hasil}\nTarget: ${kataTargetAsli}`);
+          gridItem.classList.add('benar', 'terjawab');
+          skorBenar++;
+          alert(`✅ BACAAN BENAR!\n\nBacaan Anda: ${hasil}`);
         } else {
-          alert(`🤖 AI Feedback: Kurang Tepat.\n\nAnda membaca: ${hasil}\nSeharusnya: ${kataTargetAsli}\n\nPenjelasan: AI mendeteksi perbedaan pola. Coba teliti kembali harokat akhirnya.`);
+          gridItem.classList.add('salah', 'terjawab');
+          skorSalah++;
+          alert(`🤖 KURANG TEPAT.\n\nAnda membaca: ${hasil}\nSeharusnya: ${kataTargetAsli}`);
         }
+        updateSkor();
         btnElement.innerHTML = "🎤 Cek Bacaan";
         btnElement.style.backgroundColor = "#4FB7B3";
       };
@@ -280,6 +342,16 @@
 
       const data = dataPelajaran[indexSaatIni];
       
+      // Reset skor dan hapus warna jika berpindah halaman atau refresh
+      skorBenar = 0;
+      skorSalah = 0;
+      if (data.fase === 3) {
+        document.getElementById('skor-papan').style.display = 'block';
+        updateSkor();
+      } else {
+        document.getElementById('skor-papan').style.display = 'none';
+      }
+
       // Update Teks Panduan
       document.getElementById('judul-h3').textContent = data.judul;
       document.getElementById('kotak-besar').textContent = data.penjelasan;
@@ -335,7 +407,7 @@
           btnAI.innerHTML = '🎤 Cek Bacaan';
           btnAI.onclick = (e) => {
             e.stopPropagation(); // Mencegah klik menembus ke kotak belakangnya
-            cekBacaanAI(item.kataAsli, btnAI);
+            cekBacaanAI(item.kataAsli, btnAI, div);
           };
           popup.appendChild(btnAI);
         }
@@ -353,6 +425,25 @@
       if (indexSaatIni > 0) { indexSaatIni--; renderHalaman(); }
     };
     document.getElementById('btnRefresh').onclick = () => muatDataPelajaran();
+
+    // Mode Imtihan Toggle
+    document.getElementById('btnImtihan').onclick = () => {
+      modeImtihan = !modeImtihan;
+      const btn = document.getElementById('btnImtihan');
+      if (modeImtihan) {
+        btn.innerHTML = "🎓 Mode Imtihan: ON";
+        btn.classList.add('active');
+        indexSaatIni = 0; // Lompat balik ke halaman 1
+      } else {
+        btn.innerHTML = "🎓 Mode Imtihan: OFF";
+        btn.classList.remove('active');
+        indexSaatIni = 0; // Lompat balik ke halaman 1
+      }
+      if (dataBabGlobal.length > 0) {
+        prosesDataBab(dataBabGlobal); // Bangun ulang susunan kurikulum secara seketika!
+        renderHalaman();
+      }
+    };
 
     // Muat data pelajaran saat halaman pertama kali dibuka
     muatDataPelajaran();
