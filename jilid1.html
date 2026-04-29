@@ -431,14 +431,9 @@
       }
 
       // Acak urutan kosakata yang sudah diisi penuh agar posisinya dinamis
-      const kotak & 2Array = acakUrutan(kosakataUntukGrid);
-       || data.fase === 2
-      kotakArray.forE = () => {
-            // Efek visual klik (mengecil sejenak)
-            div.style.transformach"scale(0.95i";
-        t   setTimeout(() em div.style.transform = "", 150);
-            => {Asli || item.kata;
-          }
+      const kotakArray = acakUrutan(kosakataUntukGrid);
+      
+      kotakArray.forEach(item => {
         const div = document.createElement('div');
         div.className = 'grid-item';
 
@@ -446,9 +441,6 @@
         spanKata.textContent = item.kata;
         div.appendChild(spanKata);
 
-        // Fase 1: Klik kotak untuk memutar suara bacaan
-        if (data.fase === 1) {
-          div.onclick = () => bacaTeksArab(item.kata);
         // Fase 1 & 2: Klik kotak untuk memutar suara bacaan
         if (data.fase === 1 || data.fase === 2) {
           div.onclick = () => {
