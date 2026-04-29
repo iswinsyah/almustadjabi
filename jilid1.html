@@ -142,184 +142,73 @@
   </footer>
 
   <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    
-    // Database Induk Bab Jilid 1
-    const dataBab = [
-      {
-        judul: "Pelajaran 1: Kosakata Ilmu & Kitab",
-        penjelasan: "Isim dasar berakhiran Dhommah Tanwin (-un). Kenali yang Muannats (berakhiran Ta' Marbuthoh ة).",
-        kosakata: [
-          { kata: "كِتَابٌ", arti: "Buku (Mudzakkar)" },
-          { kata: "بَابٌ", arti: "Pintu (Mudzakkar)" },
-          { kata: "فَصْلٌ", arti: "Fasal / Bagian" },
-          { kata: "صَفْحَةٌ", arti: "Halaman (Muannats)" },
-          { kata: "قَلَمٌ", arti: "Pena" },
-          { kata: "حِبْرٌ", arti: "Tinta" },
-          { kata: "كُرَّاسَةٌ", arti: "Buku Tulis (Muannats)" },
-          { kata: "مَكْتَبٌ", arti: "Meja" },
-          { kata: "مَدْرَسَةٌ", arti: "Sekolah (Muannats)" },
-          { kata: "عِلْمٌ", arti: "Ilmu" },
-          { kata: "جَهْلٌ", arti: "Kebodohan" },
-          { kata: "عَالِمٌ", arti: "Orang Berilmu" },
-          { kata: "جَاهِلٌ", arti: "Orang Bodoh" },
-          { kata: "سُؤَالٌ", arti: "Pertanyaan" },
-          { kata: "جَوَابٌ", arti: "Jawaban" },
-          { kata: "دَلِيلٌ", arti: "Dalil / Bukti" },
-          { kata: "مَسْأَلَةٌ", arti: "Masalah (Muannats)" },
-          { kata: "حُكْمٌ", arti: "Hukum" },
-          { kata: "شَرْطٌ", arti: "Syarat" },
-          { kata: "رُكْنٌ", arti: "Rukun" }
-        ]
-      },
-      {
-        judul: "Pelajaran 2: Seputar Ibadah & Alif Lam (ال)",
-        penjelasan: "Jika Isim diawali Alif Lam (ال), maka Tanwin (-un) HILANG menjadi Dhommah biasa (-u).",
-        kosakata: [
-          { kata: "الْإِسْلَامُ", arti: "Agama Islam" },
-          { kata: "الْإِيمَانُ", arti: "Iman" },
-          { kata: "الصَّلَاةُ", arti: "Shalat" },
-          { kata: "الزَّكَاةُ", arti: "Zakat" },
-          { kata: "الصَّوْمُ", arti: "Puasa" },
-          { kata: "الْحَجُّ", arti: "Haji" },
-          { kata: "الْمَسْجِدُ", arti: "Masjid" },
-          { kata: "الْقِبْلَةُ", arti: "Kiblat" },
-          { kata: "الْوُضُوءُ", arti: "Wudhu" },
-          { kata: "النِّیَّةُ", arti: "Niat" },
-          { kata: "الطَّهَارَةُ", arti: "Bersuci" },
-          { kata: "الْمَاءُ", arti: "Air" },
-          { kata: "التُّرَابُ", arti: "Debu / Tanah" },
-          { kata: "الثَّوْبُ", arti: "Pakaian" },
-          { kata: "الْبَدَنُ", arti: "Badan" },
-          { kata: "الْوَقْتُ", arti: "Waktu" },
-          { kata: "الْأَذَانُ", arti: "Adzan" },
-          { kata: "الْإِقَامَةُ", arti: "Iqamah" },
-          { kata: "الْإِمَامُ", arti: "Imam" },
-          { kata: "الْمَأْمُومُ", arti: "Makmum" }
-        ]
-      },
-      {
-        judul: "Pelajaran 3: Alam, Tempat & Huruf Jar",
-        penjelasan: "Huruf Jar (Di, Dari, Ke, Atas) merubah harokat akhir kata setelahnya menjadi Kasrah (-i).",
-        kosakata: [
-          { kata: "فِي الْمَسْجِدِ", arti: "Di dalam masjid (-i)" },
-          { kata: "مِنَ الْمَدْرَسَةِ", arti: "Dari sekolah (-i)" },
-          { kata: "إِلَى الْبَيْتِ", arti: "Ke rumah (-i)" },
-          { kata: "عَلَى الْأَرْضِ", arti: "Di atas bumi" },
-          { kata: "مِنَ السَّمَاءِ", arti: "Dari langit" },
-          { kata: "فِي الْبَحْرِ", arti: "Di dalam laut" },
-          { kata: "عَلَى الشَّجَرَةِ", arti: "Di atas pohon" },
-          { kata: "مِنَ الْبَلَدِ", arti: "Dari negara" },
-          { kata: "إِلَى السُّوقِ", arti: "Ke pasar" },
-          { kata: "فِي الصَّدْرِ", arti: "Di dalam dada" },
-          { kata: "عَلَى الرَّأْسِ", arti: "Di atas kepala" },
-          { kata: "مِنَ النَّارِ", arti: "Dari api" },
-          { kata: "إِلَى الْجَنَّةِ", arti: "Ke surga" },
-          { kata: "فِي الْقَبْرِ", arti: "Di dalam kubur" },
-          { kata: "عَلَى الْجَبَلِ", arti: "Di atas gunung" },
-          { kata: "فِي اللَّيْلِ", arti: "Di malam hari" },
-          { kata: "فِي النَّهَارِ", arti: "Di siang hari" },
-          { kata: "مِنَ الصَّبَاحِ", arti: "Dari pagi" },
-          { kata: "إِلَى الْمَسَاءِ", arti: "Ke sore hari" },
-          { kata: "عَلَى الطَّرِيقِ", arti: "Di atas jalan" }
-        ]
-      },
-      {
-        judul: "Pelajaran 4: Manusia (Tunggal & Jamak)",
-        penjelasan: "Kosakata seputar manusia. Perhatikan perubahan dari 1 orang (Tunggal) menjadi banyak (Jamak).",
-        kosakata: [
-          { kata: "مُسْلِمٌ", arti: "1 Muslim (Tunggal)" },
-          { kata: "مُسْلِمُوْنَ", arti: "Banyak Muslim (Akhiran -uuna)" },
-          { kata: "كَافِرٌ", arti: "1 Kafir" },
-          { kata: "كُفَّارٌ", arti: "Banyak Kafir (Jamak)" },
-          { kata: "رَجُلٌ", arti: "1 Pria" },
-          { kata: "رِجَالٌ", arti: "Para Pria" },
-          { kata: "امْرَأَةٌ", arti: "1 Wanita" },
-          { kata: "نِسَاءٌ", arti: "Para Wanita" },
-          { kata: "وَلَدٌ", arti: "Anak" },
-          { kata: "أَوْلَادٌ", arti: "Anak-anak" },
-          { kata: "زَوْجٌ", arti: "Suami / Pasangan" },
-          { kata: "أَزْوَاجٌ", arti: "Para Suami" },
-          { kata: "زَوْجَةٌ", arti: "Istri" },
-          { kata: "زَوْجَاتٌ", arti: "Para Istri" },
-          { kata: "نَبِيٌّ", arti: "Nabi" },
-          { kata: "أَنْبِيَاءُ", arti: "Para Nabi" },
-          { kata: "مَلَكٌ", arti: "Malaikat" },
-          { kata: "مَلَائِكَةٌ", arti: "Para Malaikat" },
-          { kata: "صَدِيقٌ", arti: "Teman" },
-          { kata: "أَصْدِقَاءُ", arti: "Teman-teman" }
-        ]
-      },
-      {
-        judul: "Pelajaran 5: Kata Sifat (Na'at) Dasar",
-        penjelasan: "Isim sifat yang paling sering mengiringi Isim lain dalam Kitab Kuning.",
-        kosakata: [
-          { kata: "كَبِيرٌ", arti: "Besar" },
-          { kata: "صَغِيرٌ", arti: "Kecil" },
-          { kata: "كَثِيرٌ", arti: "Banyak" },
-          { kata: "قَلِيلٌ", arti: "Sedikit" },
-          { kata: "طَوِيلٌ", arti: "Panjang" },
-          { kata: "قَصِيرٌ", arti: "Pendek" },
-          { kata: "حَسَنٌ", arti: "Baik / Bagus" },
-          { kata: "قَبِيحٌ", arti: "Buruk" },
-          { kata: "حَلَالٌ", arti: "Halal" },
-          { kata: "حَرَامٌ", arti: "Haram" },
-          { kata: "صَحِيحٌ", arti: "Benar / Sah" },
-          { kata: "بَاطِلٌ", arti: "Batal / Salah" },
-          { kata: "قَدِيمٌ", arti: "Lama / Terdahulu" },
-          { kata: "جَدِيدٌ", arti: "Baru" },
-          { kata: "قَوِيٌّ", arti: "Kuat" },
-          { kata: "ضَعِيفٌ", arti: "Lemah" },
-          { kata: "غَنِيٌّ", arti: "Kaya" },
-          { kata: "فَقِيرٌ", arti: "Fakir / Miskin" },
-          { kata: "صَعْبٌ", arti: "Sulit" },
-          { kata: "سَهْلٌ", arti: "Mudah" }
-        ]
+  document.addEventListener('DOMContentLoaded', async () => {
+    // URL Web App dari Google Apps Script Anda akan diletakkan di sini
+    const gasApiUrl = 'https://script.google.com/macros/s/AKfycbxSUFw79hAluE84LK6kToEyBkDuW0BLSS8gWcofSfagi-cQYH9j2_jeWk7LUFSz4OF8/exec';
+
+    let dataPelajaran = [];
+    let indexSaatIni = 0;
+
+    // Fungsi untuk memuat data dari Google Apps Script
+    async function muatDataPelajaran() {
+      document.getElementById('judul-h3').textContent = 'Memuat Data Pelajaran...';
+      try {
+        const response = await fetch(gasApiUrl);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const dataBab = await response.json();
+        
+        // === MAGIC SCRIPT: Mengubah Bab menjadi Halaman (3 Fase) secara Otomatis ===
+        prosesDataBab(dataBab);
+        renderHalaman();
+
+      } catch (error) {
+        console.error('Gagal memuat data pelajaran:', error);
+        document.getElementById('judul-h3').textContent = 'Gagal Memuat Data';
+        document.getElementById('kotak-besar').textContent = 'Pastikan URL Google Apps Script benar dan sudah di-deploy dengan akses "Anyone". Coba refresh halaman.';
       }
-    ];
+    }
 
     // === MAGIC SCRIPT: Mengubah 5 Bab menjadi 15 Halaman (3 Fase) secara Otomatis ===
-    const dataPelajaran = [];
-    let nomorHalaman = 1;
+    function prosesDataBab(dataBab) {
+      dataPelajaran = []; // Kosongkan dulu untuk refresh
+      let nomorHalaman = 1;
+      dataBab.forEach(bab => {
+        // Fase 1: Harokat Lengkap
+        dataPelajaran.push({
+          halaman: nomorHalaman++,
+          judul: bab.judul + " (Fase 1: Harokat Lengkap)",
+          penjelasan: bab.penjelasan,
+          fase: 1,
+          kosakata: bab.kosakata
+        });
 
-    dataBab.forEach(bab => {
-      // Fase 1: Harokat Lengkap
-      dataPelajaran.push({
-        halaman: nomorHalaman++,
-        judul: bab.judul + " (Fase 1: Harokat Lengkap)",
-        penjelasan: bab.penjelasan,
-        fase: 1,
-        kosakata: bab.kosakata
+        // Fase 2: Harokat Akhir Saja
+        dataPelajaran.push({
+          halaman: nomorHalaman++,
+          judul: bab.judul + " (Fase 2: Harokat Akhir Saja)",
+          penjelasan: "Latih insting I'rob Anda. Harokat di tengah kata dihilangkan, sisa harokat akhirnya saja.",
+          fase: 2,
+          kosakata: bab.kosakata.map(k => ({
+            kata: k.kata.replace(/[\u064B-\u065F\u0670]+(?=[^\s\u064B-\u065F\u0670])/g, ''), // Hapus harokat tengah
+            arti: k.arti,
+            kataAsli: k.kata
+          }))
+        });
+
+        // Fase 3: Gundul Total + Cek AI
+        dataPelajaran.push({
+          halaman: nomorHalaman++,
+          judul: bab.judul + " (Fase 3: Gundul Total + Cek Suara AI)",
+          penjelasan: "Tebak bacaan Arab Gundul ini, lalu klik kotak dan tekan tombol 🎤 untuk dikoreksi AI.",
+          fase: 3,
+          kosakata: bab.kosakata.map(k => ({
+            kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), // Hapus SEMUA harokat
+            arti: k.arti,
+            kataAsli: k.kata
+          }))
+        });
       });
-
-      // Fase 2: Harokat Akhir Saja
-      dataPelajaran.push({
-        halaman: nomorHalaman++,
-        judul: bab.judul + " (Fase 2: Harokat Akhir Saja)",
-        penjelasan: "Latih insting I'rob Anda. Harokat di tengah kata dihilangkan, sisa harokat akhirnya saja.",
-        fase: 2,
-        kosakata: bab.kosakata.map(k => ({
-          kata: k.kata.replace(/[\u064B-\u065F\u0670]+(?=[^\s\u064B-\u065F\u0670])/g, ''), // Hapus harokat tengah
-          arti: k.arti,
-          kataAsli: k.kata
-        }))
-      });
-
-      // Fase 3: Gundul Total + Cek AI
-      dataPelajaran.push({
-        halaman: nomorHalaman++,
-        judul: bab.judul + " (Fase 3: Gundul Total + Cek Suara AI)",
-        penjelasan: "Tebak bacaan Arab Gundul ini, lalu klik kotak dan tekan tombol 🎤 untuk dikoreksi AI.",
-        fase: 3,
-        kosakata: bab.kosakata.map(k => ({
-          kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), // Hapus SEMUA harokat
-          arti: k.arti,
-          kataAsli: k.kata
-        }))
-      });
-    });
-
-    let indexSaatIni = 0;
+    }
 
     // Fungsi untuk mengacak urutan array (Algoritma Fisher-Yates Shuffle)
     function acakUrutan(array) {
@@ -370,6 +259,8 @@
     }
 
     function renderHalaman() {
+      if (dataPelajaran.length === 0) return; // Jangan render jika data belum siap
+
       const data = dataPelajaran[indexSaatIni];
       
       // Update Teks Panduan
@@ -431,10 +322,10 @@
     document.getElementById('btnMundur').onclick = () => {
       if (indexSaatIni > 0) { indexSaatIni--; renderHalaman(); }
     };
-    document.getElementById('btnRefresh').onclick = () => renderHalaman();
+    document.getElementById('btnRefresh').onclick = () => muatDataPelajaran();
 
-    // Muat halaman pertama kali
-    renderHalaman();
+    // Muat data pelajaran saat halaman pertama kali dibuka
+    muatDataPelajaran();
   });
   </script>
 </body>
