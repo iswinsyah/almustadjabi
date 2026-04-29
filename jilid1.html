@@ -273,44 +273,45 @@
       const grid = document.getElementById('grid-kotak');
       grid.innerHTML = ''; 
       
-      // Siapkan tepat 30 kotak (5 kolom x 6 baris)
-      let kotakArray = new Array(30).fill(null);
-      
-      // Masukkan daftar kosakata ke dalam array kotak
-      for (let i = 0; i < data.kosakata.length; i++) {
-        if (i < 30) kotakArray[i] = data.kosakata[i];
+      // Pastikan ada 30 item untuk mengisi semua kotak, ulangi jika perlu
+      const targetJumlahKotak = 30;
+      let kosakataUntukGrid = [];
+      if (data.kosakata.length > 0) {
+        for (let i = 0; i < targetJumlahKotak; i++) {
+          kosakataUntukGrid.push(data.kosakata[i % data.kosakata.length]);
+        }
+      } else {
+        // Fallback jika tidak ada kosakata sama sekali, isi dengan placeholder kosong
+        for (let i = 0; i < targetJumlahKotak; i++) {
+          kosakataUntukGrid.push({ kata: '&nbsp;', arti: '' });
+        }
       }
 
-      // Acak posisi ke-30 kotak tersebut agar kata tersebar secara dinamis!
-      kotakArray = acakUrutan(kotakArray);
+      // Acak urutan kosakata yang sudah diisi penuh agar posisinya dinamis
+      const kotakArray = acakUrutan(kosakataUntukGrid);
       
       kotakArray.forEach(item => {
         const div = document.createElement('div');
         div.className = 'grid-item';
 
-        if (item) {
-          div.textContent = item.kata;
-          const popup = document.createElement('div');
-          popup.className = 'popup';
-          popup.innerHTML = `<div>${item.arti}</div>`;
-          
-          // Tambahkan tombol Cek AI KHUSUS di Fase 3
-          if (data.fase === 3) {
-            const btnAI = document.createElement('button');
-            btnAI.className = 'btn-ai';
-            btnAI.innerHTML = '🎤 Cek Bacaan';
-            btnAI.onclick = (e) => {
-              e.stopPropagation(); // Mencegah klik menembus ke kotak belakangnya
-              cekBacaanAI(item.kataAsli, btnAI);
-            };
-            popup.appendChild(btnAI);
-          }
-          
-          div.appendChild(popup);
-        } else {
-          div.innerHTML = '&nbsp;'; // Biarkan kotak kosong sebagai spasi
-          div.style.cursor = 'default'; // Kursor biasa untuk kotak kosong
+        div.textContent = item.kata;
+        const popup = document.createElement('div');
+        popup.className = 'popup';
+        popup.innerHTML = `<div>${item.arti}</div>`;
+        
+        // Tambahkan tombol Cek AI KHUSUS di Fase 3
+        if (data.fase === 3) {
+          const btnAI = document.createElement('button');
+          btnAI.className = 'btn-ai';
+          btnAI.innerHTML = '🎤 Cek Bacaan';
+          btnAI.onclick = (e) => {
+            e.stopPropagation(); // Mencegah klik menembus ke kotak belakangnya
+            cekBacaanAI(item.kataAsli, btnAI);
+          };
+          popup.appendChild(btnAI);
         }
+        
+        div.appendChild(popup);
         grid.appendChild(div);
       });
     }
