@@ -36,13 +36,21 @@
       border-bottom-left-radius: 25px;
       border-bottom-right-radius: 25px;
     }
+    
+    /* Tempat Logo */
+    .logo-container { display: flex; justify-content: center; margin-bottom: 15px; }
+    .logo-placeholder {
+      width: 70px; height: 70px;
+      background-color: #2563EB; color: white;
+      border-radius: 50%; border: 3px solid #BFDBFE;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
 
-    h1 { text-align:center; font-size:0.8rem; color:#ffffff; margin-bottom:0.5rem; font-weight:700; letter-spacing:0.5px; margin-top:0; }
-    h2 { text-align:center; font-size:0.65rem; color:#BFDBFE; margin-top:0; margin-bottom:0.5rem; font-weight:500; }
-    h3 { text-align:center; font-size:0.6rem; color:#ffffff; margin-bottom:0; }
-    h1 { text-align:center; font-size:0.8rem; color:#ffffff; margin-bottom:0.5rem; font-weight:700; letter-spacing:0.5px; margin-top:0; }
-    h2 { text-align:center; font-size:0.65rem; color:#BFDBFE; margin-top:0; margin-bottom:0.5rem; font-weight:500; }
-    h3 { text-align:center; font-size:0.6rem; color:#ffffff; margin-bottom:0; }
+    h1 { text-align:center; font-size:1.3rem; color:#ffffff; margin-bottom:0.5rem; font-weight:700; letter-spacing:0.5px; margin-top:0; }
+    h2 { text-align:center; font-size:1rem; color:#BFDBFE; margin-top:0; margin-bottom:0.5rem; font-weight:500; }
+    h3 { text-align:center; font-size:0.9rem; color:#ffffff; margin-bottom:0; }
 
     .kotak-besar { 
       background-color:#EFF6FF; /* Biru sangat muda yang elegan */
@@ -117,25 +125,10 @@
       z-index:10;
       width:max-content;
       max-width:250px;
+      pointer-events: none; /* Mencegah popup memblokir klik pada kotak di PC */
     }
 
     .grid-item:hover .popup, .grid-item:active .popup { display:block; }
-
-    /* Tombol AI Cek Suara di Fase 3 */
-    .btn-ai {
-      display: block;
-      margin-top: 8px;
-      padding: 6px 10px;
-      background-color: #1E3A8A; /* Biru deep */
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      width: 100%;
-      font-size: 0.9rem;
-    }
-    .btn-ai:hover { background-color: #172554; }
 
     /* Papan Skor AI */
     .skor-papan {
@@ -176,6 +169,12 @@
 </head>
 <body>
   <header class="app-header">
+    <!-- Placeholder Logo, ganti tag div ini dengan <img> nanti -->
+    <div class="logo-container">
+      <!-- <img src="URL_LOGO_ANDA" alt="Logo" style="width: 70px; height: 70px; border-radius: 50%; border: 3px solid #BFDBFE;"> -->
+      <div class="logo-placeholder">LOGO</div>
+    </div>
+
     <h1>QIROATUL KUTUB METODE AL MUSTADJABI</h1>
     <h2>Cara Mudah Bisa Baca Kitab Secara Alami Tanpa Ribet</h2>
     <h3 id="judul-h3">Judul Halaman Placeholder</h3>
@@ -302,7 +301,7 @@
     }
 
     // Fungsi AI Voice Recognition (Web Speech API)
-    function cekBacaanAI(kataTargetAsli, btnElement, gridItem, spanKata) {
+    function cekBacaanAI(kataTargetAsli, gridItem, spanKata) {
       // Cek apakah kotak ini sudah pernah dijawab
       if (gridItem.classList.contains('terjawab')) {
         alert("Kotak ini sudah dinilai! Silakan lanjut ke kotak lain untuk mengumpulkan skor.");
@@ -319,10 +318,17 @@
       recognition.lang = 'ar-SA'; // Set bahasa deteksi ke Arab
       recognition.interimResults = false;
       
-      btnElement.innerHTML = "🎙️ Mendengarkan...";
-      btnElement.style.backgroundColor = "#e74c3c"; // Merah tanda merekam
+      // Indikator visual merekam langsung di dalam kotak grid
+      const originalText = spanKata.textContent;
+      spanKata.textContent = "🎙️...";
+      gridItem.style.backgroundColor = "#e74c3c"; // Berubah merah
+      gridItem.style.transform = "scale(0.95)"; // Efek ditekan
 
       recognition.onresult = (event) => {
+        spanKata.textContent = originalText; // Kembalikan teks
+        gridItem.style.backgroundColor = ""; // Bersihkan style inline
+        gridItem.style.transform = ""; 
+
         const hasil = event.results[0][0].transcript;
         const hasilGundul = hasil.replace(/[\u064B-\u065F\u0670]/g, '').trim();
         const targetGundul = kataTargetAsli.replace(/[\u064B-\u065F\u0670]/g, '').trim();
@@ -343,14 +349,13 @@
           };
         }
         updateSkor();
-        btnElement.innerHTML = "🎤 Cek Bacaan";
-        btnElement.style.backgroundColor = "#1E3A8A";
       };
 
       recognition.onerror = (event) => {
+        spanKata.textContent = originalText;
+        gridItem.style.backgroundColor = "";
+        gridItem.style.transform = "";
         alert("Gagal mendengarkan suara: " + event.error);
-        btnElement.innerHTML = "🎤 Cek Bacaan";
-        btnElement.style.backgroundColor = "#1E3A8A";
       };
 
       recognition.start();
@@ -432,16 +437,11 @@
           popup.innerHTML = `<div>${item.arti}</div>`;
         }
         
-        // Tambahkan tombol Cek AI KHUSUS di Fase 3
+        // Fase 3: Klik kotak langsung mengaktifkan AI
         if (data.fase === 3) {
-          const btnAI = document.createElement('button');
-          btnAI.className = 'btn-ai';
-          btnAI.innerHTML = '🎤 Cek Bacaan';
-          btnAI.onclick = (e) => {
-            e.stopPropagation(); // Mencegah klik menembus ke kotak belakangnya
-            cekBacaanAI(item.kataAsli, btnAI, div, spanKata);
+          div.onclick = () => {
+            cekBacaanAI(item.kataAsli, div, spanKata);
           };
-          popup.appendChild(btnAI);
         }
         
         div.appendChild(popup);
