@@ -95,6 +95,22 @@
 
     .grid-item:hover .popup, .grid-item:active .popup { display:block; }
 
+    /* Tombol AI Cek Suara di Fase 3 */
+    .btn-ai {
+      display: block;
+      margin-top: 8px;
+      padding: 6px 10px;
+      background-color: #4FB7B3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+    .btn-ai:hover { background-color: #3a8a86; }
+
     .halaman { display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:100px; }
     .halaman input { padding:8px; border-radius:5px; border:1px solid #ccc; width:150px; }
 
@@ -128,10 +144,9 @@
   <script>
   document.addEventListener('DOMContentLoaded', () => {
     
-    // Database Kurikulum Jilid 1 (Disusun sesuai pola Al Mustadjabi)
-    const dataPelajaran = [
+    // Database Induk Bab Jilid 1
+    const dataBab = [
       {
-        halaman: 1,
         judul: "Pelajaran 1: Kosakata Ilmu & Kitab",
         penjelasan: "Isim dasar berakhiran Dhommah Tanwin (-un). Kenali yang Muannats (berakhiran Ta' Marbuthoh ة).",
         kosakata: [
@@ -158,7 +173,6 @@
         ]
       },
       {
-        halaman: 2,
         judul: "Pelajaran 2: Seputar Ibadah & Alif Lam (ال)",
         penjelasan: "Jika Isim diawali Alif Lam (ال), maka Tanwin (-un) HILANG menjadi Dhommah biasa (-u).",
         kosakata: [
@@ -185,7 +199,6 @@
         ]
       },
       {
-        halaman: 3,
         judul: "Pelajaran 3: Alam, Tempat & Huruf Jar",
         penjelasan: "Huruf Jar (Di, Dari, Ke, Atas) merubah harokat akhir kata setelahnya menjadi Kasrah (-i).",
         kosakata: [
@@ -212,7 +225,6 @@
         ]
       },
       {
-        halaman: 4,
         judul: "Pelajaran 4: Manusia (Tunggal & Jamak)",
         penjelasan: "Kosakata seputar manusia. Perhatikan perubahan dari 1 orang (Tunggal) menjadi banyak (Jamak).",
         kosakata: [
@@ -239,7 +251,6 @@
         ]
       },
       {
-        halaman: 5,
         judul: "Pelajaran 5: Kata Sifat (Na'at) Dasar",
         penjelasan: "Isim sifat yang paling sering mengiringi Isim lain dalam Kitab Kuning.",
         kosakata: [
@@ -267,6 +278,47 @@
       }
     ];
 
+    // === MAGIC SCRIPT: Mengubah 5 Bab menjadi 15 Halaman (3 Fase) secara Otomatis ===
+    const dataPelajaran = [];
+    let nomorHalaman = 1;
+
+    dataBab.forEach(bab => {
+      // Fase 1: Harokat Lengkap
+      dataPelajaran.push({
+        halaman: nomorHalaman++,
+        judul: bab.judul + " (Fase 1: Harokat Lengkap)",
+        penjelasan: bab.penjelasan,
+        fase: 1,
+        kosakata: bab.kosakata
+      });
+
+      // Fase 2: Harokat Akhir Saja
+      dataPelajaran.push({
+        halaman: nomorHalaman++,
+        judul: bab.judul + " (Fase 2: Harokat Akhir Saja)",
+        penjelasan: "Latih insting I'rob Anda. Harokat di tengah kata dihilangkan, sisa harokat akhirnya saja.",
+        fase: 2,
+        kosakata: bab.kosakata.map(k => ({
+          kata: k.kata.replace(/[\u064B-\u065F\u0670]+(?=[^\s\u064B-\u065F\u0670])/g, ''), // Hapus harokat tengah
+          arti: k.arti,
+          kataAsli: k.kata
+        }))
+      });
+
+      // Fase 3: Gundul Total + Cek AI
+      dataPelajaran.push({
+        halaman: nomorHalaman++,
+        judul: bab.judul + " (Fase 3: Gundul Total + Cek Suara AI)",
+        penjelasan: "Tebak bacaan Arab Gundul ini, lalu klik kotak dan tekan tombol 🎤 untuk dikoreksi AI.",
+        fase: 3,
+        kosakata: bab.kosakata.map(k => ({
+          kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), // Hapus SEMUA harokat
+          arti: k.arti,
+          kataAsli: k.kata
+        }))
+      });
+    });
+
     let indexSaatIni = 0;
 
     // Fungsi untuk mengacak urutan array (Algoritma Fisher-Yates Shuffle)
@@ -277,6 +329,44 @@
         [arr[i], arr[j]] = [arr[j], arr[i]];
       }
       return arr;
+    }
+
+    // Fungsi AI Voice Recognition (Web Speech API)
+    function cekBacaanAI(kataTargetAsli, btnElement) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Browser Anda tidak mendukung AI Suara. Mohon gunakan Google Chrome.");
+        return;
+      }
+      
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ar-SA'; // Set bahasa deteksi ke Arab
+      recognition.interimResults = false;
+      
+      btnElement.innerHTML = "🎙️ Mendengarkan...";
+      btnElement.style.backgroundColor = "#e74c3c"; // Merah tanda merekam
+
+      recognition.onresult = (event) => {
+        const hasil = event.results[0][0].transcript;
+        const hasilGundul = hasil.replace(/[\u064B-\u065F\u0670]/g, '').trim();
+        const targetGundul = kataTargetAsli.replace(/[\u064B-\u065F\u0670]/g, '').trim();
+        
+        if (hasilGundul === targetGundul) {
+          alert(`✅ LUAR BIASA! Bacaan Anda benar.\n\nBacaan Anda: ${hasil}\nTarget: ${kataTargetAsli}`);
+        } else {
+          alert(`🤖 AI Feedback: Kurang Tepat.\n\nAnda membaca: ${hasil}\nSeharusnya: ${kataTargetAsli}\n\nPenjelasan: AI mendeteksi perbedaan pola. Coba teliti kembali harokat akhirnya.`);
+        }
+        btnElement.innerHTML = "🎤 Cek Bacaan";
+        btnElement.style.backgroundColor = "#4FB7B3";
+      };
+
+      recognition.onerror = (event) => {
+        alert("Gagal mendengarkan suara: " + event.error);
+        btnElement.innerHTML = "🎤 Cek Bacaan";
+        btnElement.style.backgroundColor = "#4FB7B3";
+      };
+
+      recognition.start();
     }
 
     function renderHalaman() {
@@ -311,7 +401,20 @@
           div.textContent = item.kata;
           const popup = document.createElement('div');
           popup.className = 'popup';
-          popup.textContent = item.arti;
+          popup.innerHTML = `<div>${item.arti}</div>`;
+          
+          // Tambahkan tombol Cek AI KHUSUS di Fase 3
+          if (data.fase === 3) {
+            const btnAI = document.createElement('button');
+            btnAI.className = 'btn-ai';
+            btnAI.innerHTML = '🎤 Cek Bacaan';
+            btnAI.onclick = (e) => {
+              e.stopPropagation(); // Mencegah klik menembus ke kotak belakangnya
+              cekBacaanAI(item.kataAsli, btnAI);
+            };
+            popup.appendChild(btnAI);
+          }
+          
           div.appendChild(popup);
         } else {
           div.innerHTML = '&nbsp;'; // Biarkan kotak kosong sebagai spasi
