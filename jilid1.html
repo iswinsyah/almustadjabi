@@ -377,7 +377,20 @@
         const utterance = new SpeechSynthesisUtterance(teks);
         utterance.lang = 'ar-SA'; // Menggunakan logat bahasa Arab
         utterance.rate = 0.8; // Diperlambat sedikit agar lebih mudah ditiru pemula
-        window.speechSynthesis.speak(utterance);
+        
+        // Cek apakah perangkat punya suara bahasa Arab lokal
+        const voices = window.speechSynthesis.getVoices();
+        const arabicVoice = voices.find(v => v.lang.toLowerCase().includes('ar'));
+        
+        if (arabicVoice) {
+          utterance.voice = arabicVoice;
+          window.speechSynthesis.speak(utterance);
+        } else {
+          // WORKAROUND LAPTOP/PC: Pakai Google TTS Online jika suara lokal tidak ada
+          const urlAudio = `https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=ar&q=${encodeURIComponent(teks)}`;
+          const audio = new Audio(urlAudio);
+          audio.play().catch(e => console.error("Gagal memutar audio fallback:", e));
+        }
       }
     }
 
