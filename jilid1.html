@@ -4,13 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Qiroatul Kutub — Tabel Kosakata (Template)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      background-color: #f8fafc;
+      background-color: #ffffff; /* Latar belakang putih bersih */
       color: #333;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Poppins', sans-serif; /* Font elegan premium */
       overflow-x: hidden;
     }
 
@@ -25,14 +26,16 @@
       padding-bottom: 90px; /* Diperbesar agar footer fixed tidak menutupi konten PC */
     }
 
-    h1 { text-align:center; font-size:1.5rem; color:#4FB7B3; margin-bottom:0.5rem; }
-    h2 { text-align:center; font-size:1.4rem; margin-top:0; margin-bottom:0.3rem; }
+    h1 { text-align:center; font-size:1.6rem; color:#1E3A8A; margin-bottom:0.5rem; font-weight:700; letter-spacing:0.5px; }
+    h2 { text-align:center; font-size:1.3rem; color:#4B5563; margin-top:0; margin-bottom:0.3rem; font-weight:500; }
     h3 { text-align:center; font-size:1.2rem; margin-bottom:1rem; }
 
     .kotak-besar { 
-      background-color:#A8FBD3; 
-      border-radius:10px; 
-      padding:40px; 
+      background-color:#EFF6FF; /* Biru sangat muda yang elegan */
+      border: 1px solid #BFDBFE; /* Garis tepi biru lembut */
+      color: #1E3A8A; /* Biru pekat untuk teks */
+      border-radius:12px; 
+      padding:30px 40px; 
       text-align:center; 
       font-size:1.2rem; 
       font-weight:bold; 
@@ -51,9 +54,9 @@
     }
 
     .grid-item { 
-      background-color:#26667F; 
+      background-color:#2563EB; /* Warna biru elegan premium */
       color:white; 
-      border-radius:10px; 
+      border-radius:12px; 
       padding:15px; 
       text-align:center; 
       font-weight:bold; /* Dipertebal seperti tulisan kitab */
@@ -64,11 +67,14 @@
       font-size:2rem; /* Font Arab diperbesar */
       position:relative;
       cursor:pointer;
+      box-shadow: 0 4px 6px rgba(37, 99, 235, 0.15); /* Efek timbul lembut */
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
     }
+    .grid-item:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(37, 99, 235, 0.25); }
 
     /* Tambahan Warna Jawaban Benar dan Salah */
-    .grid-item.benar { background-color: #0D6EFD !important; border: 2px solid #fff; } /* Biru */
-    .grid-item.salah { background-color: #DC3545 !important; border: 2px solid #fff; } /* Merah */
+    .grid-item.benar { background-color: #10B981 !important; border: 2px solid #fff; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); } /* Hijau Cerah Emerald */
+    .grid-item.salah { background-color: #EF4444 !important; border: 2px solid #fff; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); } /* Merah Premium */
     .grid-item.terjawab { cursor: default; }
     .grid-item.salah.terjawab { cursor: pointer; } /* Tetap bisa diklik jika salah */
 
@@ -106,7 +112,7 @@
       display: block;
       margin-top: 8px;
       padding: 6px 10px;
-      background-color: #4FB7B3;
+      background-color: #1E3A8A; /* Biru deep */
       color: white;
       border: none;
       border-radius: 5px;
@@ -115,12 +121,13 @@
       width: 100%;
       font-size: 0.9rem;
     }
-    .btn-ai:hover { background-color: #3a8a86; }
+    .btn-ai:hover { background-color: #172554; }
 
     /* Papan Skor AI */
     .skor-papan {
       background-color: #fff;
-      border: 2px solid #4FB7B3;
+      border: 2px solid #2563EB;
+      color: #1E3A8A;
       border-radius: 8px;
       padding: 10px 20px;
       text-align: center;
@@ -134,9 +141,9 @@
     .halaman { display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:100px; }
     .halaman input { padding:8px; border-radius:5px; border:1px solid #ccc; width:150px; }
 
-    footer { position:fixed; bottom:0; left:0; width:100%; background-color:#26667F; display:flex; justify-content:center; gap:15px; padding:10px 0; z-index:9999; }
-    footer button { background-color:white; border:none; border-radius:5px; padding:8px 12px; font-size:14px; cursor:pointer; transition: background-color 0.2s; }
-    footer button:hover { background-color:#e0e0e0; }
+    footer { position:fixed; bottom:0; left:0; width:100%; background-color:#1E3A8A; display:flex; justify-content:center; gap:15px; padding:12px 0; z-index:9999; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); }
+    footer button { background-color:white; color:#1E3A8A; font-family:'Poppins', sans-serif; border:none; border-radius:5px; padding:8px 16px; font-size:14px; font-weight:600; cursor:pointer; transition: all 0.2s; }
+    footer button:hover { background-color:#E0F2FE; transform: translateY(-2px); }
 
     /* Tombol Khusus Imtihan */
     .btn-imtihan {
@@ -275,7 +282,7 @@
       else if (skorBenar >= 21) predikat = "Jayyid 👍";
       else if (skorBenar >= 11) predikat = "Aslaha 🙂";
       
-      document.getElementById('skor-papan').innerHTML = `Skor Benar: <span style="color:#0d6efd">${skorBenar}</span>/30 | Predikat: <span style="color:#e74c3c">${predikat}</span>`;
+      document.getElementById('skor-papan').innerHTML = `Skor Benar: <span style="color:#10B981">${skorBenar}</span>/30 | Predikat: <span style="color:#2563EB">${predikat}</span>`;
     }
 
     // Fungsi AI Voice Recognition (Web Speech API)
@@ -321,13 +328,13 @@
         }
         updateSkor();
         btnElement.innerHTML = "🎤 Cek Bacaan";
-        btnElement.style.backgroundColor = "#4FB7B3";
+        btnElement.style.backgroundColor = "#1E3A8A";
       };
 
       recognition.onerror = (event) => {
         alert("Gagal mendengarkan suara: " + event.error);
         btnElement.innerHTML = "🎤 Cek Bacaan";
-        btnElement.style.backgroundColor = "#4FB7B3";
+        btnElement.style.backgroundColor = "#1E3A8A";
       };
 
       recognition.start();
@@ -404,7 +411,7 @@
         
         if (data.fase === 2) {
           // Fase 2: Tampilkan arti + Kata Asli (Full Harokat) sebagai bantuan jika lupa
-          popup.innerHTML = `<div>${item.arti}</div><div style="margin-top: 5px; font-size: 1.4rem; font-weight: bold; color: #4FB7B3;">${item.kataAsli}</div>`;
+          popup.innerHTML = `<div>${item.arti}</div><div style="margin-top: 5px; font-size: 1.4rem; font-weight: bold; color: #2563EB;">${item.kataAsli}</div>`;
         } else {
           popup.innerHTML = `<div>${item.arti}</div>`;
         }
