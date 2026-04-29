@@ -69,7 +69,8 @@
     /* Tambahan Warna Jawaban Benar dan Salah */
     .grid-item.benar { background-color: #0D6EFD !important; border: 2px solid #fff; } /* Biru */
     .grid-item.salah { background-color: #DC3545 !important; border: 2px solid #fff; } /* Merah */
-    .grid-item.terjawab { cursor: default; } /* Kursor mati setelah dijawab */
+    .grid-item.terjawab { cursor: default; }
+    .grid-item.salah.terjawab { cursor: pointer; } /* Tetap bisa diklik jika salah */
 
     /* Sesuaikan font dan padding di HP agar 5 kolom tetap proporsional */
     @media (max-width: 768px) {
@@ -278,7 +279,7 @@
     }
 
     // Fungsi AI Voice Recognition (Web Speech API)
-    function cekBacaanAI(kataTargetAsli, btnElement, gridItem) {
+    function cekBacaanAI(kataTargetAsli, btnElement, gridItem, spanKata) {
       // Cek apakah kotak ini sudah pernah dijawab
       if (gridItem.classList.contains('terjawab')) {
         alert("Kotak ini sudah dinilai! Silakan lanjut ke kotak lain untuk mengumpulkan skor.");
@@ -311,6 +312,12 @@
           gridItem.classList.add('salah', 'terjawab');
           skorSalah++;
           alert(`🤖 KURANG TEPAT.\n\nAnda membaca: ${hasil}\nSeharusnya: ${kataTargetAsli}`);
+          
+          // Jika salah, kotak merah bisa diklik untuk memunculkan harokat lengkap & suara
+          gridItem.onclick = () => {
+            spanKata.textContent = kataTargetAsli;
+            bacaTeksArab(kataTargetAsli);
+          };
         }
         updateSkor();
         btnElement.innerHTML = "🎤 Cek Bacaan";
@@ -383,7 +390,9 @@
         const div = document.createElement('div');
         div.className = 'grid-item';
 
-        div.textContent = item.kata;
+        const spanKata = document.createElement('span');
+        spanKata.textContent = item.kata;
+        div.appendChild(spanKata);
 
         // Fase 1: Klik kotak untuk memutar suara bacaan
         if (data.fase === 1) {
@@ -407,7 +416,7 @@
           btnAI.innerHTML = '🎤 Cek Bacaan';
           btnAI.onclick = (e) => {
             e.stopPropagation(); // Mencegah klik menembus ke kotak belakangnya
-            cekBacaanAI(item.kataAsli, btnAI, div);
+            cekBacaanAI(item.kataAsli, btnAI, div, spanKata);
           };
           popup.appendChild(btnAI);
         }
