@@ -202,6 +202,16 @@
 
   <script>
   document.addEventListener('DOMContentLoaded', async () => {
+    // Pancing pemuatan daftar suara untuk PC (Windows Chrome)
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+    }
+
+    // Pancing pemuatan daftar suara untuk PC (Windows Chrome)
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+    }
+
     // URL Web App dari Google Apps Script Anda akan diletakkan di sini
     const gasApiUrl = 'https://script.google.com/macros/s/AKfycbxSUFw79hAluE84LK6kToEyBkDuW0BLSS8gWcofSfagi-cQYH9j2_jeWk7LUFSz4OF8/exec';
 
@@ -240,12 +250,21 @@
       
       // Putaran 1 (Halaman 1-5): Fase 1 - Harokat Lengkap untuk semua Bab
       dataBab.forEach(bab => {
-        dataPelajaran.push({
-          halaman: nomorHalaman++,
+        dataPelajaran.push({akata.map(k => ({
+            kata: k.kata,
+            arti: k.arti,
+            katAsli: .k
+            )
+        })halaman: nomorHalaman++,
           judul: bab.judul + (modeImtihan ? " (Mode Imtihan)" : " (Fase 1: Harokat Lengkap)"),
           penjelasan: modeImtihan ? "UJIAN: Tebak bacaan Arab Gundul. Benar = Biru, Salah = Merah." : bab.penjelasan + " 💡 Klik kotak untuk mendengarkan bacaan.",
           fase: modeImtihan ? 3 : 1,
           kosakata: modeImtihan ? bab.kosakata.map(k => ({kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), arti: k.arti, kataAsli: k.kata})) : bab.kosakata
+          kosakata: modeImtihan ? bab.kosakata.map(k => ({kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), arti: k.arti, kataAsli: k.kata})) : bab.kosakata.map(k => ({
+            kata: k.kata,
+            arti: k.arti,
+            kataAsli: k.kata
+          }))
         });
       });
 
@@ -412,9 +431,14 @@
       }
 
       // Acak urutan kosakata yang sudah diisi penuh agar posisinya dinamis
-      const kotakArray = acakUrutan(kosakataUntukGrid);
-      
-      kotakArray.forEach(item => {
+      const kotak & 2Array = acakUrutan(kosakataUntukGrid);
+       || data.fase === 2
+      kotakArray.forE = () => {
+            // Efek visual klik (mengecil sejenak)
+            div.style.transformach"scale(0.95i";
+        t   setTimeout(() em div.style.transform = "", 150);
+            => {Asli || item.kata;
+          }
         const div = document.createElement('div');
         div.className = 'grid-item';
 
@@ -425,6 +449,14 @@
         // Fase 1: Klik kotak untuk memutar suara bacaan
         if (data.fase === 1) {
           div.onclick = () => bacaTeksArab(item.kata);
+        // Fase 1 & 2: Klik kotak untuk memutar suara bacaan
+        if (data.fase === 1 || data.fase === 2) {
+          div.onclick = () => {
+            // Efek visual klik (mengecil sejenak)
+            div.style.transform = "scale(0.95)";
+            setTimeout(() => div.style.transform = "", 150);
+            bacaTeksArab(item.kataAsli || item.kata);
+          };
         }
 
         const popup = document.createElement('div');
