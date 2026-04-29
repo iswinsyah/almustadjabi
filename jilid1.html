@@ -127,23 +127,113 @@
   <script>
   document.addEventListener('DOMContentLoaded', () => {
     
-    // Men-generate 30 kotak grid kosong secara otomatis untuk membentuk tampilan
-    const grid = document.getElementById('grid-kotak');
-    
-    for (let i = 0; i < 30; i++) {
-      const div = document.createElement('div');
-      div.className = 'grid-item';
-      
-      // Mengisi kotak dengan spasi kosong agar tingginya tetap terjaga
-      div.innerHTML = '&nbsp;'; 
+    // Database Kurikulum Jilid 1 (Disusun sesuai pola Al Mustadjabi)
+    const dataPelajaran = [
+      {
+        halaman: 1,
+        judul: "Pelajaran 1: Kosakata Dasar (Mudzakkar & Muannats)",
+        penjelasan: "Kata benda (Isim) dasar umumnya berakhiran Dhommah Tanwin (-un). Muannats biasanya diakhiri Ta' Marbuthoh (ة).",
+        kosakata: [
+          { kata: "كِتَابٌ", arti: "Buku (Mudzakkar)" },
+          { kata: "مَدْرَسَةٌ", arti: "Sekolah (Muannats)" },
+          { kata: "بَابٌ", arti: "Pintu (Mudzakkar)" },
+          { kata: "سَيَّارَةٌ", arti: "Mobil (Muannats)" },
+          { kata: "مَسْجِدٌ", arti: "Masjid (Mudzakkar)" },
+          { kata: "نَافِذَةٌ", arti: "Jendela (Muannats)" }
+        ]
+      },
+      {
+        halaman: 2,
+        judul: "Pelajaran 2: Pengenalan Alif Lam (ال) - Ma'rifat",
+        penjelasan: "PENTING: Jika kata benda diawali Alif Lam (ال), maka Tanwin (-un) HILANG menjadi Dhommah biasa (-u).",
+        kosakata: [
+          { kata: "الْكِتَابُ", arti: "Buku itu (Bukan Kitabun)" },
+          { kata: "الْمَدْرَسَةُ", arti: "Sekolah itu (Bukan Madrasatun)" },
+          { kata: "الْبَابُ", arti: "Pintu itu" },
+          { kata: "السَّيَّارَةُ", arti: "Mobil itu" },
+          { kata: "الْمَسْجِدُ", arti: "Masjid itu" },
+          { kata: "النَّافِذَةُ", arti: "Jendela itu" }
+        ]
+      },
+      {
+        halaman: 3,
+        judul: "Pelajaran 3: Pengaruh Huruf Jar (فِي, عَلَى, مِنْ)",
+        penjelasan: "Perhatikan akhiran kata! Huruf Jar (Kata Depan) membuat harokat akhir kata benda setelahnya berubah menjadi Kasrah (-i / -in).",
+        kosakata: [
+          { kata: "فِي الْمَسْجِدِ", arti: "Di dalam masjid (-i)" },
+          { kata: "عَلَى الْمَكْتَبِ", arti: "Di atas meja (-i)" },
+          { kata: "مِنَ الْمَدْرَسَةِ", arti: "Dari sekolah (-i)" },
+          { kata: "إِلَى الْبَيْتِ", arti: "Ke rumah (-i)" }
+        ]
+      },
+      {
+        halaman: 4,
+        judul: "Pelajaran 4: Tunggal, Ganda (Mutsanna), & Jamak",
+        penjelasan: "Perubahan bentuk kata benda berdasarkan jumlahnya. Perhatikan penambahan huruf di akhirnya.",
+        kosakata: [
+          { kata: "مُسْلِمٌ", arti: "1 Muslim (Tunggal)" },
+          { kata: "مُسْلِمَانِ", arti: "2 Muslim (Akhiran -aani)" },
+          { kata: "مُسْلِمُوْنَ", arti: "Banyak Muslim (Akhiran -uuna)" },
+          { kata: "مُسْلِمَةٌ", arti: "1 Muslimah (Tunggal)" },
+          { kata: "مُسْلِمَتَانِ", arti: "2 Muslimah (Akhiran -taani)" },
+          { kata: "مُسْلِمَاتٌ", arti: "Banyak Muslimah (Akhiran -aatun)" }
+        ]
+      }
+    ];
 
-      const popup = document.createElement('div');
-      popup.className = 'popup';
-      popup.textContent = 'Popup Terjemahan';
+    let indexSaatIni = 0;
 
-      div.appendChild(popup);
-      grid.appendChild(div);
+    // Fungsi untuk mengacak urutan array (Algoritma Fisher-Yates Shuffle)
+    function acakUrutan(array) {
+      let arr = [...array]; // Copy array agar data asli tidak rusak
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
     }
+
+    function renderHalaman() {
+      const data = dataPelajaran[indexSaatIni];
+      
+      // Update Teks Panduan
+      document.getElementById('judul-h3').textContent = data.judul;
+      document.getElementById('kotak-besar').textContent = data.penjelasan;
+      document.getElementById('halaman-teks').textContent = 'Halaman ' + data.halaman;
+      document.getElementById('search').value = data.halaman;
+
+      // Bersihkan dan Update Grid Kosakata
+      const grid = document.getElementById('grid-kotak');
+      grid.innerHTML = ''; 
+      
+      // Acak urutan kosakata sebelum ditampilkan
+      const kosakataDinamis = acakUrutan(data.kosakata);
+      
+      kosakataDinamis.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'grid-item';
+        div.textContent = item.kata;
+
+        const popup = document.createElement('div');
+        popup.className = 'popup';
+        popup.textContent = item.arti;
+
+        div.appendChild(popup);
+        grid.appendChild(div);
+      });
+    }
+
+    // Tombol Navigasi
+    document.getElementById('btnMaju').onclick = () => {
+      if (indexSaatIni < dataPelajaran.length - 1) { indexSaatIni++; renderHalaman(); }
+    };
+    document.getElementById('btnMundur').onclick = () => {
+      if (indexSaatIni > 0) { indexSaatIni--; renderHalaman(); }
+    };
+    document.getElementById('btnRefresh').onclick = () => renderHalaman();
+
+    // Muat halaman pertama kali
+    renderHalaman();
   });
   </script>
 </body>
