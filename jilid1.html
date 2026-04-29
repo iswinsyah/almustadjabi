@@ -173,8 +173,9 @@
     function prosesDataBab(dataBab) {
       dataPelajaran = []; // Kosongkan dulu untuk refresh
       let nomorHalaman = 1;
+      
+      // Putaran 1 (Halaman 1-5): Fase 1 - Harokat Lengkap untuk semua Bab
       dataBab.forEach(bab => {
-        // Fase 1: Harokat Lengkap
         dataPelajaran.push({
           halaman: nomorHalaman++,
           judul: bab.judul + " (Fase 1: Harokat Lengkap)",
@@ -182,8 +183,10 @@
           fase: 1,
           kosakata: bab.kosakata
         });
+      });
 
-        // Fase 2: Harokat Akhir Saja
+      // Putaran 2 (Halaman 6-10): Fase 2 - Harokat Akhir Saja untuk semua Bab
+      dataBab.forEach(bab => {
         dataPelajaran.push({
           halaman: nomorHalaman++,
           judul: bab.judul + " (Fase 2: Harokat Akhir Saja)",
@@ -195,8 +198,10 @@
             kataAsli: k.kata
           }))
         });
+      });
 
-        // Fase 3: Gundul Total + Cek AI
+      // Putaran 3 (Halaman 11-15): Fase 3 - Gundul Total + AI untuk semua Bab
+      dataBab.forEach(bab => {
         dataPelajaran.push({
           halaman: nomorHalaman++,
           judul: bab.judul + " (Fase 3: Gundul Total + Cek Suara AI)",
