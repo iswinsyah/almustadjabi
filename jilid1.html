@@ -179,7 +179,7 @@
         dataPelajaran.push({
           halaman: nomorHalaman++,
           judul: bab.judul + " (Fase 1: Harokat Lengkap)",
-          penjelasan: bab.penjelasan,
+          penjelasan: bab.penjelasan + " 💡 Klik kotak untuk mendengarkan bacaan.",
           fase: 1,
           kosakata: bab.kosakata
         });
@@ -264,6 +264,17 @@
       recognition.start();
     }
 
+    // Fungsi Text-to-Speech untuk membacakan teks Arab
+    function bacaTeksArab(teks) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // Hentikan suara sebelumnya jika ada
+        const utterance = new SpeechSynthesisUtterance(teks);
+        utterance.lang = 'ar-SA'; // Menggunakan logat bahasa Arab
+        utterance.rate = 0.8; // Diperlambat sedikit agar lebih mudah ditiru pemula
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
     function renderHalaman() {
       if (dataPelajaran.length === 0) return; // Jangan render jika data belum siap
 
@@ -301,9 +312,21 @@
         div.className = 'grid-item';
 
         div.textContent = item.kata;
+
+        // Fase 1: Klik kotak untuk memutar suara bacaan
+        if (data.fase === 1) {
+          div.onclick = () => bacaTeksArab(item.kata);
+        }
+
         const popup = document.createElement('div');
         popup.className = 'popup';
-        popup.innerHTML = `<div>${item.arti}</div>`;
+        
+        if (data.fase === 2) {
+          // Fase 2: Tampilkan arti + Kata Asli (Full Harokat) sebagai bantuan jika lupa
+          popup.innerHTML = `<div>${item.arti}</div><div style="margin-top: 5px; font-size: 1.4rem; font-weight: bold; color: #4FB7B3;">${item.kataAsli}</div>`;
+        } else {
+          popup.innerHTML = `<div>${item.arti}</div>`;
+        }
         
         // Tambahkan tombol Cek AI KHUSUS di Fase 3
         if (data.fase === 3) {
