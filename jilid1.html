@@ -22,13 +22,24 @@
       align-items: center;
       min-height: 100vh;
       box-sizing: border-box;
-      padding: 10px;
-      padding-bottom: 90px; /* Diperbesar agar footer fixed tidak menutupi konten PC */
+      padding: 0; /* Dihapus agar header bisa full width */
+      padding-bottom: 90px;
     }
 
-    h1 { text-align:center; font-size:1.6rem; color:#1E3A8A; margin-bottom:0.5rem; font-weight:700; letter-spacing:0.5px; }
-    h2 { text-align:center; font-size:1.3rem; color:#4B5563; margin-top:0; margin-bottom:0.3rem; font-weight:500; }
-    h3 { text-align:center; font-size:1.2rem; margin-bottom:1rem; }
+    .app-header {
+      background-color: #1E3A8A; /* Biru deep premium */
+      width: 100%;
+      padding: 25px 15px;
+      box-sizing: border-box;
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+      margin-bottom: 25px;
+      border-bottom-left-radius: 25px;
+      border-bottom-right-radius: 25px;
+    }
+
+    h1 { text-align:center; font-size:1.6rem; color:#ffffff; margin-bottom:0.5rem; font-weight:700; letter-spacing:0.5px; margin-top:0; }
+    h2 { text-align:center; font-size:1.3rem; color:#BFDBFE; margin-top:0; margin-bottom:0.5rem; font-weight:500; }
+    h3 { text-align:center; font-size:1.2rem; color:#ffffff; margin-bottom:0; }
 
     .kotak-besar { 
       background-color:#EFF6FF; /* Biru sangat muda yang elegan */
@@ -40,7 +51,7 @@
       font-size:1.2rem; 
       font-weight:bold; 
       margin-bottom:20px; 
-      width:100%; 
+      width:95%; /* Menggunakan 95% agar tidak menyentuh tepi layar di HP */
       max-width:800px; 
     }
 
@@ -49,7 +60,7 @@
       grid-template-columns: repeat(5, 1fr); /* Pastikan selalu 5 kolom */
       gap: 10px; 
       margin-bottom: 20px; 
-      width: 100%;
+      width: 95%;
       max-width: 900px;
     }
 
@@ -135,7 +146,7 @@
       font-weight: bold;
       margin-bottom: 15px;
       display: none; /* Sembunyikan secara default */
-      width: 100%; max-width: 800px; box-sizing: border-box;
+      width: 95%; max-width: 800px; box-sizing: border-box;
     }
 
     .halaman { display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:100px; }
@@ -161,9 +172,11 @@
   </style>
 </head>
 <body>
-  <h1>QIROATUL KUTUB METODE AL MUSTADJABI</h1>
-  <h2>Cara Mudah Bisa Baca Kitab Secara Alami Tanpa Ribet</h2>
-  <h3 id="judul-h3">Judul Halaman Placeholder</h3>
+  <header class="app-header">
+    <h1>QIROATUL KUTUB METODE AL MUSTADJABI</h1>
+    <h2>Cara Mudah Bisa Baca Kitab Secara Alami Tanpa Ribet</h2>
+    <h3 id="judul-h3">Judul Halaman Placeholder</h3>
+  </header>
 
   <!-- Tempat Papan Skor -->
   <div class="skor-papan" id="skor-papan">Skor Benar: 0/30 | Predikat: Aadi</div>
