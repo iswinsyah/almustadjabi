@@ -43,19 +43,11 @@
 
     .grid-kotak { 
       display: grid; 
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      grid-template-columns: repeat(5, 1fr); /* Pastikan selalu 5 kolom */
       gap: 10px; 
       margin-bottom: 20px; 
       width: 100%;
       max-width: 900px;
-    }
-
-    @media (max-width: 768px) {
-      .grid-kotak { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    @media (min-width: 769px) {
-      .grid-kotak { grid-template-columns: repeat(5, 1fr); }
     }
 
     .grid-item { 
@@ -64,14 +56,23 @@
       border-radius:10px; 
       padding:15px; 
       text-align:center; 
-      font-weight:500; 
+      font-weight:bold; /* Dipertebal seperti tulisan kitab */
       min-height:60px; 
       display:flex; 
       align-items:center; 
       justify-content:center; 
-      font-size:1.5rem;
+      font-size:2rem; /* Font Arab diperbesar */
       position:relative;
       cursor:pointer;
+    }
+
+    /* Sesuaikan font dan padding di HP agar 5 kolom tetap proporsional */
+    @media (max-width: 768px) {
+      .grid-item {
+        font-size: 1.3rem;
+        padding: 10px 5px;
+        min-height: 50px;
+      }
     }
 
     .popup {
@@ -131,52 +132,137 @@
     const dataPelajaran = [
       {
         halaman: 1,
-        judul: "Pelajaran 1: Kosakata Dasar (Mudzakkar & Muannats)",
-        penjelasan: "Kata benda (Isim) dasar umumnya berakhiran Dhommah Tanwin (-un). Muannats biasanya diakhiri Ta' Marbuthoh (ة).",
+        judul: "Pelajaran 1: Kosakata Ilmu & Kitab",
+        penjelasan: "Isim dasar berakhiran Dhommah Tanwin (-un). Kenali yang Muannats (berakhiran Ta' Marbuthoh ة).",
         kosakata: [
           { kata: "كِتَابٌ", arti: "Buku (Mudzakkar)" },
-          { kata: "مَدْرَسَةٌ", arti: "Sekolah (Muannats)" },
           { kata: "بَابٌ", arti: "Pintu (Mudzakkar)" },
-          { kata: "سَيَّارَةٌ", arti: "Mobil (Muannats)" },
-          { kata: "مَسْجِدٌ", arti: "Masjid (Mudzakkar)" },
-          { kata: "نَافِذَةٌ", arti: "Jendela (Muannats)" }
+          { kata: "فَصْلٌ", arti: "Fasal / Bagian" },
+          { kata: "صَفْحَةٌ", arti: "Halaman (Muannats)" },
+          { kata: "قَلَمٌ", arti: "Pena" },
+          { kata: "حِبْرٌ", arti: "Tinta" },
+          { kata: "كُرَّاسَةٌ", arti: "Buku Tulis (Muannats)" },
+          { kata: "مَكْتَبٌ", arti: "Meja" },
+          { kata: "مَدْرَسَةٌ", arti: "Sekolah (Muannats)" },
+          { kata: "عِلْمٌ", arti: "Ilmu" },
+          { kata: "جَهْلٌ", arti: "Kebodohan" },
+          { kata: "عَالِمٌ", arti: "Orang Berilmu" },
+          { kata: "جَاهِلٌ", arti: "Orang Bodoh" },
+          { kata: "سُؤَالٌ", arti: "Pertanyaan" },
+          { kata: "جَوَابٌ", arti: "Jawaban" },
+          { kata: "دَلِيلٌ", arti: "Dalil / Bukti" },
+          { kata: "مَسْأَلَةٌ", arti: "Masalah (Muannats)" },
+          { kata: "حُكْمٌ", arti: "Hukum" },
+          { kata: "شَرْطٌ", arti: "Syarat" },
+          { kata: "رُكْنٌ", arti: "Rukun" }
         ]
       },
       {
         halaman: 2,
-        judul: "Pelajaran 2: Pengenalan Alif Lam (ال) - Ma'rifat",
-        penjelasan: "PENTING: Jika kata benda diawali Alif Lam (ال), maka Tanwin (-un) HILANG menjadi Dhommah biasa (-u).",
+        judul: "Pelajaran 2: Seputar Ibadah & Alif Lam (ال)",
+        penjelasan: "Jika Isim diawali Alif Lam (ال), maka Tanwin (-un) HILANG menjadi Dhommah biasa (-u).",
         kosakata: [
-          { kata: "الْكِتَابُ", arti: "Buku itu (Bukan Kitabun)" },
-          { kata: "الْمَدْرَسَةُ", arti: "Sekolah itu (Bukan Madrasatun)" },
-          { kata: "الْبَابُ", arti: "Pintu itu" },
-          { kata: "السَّيَّارَةُ", arti: "Mobil itu" },
-          { kata: "الْمَسْجِدُ", arti: "Masjid itu" },
-          { kata: "النَّافِذَةُ", arti: "Jendela itu" }
+          { kata: "الْإِسْلَامُ", arti: "Agama Islam" },
+          { kata: "الْإِيمَانُ", arti: "Iman" },
+          { kata: "الصَّلَاةُ", arti: "Shalat" },
+          { kata: "الزَّكَاةُ", arti: "Zakat" },
+          { kata: "الصَّوْمُ", arti: "Puasa" },
+          { kata: "الْحَجُّ", arti: "Haji" },
+          { kata: "الْمَسْجِدُ", arti: "Masjid" },
+          { kata: "الْقِبْلَةُ", arti: "Kiblat" },
+          { kata: "الْوُضُوءُ", arti: "Wudhu" },
+          { kata: "النِّیَّةُ", arti: "Niat" },
+          { kata: "الطَّهَارَةُ", arti: "Bersuci" },
+          { kata: "الْمَاءُ", arti: "Air" },
+          { kata: "التُّرَابُ", arti: "Debu / Tanah" },
+          { kata: "الثَّوْبُ", arti: "Pakaian" },
+          { kata: "الْبَدَنُ", arti: "Badan" },
+          { kata: "الْوَقْتُ", arti: "Waktu" },
+          { kata: "الْأَذَانُ", arti: "Adzan" },
+          { kata: "الْإِقَامَةُ", arti: "Iqamah" },
+          { kata: "الْإِمَامُ", arti: "Imam" },
+          { kata: "الْمَأْمُومُ", arti: "Makmum" }
         ]
       },
       {
         halaman: 3,
-        judul: "Pelajaran 3: Pengaruh Huruf Jar (فِي, عَلَى, مِنْ)",
-        penjelasan: "Perhatikan akhiran kata! Huruf Jar (Kata Depan) membuat harokat akhir kata benda setelahnya berubah menjadi Kasrah (-i / -in).",
+        judul: "Pelajaran 3: Alam, Tempat & Huruf Jar",
+        penjelasan: "Huruf Jar (Di, Dari, Ke, Atas) merubah harokat akhir kata setelahnya menjadi Kasrah (-i).",
         kosakata: [
           { kata: "فِي الْمَسْجِدِ", arti: "Di dalam masjid (-i)" },
-          { kata: "عَلَى الْمَكْتَبِ", arti: "Di atas meja (-i)" },
           { kata: "مِنَ الْمَدْرَسَةِ", arti: "Dari sekolah (-i)" },
-          { kata: "إِلَى الْبَيْتِ", arti: "Ke rumah (-i)" }
+          { kata: "إِلَى الْبَيْتِ", arti: "Ke rumah (-i)" },
+          { kata: "عَلَى الْأَرْضِ", arti: "Di atas bumi" },
+          { kata: "مِنَ السَّمَاءِ", arti: "Dari langit" },
+          { kata: "فِي الْبَحْرِ", arti: "Di dalam laut" },
+          { kata: "عَلَى الشَّجَرَةِ", arti: "Di atas pohon" },
+          { kata: "مِنَ الْبَلَدِ", arti: "Dari negara" },
+          { kata: "إِلَى السُّوقِ", arti: "Ke pasar" },
+          { kata: "فِي الصَّدْرِ", arti: "Di dalam dada" },
+          { kata: "عَلَى الرَّأْسِ", arti: "Di atas kepala" },
+          { kata: "مِنَ النَّارِ", arti: "Dari api" },
+          { kata: "إِلَى الْجَنَّةِ", arti: "Ke surga" },
+          { kata: "فِي الْقَبْرِ", arti: "Di dalam kubur" },
+          { kata: "عَلَى الْجَبَلِ", arti: "Di atas gunung" },
+          { kata: "فِي اللَّيْلِ", arti: "Di malam hari" },
+          { kata: "فِي النَّهَارِ", arti: "Di siang hari" },
+          { kata: "مِنَ الصَّبَاحِ", arti: "Dari pagi" },
+          { kata: "إِلَى الْمَسَاءِ", arti: "Ke sore hari" },
+          { kata: "عَلَى الطَّرِيقِ", arti: "Di atas jalan" }
         ]
       },
       {
         halaman: 4,
-        judul: "Pelajaran 4: Tunggal, Ganda (Mutsanna), & Jamak",
-        penjelasan: "Perubahan bentuk kata benda berdasarkan jumlahnya. Perhatikan penambahan huruf di akhirnya.",
+        judul: "Pelajaran 4: Manusia (Tunggal & Jamak)",
+        penjelasan: "Kosakata seputar manusia. Perhatikan perubahan dari 1 orang (Tunggal) menjadi banyak (Jamak).",
         kosakata: [
           { kata: "مُسْلِمٌ", arti: "1 Muslim (Tunggal)" },
-          { kata: "مُسْلِمَانِ", arti: "2 Muslim (Akhiran -aani)" },
           { kata: "مُسْلِمُوْنَ", arti: "Banyak Muslim (Akhiran -uuna)" },
-          { kata: "مُسْلِمَةٌ", arti: "1 Muslimah (Tunggal)" },
-          { kata: "مُسْلِمَتَانِ", arti: "2 Muslimah (Akhiran -taani)" },
-          { kata: "مُسْلِمَاتٌ", arti: "Banyak Muslimah (Akhiran -aatun)" }
+          { kata: "كَافِرٌ", arti: "1 Kafir" },
+          { kata: "كُفَّارٌ", arti: "Banyak Kafir (Jamak)" },
+          { kata: "رَجُلٌ", arti: "1 Pria" },
+          { kata: "رِجَالٌ", arti: "Para Pria" },
+          { kata: "امْرَأَةٌ", arti: "1 Wanita" },
+          { kata: "نِسَاءٌ", arti: "Para Wanita" },
+          { kata: "وَلَدٌ", arti: "Anak" },
+          { kata: "أَوْلَادٌ", arti: "Anak-anak" },
+          { kata: "زَوْجٌ", arti: "Suami / Pasangan" },
+          { kata: "أَزْوَاجٌ", arti: "Para Suami" },
+          { kata: "زَوْجَةٌ", arti: "Istri" },
+          { kata: "زَوْجَاتٌ", arti: "Para Istri" },
+          { kata: "نَبِيٌّ", arti: "Nabi" },
+          { kata: "أَنْبِيَاءُ", arti: "Para Nabi" },
+          { kata: "مَلَكٌ", arti: "Malaikat" },
+          { kata: "مَلَائِكَةٌ", arti: "Para Malaikat" },
+          { kata: "صَدِيقٌ", arti: "Teman" },
+          { kata: "أَصْدِقَاءُ", arti: "Teman-teman" }
+        ]
+      },
+      {
+        halaman: 5,
+        judul: "Pelajaran 5: Kata Sifat (Na'at) Dasar",
+        penjelasan: "Isim sifat yang paling sering mengiringi Isim lain dalam Kitab Kuning.",
+        kosakata: [
+          { kata: "كَبِيرٌ", arti: "Besar" },
+          { kata: "صَغِيرٌ", arti: "Kecil" },
+          { kata: "كَثِيرٌ", arti: "Banyak" },
+          { kata: "قَلِيلٌ", arti: "Sedikit" },
+          { kata: "طَوِيلٌ", arti: "Panjang" },
+          { kata: "قَصِيرٌ", arti: "Pendek" },
+          { kata: "حَسَنٌ", arti: "Baik / Bagus" },
+          { kata: "قَبِيحٌ", arti: "Buruk" },
+          { kata: "حَلَالٌ", arti: "Halal" },
+          { kata: "حَرَامٌ", arti: "Haram" },
+          { kata: "صَحِيحٌ", arti: "Benar / Sah" },
+          { kata: "بَاطِلٌ", arti: "Batal / Salah" },
+          { kata: "قَدِيمٌ", arti: "Lama / Terdahulu" },
+          { kata: "جَدِيدٌ", arti: "Baru" },
+          { kata: "قَوِيٌّ", arti: "Kuat" },
+          { kata: "ضَعِيفٌ", arti: "Lemah" },
+          { kata: "غَنِيٌّ", arti: "Kaya" },
+          { kata: "فَقِيرٌ", arti: "Fakir / Miskin" },
+          { kata: "صَعْبٌ", arti: "Sulit" },
+          { kata: "سَهْلٌ", arti: "Mudah" }
         ]
       }
     ];
@@ -206,19 +292,31 @@
       const grid = document.getElementById('grid-kotak');
       grid.innerHTML = ''; 
       
-      // Acak urutan kosakata sebelum ditampilkan
-      const kosakataDinamis = acakUrutan(data.kosakata);
+      // Siapkan tepat 30 kotak (5 kolom x 6 baris)
+      let kotakArray = new Array(30).fill(null);
       
-      kosakataDinamis.forEach(item => {
+      // Masukkan daftar kosakata ke dalam array kotak
+      for (let i = 0; i < data.kosakata.length; i++) {
+        if (i < 30) kotakArray[i] = data.kosakata[i];
+      }
+
+      // Acak posisi ke-30 kotak tersebut agar kata tersebar secara dinamis!
+      kotakArray = acakUrutan(kotakArray);
+      
+      kotakArray.forEach(item => {
         const div = document.createElement('div');
         div.className = 'grid-item';
-        div.textContent = item.kata;
 
-        const popup = document.createElement('div');
-        popup.className = 'popup';
-        popup.textContent = item.arti;
-
-        div.appendChild(popup);
+        if (item) {
+          div.textContent = item.kata;
+          const popup = document.createElement('div');
+          popup.className = 'popup';
+          popup.textContent = item.arti;
+          div.appendChild(popup);
+        } else {
+          div.innerHTML = '&nbsp;'; // Biarkan kotak kosong sebagai spasi
+          div.style.cursor = 'default'; // Kursor biasa untuk kotak kosong
+        }
         grid.appendChild(div);
       });
     }
