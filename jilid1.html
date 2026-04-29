@@ -207,11 +207,6 @@
       window.speechSynthesis.getVoices();
     }
 
-    // Pancing pemuatan daftar suara untuk PC (Windows Chrome)
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.getVoices();
-    }
-
     // URL Web App dari Google Apps Script Anda akan diletakkan di sini
     const gasApiUrl = 'https://script.google.com/macros/s/AKfycbxSUFw79hAluE84LK6kToEyBkDuW0BLSS8gWcofSfagi-cQYH9j2_jeWk7LUFSz4OF8/exec';
 
@@ -250,16 +245,11 @@
       
       // Putaran 1 (Halaman 1-5): Fase 1 - Harokat Lengkap untuk semua Bab
       dataBab.forEach(bab => {
-        dataPelajaran.push({akata.map(k => ({
-            kata: k.kata,
-            arti: k.arti,
-            katAsli: .k
-            )
-        })halaman: nomorHalaman++,
+        dataPelajaran.push({
+          halaman: nomorHalaman++,
           judul: bab.judul + (modeImtihan ? " (Mode Imtihan)" : " (Fase 1: Harokat Lengkap)"),
           penjelasan: modeImtihan ? "UJIAN: Tebak bacaan Arab Gundul. Benar = Biru, Salah = Merah." : bab.penjelasan + " 💡 Klik kotak untuk mendengarkan bacaan.",
           fase: modeImtihan ? 3 : 1,
-          kosakata: modeImtihan ? bab.kosakata.map(k => ({kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), arti: k.arti, kataAsli: k.kata})) : bab.kosakata
           kosakata: modeImtihan ? bab.kosakata.map(k => ({kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), arti: k.arti, kataAsli: k.kata})) : bab.kosakata.map(k => ({
             kata: k.kata,
             arti: k.arti,
