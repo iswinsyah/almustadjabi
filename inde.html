@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qiroatul Kutub — Menu Utama</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #f8fafc;
+      color: #333;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 15px;
+    }
+
+    h1 { 
+      text-align: center; 
+      font-size: 1.8rem; 
+      color: #4FB7B3; 
+      margin-bottom: 0.2rem; 
+    }
+    
+    h2 { 
+      text-align: center; 
+      font-size: 1.2rem; 
+      color: #555;
+      margin-top: 0; 
+      margin-bottom: 2rem; 
+    }
+
+    .menu-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    /* Tombol navigasi bergaya selaras dengan grid sebelumnya */
+    .btn-jilid {
+      display: block;
+      background-color: #26667F;
+      color: white;
+      text-decoration: none;
+      text-align: center;
+      padding: 18px;
+      border-radius: 10px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: all 0.2s ease-in-out;
+    }
+
+    .btn-jilid:hover {
+      background-color: #1a495c;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    .btn-jilid:active {
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>QIROATUL KUTUB METODE AL MUSTADJABI</h1>
+  <h2>Silakan Pilih Jilid Pembelajaran</h2>
+
+  <div class="menu-container">
+    <!-- Link ini akan mengarah ke file jilid1.html yang baru saja Anda namai -->
+    <a href="jilid1.html" class="btn-jilid">📚 Buka Jilid 1</a>
+    
+    <!-- Nanti Anda tinggal membuat file jilid2.html, jilid3.html, dst. -->
+    <a href="jilid2.html" class="btn-jilid">📚 Buka Jilid 2</a>
+    <a href="jilid3.html" class="btn-jilid">📚 Buka Jilid 3</a>
+    <a href="jilid4.html" class="btn-jilid">📚 Buka Jilid 4</a>
+    <a href="jilid5.html" class="btn-jilid">📚 Buka Jilid 5</a>
+    <a href="jilid6.html" class="btn-jilid">📚 Buka Jilid 6</a>
+  </div>
+
+</body>
+</html>

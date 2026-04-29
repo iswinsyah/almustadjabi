@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qiroatul Kutub — Tabel Kosakata (Template)</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: #f8fafc;
+      color: #333;
+      font-family: 'Segoe UI', sans-serif;
+      overflow-x: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+      padding: 10px;
+    }
+
+    h1 { text-align:center; font-size:1.5rem; color:#4FB7B3; margin-bottom:0.5rem; }
+    h2 { text-align:center; font-size:1.4rem; margin-top:0; margin-bottom:0.3rem; }
+    h3 { text-align:center; font-size:1.2rem; margin-bottom:1rem; }
+
+    .kotak-besar { 
+      background-color:#A8FBD3; 
+      border-radius:10px; 
+      padding:40px; 
+      text-align:center; 
+      font-size:1.2rem; 
+      font-weight:bold; 
+      margin-bottom:20px; 
+      width:100%; 
+      max-width:800px; 
+    }
+
+    .grid-kotak { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px; 
+      margin-bottom: 20px; 
+      width: 100%;
+      max-width: 900px;
+    }
+
+    @media (max-width: 768px) {
+      .grid-kotak { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (min-width: 769px) {
+      .grid-kotak { grid-template-columns: repeat(5, 1fr); }
+    }
+
+    .grid-item { 
+      background-color:#26667F; 
+      color:white; 
+      border-radius:10px; 
+      padding:15px; 
+      text-align:center; 
+      font-weight:500; 
+      min-height:60px; 
+      display:flex; 
+      align-items:center; 
+      justify-content:center; 
+      font-size:1.5rem;
+      position:relative;
+      cursor:pointer;
+    }
+
+    .popup {
+      display:none;
+      position:absolute;
+      bottom:110%;
+      left:50%;
+      transform:translateX(-50%);
+      background:#fff;
+      color:#333;
+      border-radius:8px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.15);
+      padding:8px 12px;
+      font-size:1rem;
+      white-space:normal;
+      z-index:10;
+      width:max-content;
+      max-width:250px;
+    }
+
+    .grid-item:hover .popup, .grid-item:active .popup { display:block; }
+
+    .halaman { display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:100px; }
+    .halaman input { padding:8px; border-radius:5px; border:1px solid #ccc; width:150px; }
+
+    footer { position:fixed; bottom:0; left:0; width:100%; background-color:#26667F; display:flex; justify-content:center; gap:15px; padding:10px 0; z-index:9999; }
+    footer button { background-color:white; border:none; border-radius:5px; padding:8px 12px; font-size:14px; cursor:pointer; transition: background-color 0.2s; }
+    footer button:hover { background-color:#e0e0e0; }
+
+  </style>
+</head>
+<body>
+  <h1>QIROATUL KUTUB METODE AL MUSTADJABI</h1>
+  <h2>Cara Mudah Bisa Baca Kitab Secara Alami Tanpa Ribet</h2>
+  <h3 id="judul-h3">Judul Halaman Placeholder</h3>
+
+  <div class="kotak-besar" id="kotak-besar">Kotak Besar Kosong</div>
+  
+  <!-- Grid Kosong yang akan diisi oleh JavaScript -->
+  <div class="grid-kotak" id="grid-kotak"></div>
+
+  <div class="halaman">
+    <span id="halaman-teks">Halaman —</span>
+    <input type="text" id="search" placeholder="Cari halaman...">
+  </div>
+
+  <footer>
+    <button id="btnMundur">⬅ Mundur</button>
+    <button id="btnRefresh">🔄 Refresh</button>
+    <button id="btnMaju">➡ Maju</button>
+  </footer>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    
+    // Men-generate 30 kotak grid kosong secara otomatis untuk membentuk tampilan
+    const grid = document.getElementById('grid-kotak');
+    
+    for (let i = 0; i < 30; i++) {
+      const div = document.createElement('div');
+      div.className = 'grid-item';
+      
+      // Mengisi kotak dengan spasi kosong agar tingginya tetap terjaga
+      div.innerHTML = '&nbsp;'; 
+
+      const popup = document.createElement('div');
+      popup.className = 'popup';
+      popup.textContent = 'Popup Terjemahan';
+
+      div.appendChild(popup);
+      grid.appendChild(div);
+    }
+  });
+  </script>
+</body>
+</html>
