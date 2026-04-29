@@ -6,7 +6,6 @@
   <title>Qiroatul Kutub — Tabel Kosakata (Template)</title>
   <style>
     html, body {
-      height: 100%;
       margin: 0;
       padding: 0;
       background-color: #f8fafc;
@@ -23,7 +22,7 @@
       min-height: 100vh;
       box-sizing: border-box;
       padding: 10px;
-      padding-bottom: 60px; /* Tambahkan padding bawah untuk footer yang fixed */
+      padding-bottom: 90px; /* Diperbesar agar footer fixed tidak menutupi konten PC */
     }
 
     h1 { text-align:center; font-size:1.5rem; color:#4FB7B3; margin-bottom:0.5rem; }
@@ -154,7 +153,8 @@
     async function muatDataPelajaran() {
       document.getElementById('judul-h3').textContent = 'Memuat Data Pelajaran...';
       try {
-        const response = await fetch(gasApiUrl);
+        // Tambahkan { cache: 'no-store' } agar browser selalu mengambil data terbaru, bukan sisa cache
+        const response = await fetch(gasApiUrl, { cache: 'no-store' });
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const dataBab = await response.json();
         
