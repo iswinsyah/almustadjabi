@@ -372,26 +372,21 @@
 
     // Fungsi Text-to-Speech untuk membacakan teks Arab
     function bacaTeksArab(teks) {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel(); // Hentikan suara sebelumnya jika ada
-        const utterance = new SpeechSynthesisUtterance(teks);
-        utterance.lang = 'ar-SA'; // Menggunakan logat bahasa Arab
-        utterance.rate = 0.8; // Diperlambat sedikit agar lebih mudah ditiru pemula
-        
-        // Cek apakah perangkat punya suara bahasa Arab lokal
-        const voices = window.speechSynthesis.getVoices();
-        const arabicVoice = voices.find(v => v.lang.toLowerCase().includes('ar'));
-        
-        if (arabicVoice) {
-          utterance.voice = arabicVoice;
+      // JALUR VVIP: Selalu gunakan API Audio Google yang jernih dan stabil
+      const urlAudio = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ar&client=tw-ob&q=${encodeURIComponent(teks)}`;
+      const audio = new Audio(urlAudio);
+      
+      audio.play().catch(e => {
+        console.error("Gagal memutar audio API Google:", e);
+        // Fallback darurat ke sistem bawaan PC jika API Google offline/diblokir
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(teks);
+          utterance.lang = 'ar-SA';
+          utterance.rate = 0.8;
           window.speechSynthesis.speak(utterance);
-        } else {
-          // WORKAROUND LAPTOP/PC: Pakai Google TTS Online jika suara lokal tidak ada
-          const urlAudio = `https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=ar&q=${encodeURIComponent(teks)}`;
-          const audio = new Audio(urlAudio);
-          audio.play().catch(e => console.error("Gagal memutar audio fallback:", e));
         }
-      }
+      });
     }
 
     function renderHalaman() {
