@@ -26,6 +26,6 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           
-          # Folder tujuan di Hostinger. Biasanya 'public_html'.
-          # Sesuaikan jika Anda ingin menaruhnya di sub-folder, contoh: 'public_html/almustadjabi/'
-          server-dir: public_html/
+          # Folder tujuan di Hostinger.
+          server-dir: ./
+
