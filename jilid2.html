@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qiroatul Kutub — Jilid 2: Fi'il</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #ffffff; /* Latar belakang putih bersih */
+      color: #333;
+      font-family: 'Poppins', sans-serif; /* Font elegan premium */
+      overflow-x: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+      padding: 0; /* Dihapus agar header bisa full width */
+      padding-bottom: 90px;
+    }
+
+    .page-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      transition: margin-left 0.3s ease-in-out;
+    }
+
+    .app-header {
+      background-color: #1E3A8A; /* Biru deep premium */
+      width: 100%;
+      padding: 25px 15px;
+      box-sizing: border-box;
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+      margin-bottom: 25px;
+      border-bottom-left-radius: 25px;
+      border-bottom-right-radius: 25px;
+      position: relative; /* Untuk posisi hamburger */
+    }
+    
+    /* Tempat Logo */
+    .logo-container { display: flex; justify-content: center; margin-bottom: 15px; }
+    .logo-placeholder {
+      width: 70px; height: 70px;
+      background-color: #2563EB; color: white;
+      border-radius: 50%; border: 3px solid #BFDBFE;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    h1 { text-align:center; font-size:1.3rem; color:#ffffff; margin-bottom:0.5rem; font-weight:700; letter-spacing:0.5px; margin-top:0; }
+    h2 { text-align:center; font-size:1rem; color:#BFDBFE; margin-top:0; margin-bottom:0.5rem; font-weight:500; }
+    h3 { text-align:center; font-size:0.9rem; color:#ffffff; margin-bottom:0; }
+
+    .kotak-besar { 
+      background-color:#EFF6FF; /* Biru sangat muda yang elegan */
+      border: 1px solid #BFDBFE; /* Garis tepi biru lembut */
+      color: #1E3A8A; /* Biru pekat untuk teks */
+      border-radius:12px; 
+      padding:30px 40px; 
+      text-align:center; 
+      font-size:1.2rem; 
+      font-weight:bold; 
+      margin-bottom:20px; 
+      width:95%; /* Menggunakan 95% agar tidak menyentuh tepi layar di HP */
+      max-width:800px; 
+    }
+
+    .grid-kotak { 
+      display: grid; 
+      grid-template-columns: repeat(5, 1fr); /* Pastikan selalu 5 kolom */
+      gap: 10px; 
+      margin-bottom: 20px; 
+      width: 95%;
+      max-width: 900px;
+    }
+
+    .grid-item { 
+      background-color:#2563EB; /* Warna biru elegan premium */
+      color:white; 
+      border-radius:12px; 
+      padding:15px; 
+      text-align:center; 
+      font-weight:bold; /* Dipertebal seperti tulisan kitab */
+      min-height:60px; 
+      display:flex; 
+      align-items:center; 
+      justify-content:center; 
+      font-size:2rem; /* Font Arab diperbesar */
+      position:relative;
+      cursor:pointer;
+      box-shadow: 0 4px 6px rgba(37, 99, 235, 0.15); /* Efek timbul lembut */
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+    }
+    .grid-item:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(37, 99, 235, 0.25); }
+
+    /* Tambahan Warna Jawaban Benar dan Salah */
+    .grid-item.benar { background-color: #10B981 !important; border: 2px solid #fff; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); } /* Hijau Cerah Emerald */
+    .grid-item.salah { background-color: #EF4444 !important; border: 2px solid #fff; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); } /* Merah Premium */
+    .grid-item.terjawab { cursor: default; }
+    .grid-item.salah.terjawab { cursor: pointer; } /* Tetap bisa diklik jika salah */
+
+    /* Sesuaikan font dan padding di HP agar 5 kolom tetap proporsional */
+    @media (max-width: 768px) {
+      .grid-item {
+        font-size: 1.3rem;
+        padding: 10px 5px;
+        min-height: 50px;
+      }
+    }
+
+    .popup {
+      display:none;
+      position:absolute;
+      bottom:110%;
+      left:50%;
+      transform:translateX(-50%);
+      background:#fff;
+      color:#333;
+      border-radius:8px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.15);
+      padding:8px 12px;
+      font-size:1rem;
+      white-space:normal;
+      z-index:10;
+      width:max-content;
+      max-width:250px;
+      pointer-events: none; /* Mencegah popup memblokir klik pada kotak di PC */
+    }
+
+    /* Navigasi Sidebar & Hamburger */
+    .sidebar {
+      height: 100%;
+      width: 250px;
+      position: fixed;
+      z-index: 10001; /* Di atas footer */
+      top: 0;
+      left: 0;
+      background-color: #172554; /* Biru lebih gelap */
+      overflow-x: hidden;
+      transition: transform 0.3s ease-in-out;
+      padding-top: 20px;
+      box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+    }
+
+    .sidebar-header {
+      padding: 10px 20px;
+      text-align: center;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-link {
+      padding: 12px 20px;
+      text-decoration: none;
+      font-size: 1rem;
+      color: #BFDBFE;
+      display: block;
+      transition: 0.2s;
+      border-left: 4px solid transparent;
+    }
+
+    .sidebar-link:hover {
+      background-color: #1E3A8A;
+      color: white;
+      border-left-color: #3B82F6;
+    }
+
+    .sidebar-link.active {
+      background-color: #2563EB;
+      color: white;
+      font-weight: 600;
+      border-left-color: #93C5FD;
+    }
+
+    .hamburger-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 20px;
+      display: none; /* Sembunyi di PC */
+      flex-direction: column;
+      justify-content: space-around;
+      width: 30px;
+      height: 25px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 10002;
+    }
+
+    .hamburger-btn span {
+      width: 30px;
+      height: 3px;
+      background-color: white;
+      border-radius: 5px;
+    }
+
+    .grid-item:hover .popup, .grid-item:active .popup { display:block; }
+
+    /* Papan Skor AI */
+    .skor-papan {
+      background-color: #fff;
+      border: 2px solid #2563EB;
+      color: #1E3A8A;
+      border-radius: 8px;
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      display: none; /* Sembunyikan secara default */
+      width: 95%; max-width: 800px; box-sizing: border-box;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 10000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Responsive Logic */
+    @media (min-width: 992px) {
+      .page-container { margin-left: 250px; }
+      footer { width: calc(100% - 250px); left: 250px; }
+    }
+
+    .halaman { display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:100px; }
+    .halaman input { padding:8px; border-radius:5px; border:1px solid #ccc; width:150px; }
+
+    footer { position:fixed; bottom:0; left:0; width:100%; background-color:#1E3A8A; display:flex; justify-content:center; gap:15px; padding:12px 0; z-index:9999; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); }
+    footer button { background-color:white; color:#1E3A8A; font-family:'Poppins', sans-serif; border:none; border-radius:5px; padding:8px 16px; font-size:14px; font-weight:600; cursor:pointer; transition: all 0.2s; }
+    footer button:hover { background-color:#E0F2FE; transform: translateY(-2px); }
+
+    /* Tombol Khusus Imtihan */
+    .btn-imtihan {
+      background-color: #f39c12 !important; color: white !important; font-weight: bold;
+    }
+    .btn-imtihan:hover { background-color: #d68910 !important; }
+    .btn-imtihan.active {
+      background-color: #e74c3c !important;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); }
+    }
+
+    @media (max-width: 991px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.active { transform: translateX(0); }
+      .hamburger-btn { display: flex; }
+    }
+
+  </style>
+</head>
+<body>
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h3>Menu Navigasi</h3>
+    </div>
+    <a href="inde.html" class="sidebar-link">🏠 Menu Utama</a>
+    <a href="jilid1.html" class="sidebar-link">Jilid 1: Isim</a>
+    <a href="jilid2.html" class="sidebar-link active">Jilid 2: Fi'il</a>
+    <a href="jilid3.html" class="sidebar-link">Jilid 3</a>
+    <a href="jilid4.html" class="sidebar-link">Jilid 4</a>
+    <a href="jilid5.html" class="sidebar-link">Jilid 5</a>
+    <a href="jilid6.html" class="sidebar-link">Jilid 6</a>
+  </nav>
+
+  <!-- Overlay untuk menu mobile -->
+  <div class="overlay" id="overlay"></div>
+
+  <div class="page-container">
+    <header class="app-header">
+      <button class="hamburger-btn" id="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <!-- Placeholder Logo, ganti tag div ini dengan <img> nanti -->
+      <div class="logo-container">
+        <!-- <img src="URL_LOGO_ANDA" alt="Logo" style="width: 70px; height: 70px; border-radius: 50%; border: 3px solid #BFDBFE;"> -->
+        <div class="logo-placeholder">LOGO</div>
+      </div>
+
+      <h1>QIROATUL KUTUB METODE AL MUSTADJABI</h1>
+      <h2>Cara Mudah Bisa Baca Kitab Secara Alami Tanpa Ribet</h2>
+      <h3 id="judul-h3">Judul Halaman Placeholder</h3>
+    </header>
+
+    <!-- Tempat Papan Skor -->
+    <div class="skor-papan" id="skor-papan">Skor Benar: 0/30 | Predikat: Aadi</div>
+
+    <div class="kotak-besar" id="kotak-besar">Kotak Besar Kosong</div>
+    
+    <!-- Grid Kosong yang akan diisi oleh JavaScript -->
+    <div class="grid-kotak" id="grid-kotak"></div>
+
+    <div class="halaman">
+      <span id="halaman-teks">Halaman —</span>
+      <input type="text" id="search" placeholder="Cari halaman...">
+    </div>
+
+    <footer>
+      <button id="btnMundur">⬅ Mundur</button>
+      <button id="btnRefresh">🔄 Refresh</button>
+      <button id="btnMaju">➡ Maju</button>
+      <button id="btnImtihan" class="btn-imtihan">🎓 Mode Imtihan: OFF</button>
+    </footer>
+  </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Logika untuk Hamburger Menu
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    hamburgerBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+    });
+
+    // Pancing pemuatan daftar suara untuk PC (Windows Chrome)
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+    }
+
+    // URL Web App dari Google Apps Script Anda akan diletakkan di sini
+    const gasApiUrl = 'GANTI_DENGAN_URL_API_JILID2_NANTI';
+
+    let dataPelajaran = [];
+    let indexSaatIni = 0;
+    let dataBabGlobal = []; // Untuk menyimpan data murni agar cepat saat ganti mode
+    let modeImtihan = false;
+    let skorBenar = 0;
+    let skorSalah = 0;
+
+    // Fungsi untuk memuat data dari Google Apps Script
+    async function muatDataPelajaran() {
+      document.getElementById('judul-h3').textContent = 'Memuat Data Pelajaran...';
+      try {
+        // Tambahkan { cache: 'no-store' } agar browser selalu mengambil data terbaru, bukan sisa cache
+        const response = await fetch(gasApiUrl, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const dataBab = await response.json();
+        dataBabGlobal = dataBab; // Simpan data utuh
+        
+        // === MAGIC SCRIPT: Mengubah Bab menjadi Halaman (3 Fase) secara Otomatis ===
+        prosesDataBab(dataBabGlobal);
+        renderHalaman();
+
+      } catch (error) {
+        console.error('Gagal memuat data pelajaran:', error);
+        document.getElementById('judul-h3').textContent = 'Gagal Memuat Data';
+        document.getElementById('kotak-besar').textContent = 'Pastikan URL Google Apps Script benar dan sudah di-deploy dengan akses "Anyone". Coba refresh halaman.';
+      }
+    }
+
+    // === MAGIC SCRIPT: Mengubah 5 Bab menjadi 15 Halaman (3 Fase) secara Otomatis ===
+    function prosesDataBab(dataBab) {
+      dataPelajaran = []; // Kosongkan dulu untuk refresh
+      let nomorHalaman = 1;
+      
+      // Putaran 1 (Halaman 1-5): Fase 1 - Harokat Lengkap untuk semua Bab
+      dataBab.forEach(bab => {
+        dataPelajaran.push({
+          halaman: nomorHalaman++,
+          judul: bab.judul + (modeImtihan ? " (Mode Imtihan)" : " (Fase 1: Harokat Lengkap)"),
+          penjelasan: modeImtihan ? "UJIAN: Tebak bacaan Arab Gundul. Benar = Biru, Salah = Merah." : bab.penjelasan + " 💡 Klik kotak untuk mendengarkan bacaan.",
+          fase: modeImtihan ? 3 : 1,
+          kosakata: modeImtihan ? bab.kosakata.map(k => ({kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), arti: k.arti, kataAsli: k.kata})) : bab.kosakata.map(k => ({
+            kata: k.kata,
+            arti: k.arti,
+            kataAsli: k.kata
+          }))
+        });
+      });
+
+      // Putaran 2 (Halaman 6-10): Fase 2 - Harokat Akhir Saja untuk semua Bab
+      dataBab.forEach(bab => {
+        dataPelajaran.push({
+          halaman: nomorHalaman++,
+          judul: bab.judul + (modeImtihan ? " (Mode Imtihan)" : " (Fase 2: Harokat Akhir Saja)"),
+          penjelasan: modeImtihan ? "UJIAN: Tebak bacaan Arab Gundul. Benar = Biru, Salah = Merah." : "Latih insting I'rob Anda. Harokat di tengah kata dihilangkan, sisa harokat akhirnya saja.",
+          fase: modeImtihan ? 3 : 2,
+          kosakata: modeImtihan ? bab.kosakata.map(k => ({kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), arti: k.arti, kataAsli: k.kata})) : bab.kosakata.map(k => ({
+            kata: k.kata.replace(/[\u064B-\u065F\u0670]+(?=[^\s\u064B-\u065F\u0670])/g, ''), 
+            arti: k.arti,
+            kataAsli: k.kata
+          }))
+        });
+      });
+
+      // Putaran 3 (Halaman 11-15): Fase 3 - Gundul Total + AI untuk semua Bab
+      dataBab.forEach(bab => {
+        dataPelajaran.push({
+          halaman: nomorHalaman++,
+          judul: bab.judul + (modeImtihan ? " (Mode Imtihan)" : " (Fase 3: Gundul Total + Cek Suara AI)"),
+          penjelasan: modeImtihan ? "UJIAN: Tebak bacaan Arab Gundul. Benar = Biru, Salah = Merah." : "Tebak bacaan Arab Gundul ini, lalu klik kotak dan tekan tombol 🎤 untuk dikoreksi AI.",
+          fase: 3,
+          kosakata: bab.kosakata.map(k => ({
+            kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), 
+            arti: k.arti,
+            kataAsli: k.kata
+          }))
+        });
+      });
+    }
+
+    // Fungsi untuk mengacak urutan array (Algoritma Fisher-Yates Shuffle)
+    function acakUrutan(array) {
+      let arr = [...array]; // Copy array agar data asli tidak rusak
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Fungsi Papan Skor
+    function updateSkor() {
+      let predikat = "Aadi";
+      if (skorBenar === 30) predikat = "Mumtaz 🌟";
+      else if (skorBenar >= 21) predikat = "Jayyid 👍";
+      else if (skorBenar >= 11) predikat = "Aslaha 🙂";
+      
+      document.getElementById('skor-papan').innerHTML = `Skor Benar: <span style="color:#10B981">${skorBenar}</span>/30 | Predikat: <span style="color:#2563EB">${predikat}</span>`;
+    }
+
+    // Fungsi AI Voice Recognition (Web Speech API)
+    function cekBacaanAI(kataTargetAsli, gridItem, spanKata) {
+      // Cek apakah kotak ini sudah pernah dijawab
+      if (gridItem.classList.contains('terjawab')) {
+        alert("Kotak ini sudah dinilai! Silakan lanjut ke kotak lain untuk mengumpulkan skor.");
+        return;
+      }
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Browser Anda tidak mendukung AI Suara. Mohon gunakan Google Chrome.");
+        return;
+      }
+      
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ar-SA'; // Set bahasa deteksi ke Arab
+      recognition.interimResults = false;
+      
+      // Indikator visual merekam langsung di dalam kotak grid
+      const originalText = spanKata.textContent;
+      spanKata.textContent = "🎙️...";
+      gridItem.style.backgroundColor = "#e74c3c"; // Berubah merah
+      gridItem.style.transform = "scale(0.95)"; // Efek ditekan
+
+      recognition.onresult = (event) => {
+        spanKata.textContent = originalText; // Kembalikan teks
+        gridItem.style.backgroundColor = ""; // Bersihkan style inline
+        gridItem.style.transform = ""; 
+
+        const hasil = event.results[0][0].transcript;
+        const hasilGundul = hasil.replace(/[\u064B-\u065F\u0670]/g, '').trim();
+        const targetGundul = kataTargetAsli.replace(/[\u064B-\u065F\u0670]/g, '').trim();
+        
+        if (hasilGundul === targetGundul) {
+          gridItem.classList.add('benar', 'terjawab');
+          skorBenar++;
+          alert(`✅ BACAAN BENAR!\n\nBacaan Anda: ${hasil}`);
+        } else {
+          gridItem.classList.add('salah', 'terjawab');
+          skorSalah++;
+          alert(`🤖 KURANG TEPAT.\n\nAnda membaca: ${hasil}\nSeharusnya: ${kataTargetAsli}`);
+          
+          // Jika salah, kotak merah bisa diklik untuk memunculkan harokat lengkap & suara
+          gridItem.onclick = () => {
+            spanKata.textContent = kataTargetAsli;
+            bacaTeksArab(kataTargetAsli);
+          };
+        }
+        updateSkor();
+      };
+
+      recognition.onerror = (event) => {
+        spanKata.textContent = originalText;
+        gridItem.style.backgroundColor = "";
+        gridItem.style.transform = "";
+        alert("Gagal mendengarkan suara: " + event.error);
+      };
+
+      recognition.start();
+    }
+
+    // Fungsi Text-to-Speech untuk membacakan teks Arab
+    function bacaTeksArab(teks) {
+      // JALUR VVIP: Selalu gunakan API Audio Google yang jernih dan stabil
+      const urlAudio = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ar&client=tw-ob&q=${encodeURIComponent(teks)}`;
+      const audio = new Audio(urlAudio);
+      
+      audio.play().catch(e => {
+        console.error("Gagal memutar audio API Google:", e);
+        // Fallback darurat ke sistem bawaan PC jika API Google offline/diblokir
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(teks);
+          utterance.lang = 'ar-SA';
+          utterance.rate = 0.8;
+          window.speechSynthesis.speak(utterance);
+        }
+      });
+    }
+
+    function renderHalaman() {
+      if (dataPelajaran.length === 0) return; // Jangan render jika data belum siap
+
+      const data = dataPelajaran[indexSaatIni];
+      
+      // Reset skor dan hapus warna jika berpindah halaman atau refresh
+      skorBenar = 0;
+      skorSalah = 0;
+      if (data.fase === 3) {
+        document.getElementById('skor-papan').style.display = 'block';
+        updateSkor();
+      } else {
+        document.getElementById('skor-papan').style.display = 'none';
+      }
+
+      // Update Teks Panduan
+      document.getElementById('judul-h3').textContent = data.judul;
+      document.getElementById('kotak-besar').textContent = data.penjelasan;
+      document.getElementById('halaman-teks').textContent = 'Halaman ' + data.halaman;
+      document.getElementById('search').value = data.halaman;
+
+      // Bersihkan dan Update Grid Kosakata
+      const grid = document.getElementById('grid-kotak');
+      grid.innerHTML = ''; 
+      
+      // Pastikan ada 30 item untuk mengisi semua kotak, ulangi jika perlu
+      const targetJumlahKotak = 30;
+      let kosakataUntukGrid = [];
+      if (data.kosakata.length > 0) {
+        for (let i = 0; i < targetJumlahKotak; i++) {
+          kosakataUntukGrid.push(data.kosakata[i % data.kosakata.length]);
+        }
+      } else {
+        // Fallback jika tidak ada kosakata sama sekali, isi dengan placeholder kosong
+        for (let i = 0; i < targetJumlahKotak; i++) {
+          kosakataUntukGrid.push({ kata: '&nbsp;', arti: '' });
+        }
+      }
+
+      // Acak urutan kosakata yang sudah diisi penuh agar posisinya dinamis
+      const kotakArray = acakUrutan(kosakataUntukGrid);
+      
+      kotakArray.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'grid-item';
+
+        const spanKata = document.createElement('span');
+        spanKata.textContent = item.kata;
+        div.appendChild(spanKata);
+
+        // Fase 1 & 2: Klik kotak untuk memutar suara bacaan
+        if (data.fase === 1 || data.fase === 2) {
+          div.onclick = () => {
+            // Efek visual klik (mengecil sejenak)
+            div.style.transform = "scale(0.95)";
+            setTimeout(() => div.style.transform = "", 150);
+            bacaTeksArab(item.kataAsli || item.kata);
+          };
+        }
+
+        const popup = document.createElement('div');
+        popup.className = 'popup';
+        
+        if (data.fase === 2) {
+          // Fase 2: Tampilkan arti + Kata Asli (Full Harokat) sebagai bantuan jika lupa
+          popup.innerHTML = `<div>${item.arti}</div><div style="margin-top: 5px; font-size: 1.4rem; font-weight: bold; color: #2563EB;">${item.kataAsli}</div>`;
+        } else {
+          popup.innerHTML = `<div>${item.arti}</div>`;
+        }
+        
+        // Fase 3: Klik kotak langsung mengaktifkan AI
+        if (data.fase === 3) {
+          div.onclick = () => {
+            cekBacaanAI(item.kataAsli, div, spanKata);
+          };
+        }
+        
+        div.appendChild(popup);
+        grid.appendChild(div);
+      });
+    }
+
+    // Tombol Navigasi
+    document.getElementById('btnMaju').onclick = () => {
+      if (indexSaatIni < dataPelajaran.length - 1) { indexSaatIni++; renderHalaman(); }
+    };
+    document.getElementById('btnMundur').onclick = () => {
+      if (indexSaatIni > 0) { indexSaatIni--; renderHalaman(); }
+    };
+    document.getElementById('btnRefresh').onclick = () => muatDataPelajaran();
+
+    // Mode Imtihan Toggle
+    document.getElementById('btnImtihan').onclick = () => {
+      modeImtihan = !modeImtihan;
+      const btn = document.getElementById('btnImtihan');
+      if (modeImtihan) {
+        btn.innerHTML = "🎓 Mode Imtihan: ON";
+        btn.classList.add('active');
+        indexSaatIni = 0; // Lompat balik ke halaman 1
+      } else {
+        btn.innerHTML = "🎓 Mode Imtihan: OFF";
+        btn.classList.remove('active');
+        indexSaatIni = 0; // Lompat balik ke halaman 1
+      }
+      if (dataBabGlobal.length > 0) {
+        prosesDataBab(dataBabGlobal); // Bangun ulang susunan kurikulum secara seketika!
+        renderHalaman();
+      }
+    };
+
+    // Muat data pelajaran saat halaman pertama kali dibuka
+    muatDataPelajaran();
+  });
+  </script>
+</body>
+</html>
