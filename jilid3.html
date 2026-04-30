@@ -77,7 +77,7 @@
 
     .grid-kotak { 
       display: grid; 
-      grid-template-columns: repeat(2, 1fr); /* Diubah menjadi 2 kolom untuk PC/Tablet */
+      grid-template-columns: repeat(3, 1fr); /* Diubah menjadi 3 kolom untuk PC/Tablet */
       gap: 10px; 
       margin-bottom: 20px; 
       width: 95%;
@@ -368,7 +368,7 @@
       window.speechSynthesis.getVoices();
     }
 
-    const TARGET_JUMLAH_KOTAK = 12; // Jumlah total kotak di grid (2 kolom x 6 baris)
+    const TARGET_JUMLAH_KOTAK = 18; // Jumlah total kotak di grid (3 kolom x 6 baris)
 
     // URL Web App dari Google Apps Script Anda akan diletakkan di sini
     const gasApiUrl = 'https://script.google.com/macros/s/AKfycbwJMzHqLjnaKKEo2Z-oZwRQa6iqfnokRN7QttjpW87v8rvHoMdmxS5c0iq8O-TL0WY/exec';
@@ -490,31 +490,56 @@
       recognition.lang = 'ar-SA'; // Set bahasa deteksi ke Arab
       recognition.interimResults = false;
       
-      // Indikator visual merekam langsung di dalam kotak grid
-      const originalText = spanKata.textContent;
-      spanKata.textContent = "🎙️...";
-      gridItem.style.backgroundColor = "#e74c3c"; // Berubah merah
+      // --- PERUBAHAN UI SESUAI PERMINTAAN ---
+      // 1. Buat indikator microphone
+      const micIndicator = document.createElement('div');
+      micIndicator.innerHTML = '🎙️';
+      micIndicator.style.position = 'absolute';
+      micIndicator.style.top = '5px';
+      micIndicator.style.right = '5px';
+      micIndicator.style.fontSize = '1rem';
+      micIndicator.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+      micIndicator.style.color = 'white';
+      micIndicator.style.width = '24px';
+      micIndicator.style.height = '24px';
+      micIndicator.style.borderRadius = '50%';
+      micIndicator.style.display = 'flex';
+      micIndicator.style.alignItems = 'center';
+      micIndicator.style.justifyContent = 'center';
+      micIndicator.style.zIndex = '11';
+
+      // 2. Ubah style kotak menjadi mode "mendengarkan"
+      gridItem.style.backgroundColor = "#f39c12"; // Warna kuning
+      spanKata.style.color = "#000000"; // Tulisan hitam
       gridItem.style.transform = "scale(0.95)"; // Efek ditekan
+      gridItem.appendChild(micIndicator);
+
+      const cleanupUI = () => {
+        if (gridItem.contains(micIndicator)) {
+            gridItem.removeChild(micIndicator);
+        }
+        gridItem.style.backgroundColor = ""; // Hapus warna kuning
+        spanKata.style.color = ""; // Kembalikan warna tulisan
+        gridItem.style.transform = ""; // Hapus efek tekan
+      };
+      // --- AKHIR PERUBAHAN UI ---
 
       recognition.onresult = (event) => {
-        spanKata.textContent = originalText; // Kembalikan teks
-        gridItem.style.backgroundColor = ""; // Bersihkan style inline
-        gridItem.style.transform = ""; 
+        cleanupUI();
 
         const hasil = event.results[0][0].transcript;
         const hasilGundul = hasil.replace(/[\u064B-\u065F\u0670]/g, '').trim();
         const targetGundul = kataTargetAsli.replace(/[\u064B-\u065F\u0670]/g, '').trim();
         
         if (hasilGundul === targetGundul) {
-          gridItem.classList.add('benar', 'terjawab');
+          gridItem.classList.add('benar', 'terjawab'); // Jadi hijau
           skorBenar++;
           alert(`✅ BACAAN BENAR!\n\nBacaan Anda: ${hasil}`);
         } else {
-          gridItem.classList.add('salah', 'terjawab');
+          gridItem.classList.add('salah', 'terjawab'); // Jadi merah
           skorSalah++;
           alert(`🤖 KURANG TEPAT.\n\nAnda membaca: ${hasil}\nSeharusnya: ${kataTargetAsli}`);
           
-          // Jika salah, kotak merah bisa diklik untuk memunculkan harokat lengkap & suara
           gridItem.onclick = () => {
             spanKata.textContent = kataTargetAsli;
             bacaTeksArab(kataTargetAsli);
@@ -524,10 +549,13 @@
       };
 
       recognition.onerror = (event) => {
-        spanKata.textContent = originalText;
-        gridItem.style.backgroundColor = "";
-        gridItem.style.transform = "";
+        cleanupUI();
         alert("Gagal mendengarkan suara: " + event.error);
+      };
+
+      recognition.onend = () => {
+        // Bersihkan UI jika tidak ada suara terdeteksi atau error
+        cleanupUI();
       };
 
       recognition.start();
@@ -585,7 +613,7 @@
         }
       } else {
         // Fallback jika tidak ada kosakata sama sekali, isi dengan placeholder kosong
-        for (let i = 0; i < targetJumlahKotak; i++) {
+        for (let i = 0; i < TARGET_JUMLAH_KOTAK; i++) {
           kosakataUntukGrid.push({ kata: '&nbsp;', arti: '' });
         }
       }

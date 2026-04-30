@@ -466,26 +466,53 @@
       recognition.lang = 'ar-SA';
       recognition.interimResults = false;
       
-      const originalText = spanKata.textContent;
-      spanKata.textContent = "🎙️...";
-      gridItem.style.backgroundColor = "#e74c3c";
+      // --- PERUBAHAN UI SESUAI PERMINTAAN ---
+      // 1. Buat indikator microphone
+      const micIndicator = document.createElement('div');
+      micIndicator.innerHTML = '🎙️';
+      micIndicator.style.position = 'absolute';
+      micIndicator.style.top = '5px';
+      micIndicator.style.right = '5px';
+      micIndicator.style.fontSize = '1rem';
+      micIndicator.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+      micIndicator.style.color = 'white';
+      micIndicator.style.width = '24px';
+      micIndicator.style.height = '24px';
+      micIndicator.style.borderRadius = '50%';
+      micIndicator.style.display = 'flex';
+      micIndicator.style.alignItems = 'center';
+      micIndicator.style.justifyContent = 'center';
+      micIndicator.style.zIndex = '11';
+
+      // 2. Ubah style kotak menjadi mode "mendengarkan"
+      gridItem.style.backgroundColor = "#f39c12"; // Warna kuning
+      spanKata.style.color = "#000000"; // Tulisan hitam
       gridItem.style.transform = "scale(0.95)";
+      gridItem.appendChild(micIndicator);
+
+      const cleanupUI = () => {
+        if (gridItem.contains(micIndicator)) {
+            gridItem.removeChild(micIndicator);
+        }
+        gridItem.style.backgroundColor = ""; // Hapus warna kuning
+        spanKata.style.color = ""; // Kembalikan warna tulisan
+        gridItem.style.transform = ""; // Hapus efek tekan
+      };
+      // --- AKHIR PERUBAHAN UI ---
 
       recognition.onresult = (event) => {
-        spanKata.textContent = originalText;
-        gridItem.style.backgroundColor = "";
-        gridItem.style.transform = ""; 
+        cleanupUI();
 
         const hasil = event.results[0][0].transcript;
         const hasilGundul = hasil.replace(/[\u064B-\u065F\u0670]/g, '').trim();
         const targetGundul = kataTargetAsli.replace(/[\u064B-\u065F\u0670]/g, '').trim();
         
         if (hasilGundul === targetGundul) {
-          gridItem.classList.add('benar', 'terjawab');
+          gridItem.classList.add('benar', 'terjawab'); // Jadi hijau
           skorBenar++;
           alert(`✅ BACAAN BENAR!\n\nBacaan Anda: ${hasil}`);
         } else {
-          gridItem.classList.add('salah', 'terjawab');
+          gridItem.classList.add('salah', 'terjawab'); // Jadi merah
           skorSalah++;
           alert(`🤖 KURANG TEPAT.\n\nAnda membaca: ${hasil}\nSeharusnya: ${kataTargetAsli}`);
           
@@ -498,10 +525,13 @@
       };
 
       recognition.onerror = (event) => {
-        spanKata.textContent = originalText;
-        gridItem.style.backgroundColor = "";
-        gridItem.style.transform = "";
+        cleanupUI();
         alert("Gagal mendengarkan suara: " + event.error);
+      };
+
+      recognition.onend = () => {
+        // Bersihkan UI jika tidak ada suara terdeteksi atau error
+        cleanupUI();
       };
 
       recognition.start();
