@@ -247,22 +247,12 @@
     @media (min-width: 992px) {
       .page-container { 
         margin-left: 250px; 
-        margin-right: 200px; 
         width: auto; /* Mencegah grid hancur/hilang akibat flexbox */
-        padding-bottom: 20px;
       }
       footer { 
-        width: 200px; 
-        left: auto; 
-        right: 0; 
-        top: 0; 
-        height: 100vh; 
-        flex-direction: column; 
-        justify-content: center; 
-        box-shadow: -5px 0 15px rgba(0,0,0,0.15); 
-        padding: 0;
+        width: calc(100% - 250px); 
+        left: 250px; 
       }
-      footer button { width: 85%; padding: 12px 10px; font-size: 1rem; }
     }
 
     .halaman { display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:100px; }
