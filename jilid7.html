@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qiroatul Kutub — Jilid 7: Kitab Asli</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0; padding: 0; background-color: #ffffff; color: #333; font-family: 'Poppins', sans-serif; overflow-x: hidden;
+    }
+    body { display: block; min-height: 100vh; box-sizing: border-box; padding: 0; margin: 0; }
+    
+    .page-container {
+      display: flex; flex-direction: column; align-items: center; width: 100%; min-height: 100vh;
+      padding-bottom: 100px; box-sizing: border-box; transition: margin-left 0.3s, margin-right 0.3s;
+    }
+
+    .app-header {
+      background-color: #1E3A8A; width: 100%; padding: 15px; box-sizing: border-box;
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2); margin-bottom: 20px;
+      border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; position: relative;
+    }
+    
+    .header-main { display: flex; align-items: center; gap: 15px; }
+    .header-logo { width: 55px; height: 55px; border-radius: 50%; background-color: white; border: 2px solid #BFDBFE; object-fit: contain; flex-shrink: 0; }
+    .header-text h1 { text-align:left; font-size:1.2rem; color:#ffffff; margin:0; font-weight:700; }
+    .header-text h2 { text-align:left; font-size:0.85rem; color:#BFDBFE; margin:3px 0 0 0; font-weight:500; }
+    #judul-h3 { text-align:center; font-size:0.9rem; color:#ffffff; margin: 15px 0 0 0; border-top: 1px solid rgba(191, 219, 254, 0.3); padding-top: 10px; }
+
+    .btn-kitab {
+      background-color: #E5E7EB; color: #4B5563; border: none; padding: 10px 20px; border-radius: 8px;
+      font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Poppins', sans-serif;
+      flex: 1; min-width: 150px;
+    }
+    .btn-kitab.active { background-color: #F59E0B; color: white; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3); }
+    .btn-kitab:hover { transform: translateY(-2px); }
+
+    .kotak-besar { 
+      background-color:#EFF6FF; border: 1px solid #BFDBFE; color: #1E3A8A; border-radius:12px; 
+      padding:20px; text-align:center; font-size:1.1rem; font-weight:bold; margin-bottom:20px; 
+      width:95%; max-width:800px; box-sizing: border-box;
+    }
+
+    .grid-kotak { display: grid; grid-template-columns: repeat(1, 1fr); gap: 15px; margin-bottom: 20px; width: 95%; max-width: 900px; }
+
+    .grid-item { 
+      background-color:#2563EB; color:white; border-radius:12px; padding:20px; text-align:center; 
+      font-weight:bold; min-height:80px; display:flex; align-items:center; justify-content:center; 
+      font-size:1.8rem; line-height: 1.8; position:relative; cursor:pointer;
+      box-shadow: 0 4px 6px rgba(37, 99, 235, 0.15); transition: 0.2s;
+    }
+    .grid-item:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(37, 99, 235, 0.25); }
+    .grid-item.benar { background-color: #10B981 !important; border: 2px solid #fff; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+    .grid-item.salah { background-color: #EF4444 !important; border: 2px solid #fff; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+    .grid-item.terjawab { cursor: default; }
+    .grid-item.salah.terjawab { cursor: pointer; }
+
+    @media (max-width: 768px) { .grid-item { font-size: 1.4rem; padding: 15px 10px; } }
+
+    .popup {
+      display:none; position:absolute; bottom:105%; left:50%; transform:translateX(-50%);
+      background:#fff; color:#333; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.15);
+      padding:10px 15px; font-size:1rem; white-space:normal; z-index:10; width:max-content;
+      max-width:300px; pointer-events: none; line-height: 1.4;
+    }
+    .grid-item:hover .popup, .grid-item:active .popup { display:block; }
+
+    .skor-papan {
+      background-color: #fff; border: 2px solid #2563EB; color: #1E3A8A; border-radius: 8px;
+      padding: 10px 20px; text-align: center; font-size: 1.2rem; font-weight: bold; margin-bottom: 15px;
+      display: none; width: 95%; max-width: 800px; box-sizing: border-box;
+    }
+
+    /* Navigasi Sidebar */
+    .sidebar {
+      height: 100%; width: 250px; position: fixed; z-index: 10001; top: 0; left: 0;
+      background-color: #172554; overflow-x: hidden; transition: transform 0.3s;
+      padding-top: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+    }
+    .sidebar-header { padding: 10px 20px; text-align: center; color: white; font-size: 1.2rem; font-weight: 600; margin-bottom: 20px; }
+    .sidebar-link { padding: 12px 20px; text-decoration: none; font-size: 1rem; color: #BFDBFE; display: block; transition: 0.2s; border-left: 4px solid transparent; }
+    .sidebar-link:hover { background-color: #1E3A8A; color: white; border-left-color: #3B82F6; }
+    .sidebar-link.active { background-color: #2563EB; color: white; font-weight: 600; border-left-color: #93C5FD; }
+
+    .hamburger-btn {
+      position: absolute; top: 38px; transform: translateY(-50%); left: 20px;
+      display: none; flex-direction: column; justify-content: space-around; width: 30px; height: 25px;
+      background: transparent; border: none; cursor: pointer; padding: 0; z-index: 10002;
+    }
+    .hamburger-btn span { width: 30px; height: 3px; background-color: white; border-radius: 5px; }
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s; }
+    .overlay.active { opacity: 1; visibility: visible; }
+
+    .halaman { display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:100px; font-weight: bold; color: #2563EB; }
+    footer { position:fixed; bottom:0; left:0; width:100%; background-color:#1E3A8A; display:flex; justify-content:center; gap:15px; padding:12px 0; z-index:9999; }
+    footer button { background-color:white; color:#1E3A8A; font-family:'Poppins', sans-serif; border:none; border-radius:5px; padding:8px 16px; font-size:14px; font-weight:600; cursor:pointer; transition: 0.2s; }
+    footer button:hover { background-color:#E0F2FE; transform: translateY(-2px); }
+
+    @media (min-width: 992px) { .page-container { margin-left: 250px; width: auto; } footer { width: calc(100% - 250px); left: 250px; } }
+    @media (max-width: 991px) { .sidebar { transform: translateX(-100%); } .sidebar.active { transform: translateX(0); } .hamburger-btn { display: flex; } .header-main { margin-left: 40px; } }
+  </style>
+</head>
+<body>
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header"><h3>Menu Navigasi</h3></div>
+    <a href="menu.html" class="sidebar-link">🏠 Beranda</a>
+    <a href="jilid1.html" class="sidebar-link">Jilid 1: Isim</a>
+    <a href="jilid2.html" class="sidebar-link">Jilid 2: Fi'il</a>
+    <a href="jilid3.html" class="sidebar-link">Jilid 3: Kalimat</a>
+    <a href="jilid4.html" class="sidebar-link">Jilid 4: Lanjutan</a>
+    <a href="jilid5.html" class="sidebar-link">Jilid 5: Jamak</a>
+    <a href="jilid6.html" class="sidebar-link">Jilid 6: Khusus</a>
+    <a href="jilid7.html" class="sidebar-link active">Jilid 7: Kitab Asli</a>
+  </nav>
+
+  <!-- PREMIUM LOCK OVERLAY -->
+  <div id="premium-lock" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.95); z-index:100000; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px; box-sizing:border-box;">
+    <div style="font-size: 4rem; margin-bottom: 10px;">🔒</div>
+    <h2 style="color: #1E3A8A; margin: 0 0 10px 0;">Akses Terkunci</h2>
+    <p style="color: #4B5563; max-width: 400px; margin-bottom: 20px; line-height: 1.6;">Jilid ini khusus untuk Pengguna Premium.<br>Buka akses tingkat lanjut seumur hidup dengan menyalurkan Sedekah terbaik Anda.</p>
+    <button onclick="window.location.href='menu.html#sedekah'" style="background: #2563EB; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem;">Buka Akses Premium Sekarang</button>
+    <button onclick="window.location.href='menu.html'" style="background: transparent; color: #6B7280; border: none; margin-top: 15px; font-weight: 600; cursor: pointer;">Kembali ke Beranda</button>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="page-container">
+    <header class="app-header">
+      <button class="hamburger-btn" id="hamburger-btn"><span></span><span></span><span></span></button>
+      <div class="header-main">
+        <img src="assets/images/logo.png" alt="Logo" class="header-logo">
+        <div class="header-text"><h1>QIROATUL KUTUB</h1><h2>Metode Al Mustadjabi</h2></div>
+      </div>
+      <h3 id="judul-h3">Pusat Latihan Kitab Asli</h3>
+    </header>
+
+    <div style="display: flex; gap: 10px; margin-bottom: 20px; width: 95%; max-width: 800px; flex-wrap: wrap; justify-content: center;">
+      <button id="btn-talim" class="btn-kitab active" onclick="pilihKitab('talim')">Ta'lim Muta'alim (Salaf)</button>
+      <button id="btn-nidhom" class="btn-kitab" onclick="pilihKitab('nidhom')">Nidhomul Islam (Khalaf)</button>
+    </div>
+
+    <div class="skor-papan" id="skor-papan">Skor Benar: 0/1 | Predikat: Aadi</div>
+    <div class="kotak-besar" id="kotak-besar">Pilih kitab untuk memulai latihan.</div>
+    
+    <div class="grid-kotak" id="grid-kotak"></div>
+
+    <div class="halaman"><span id="halaman-teks">Fase 1/3</span></div>
+
+    <footer>
+      <button id="btnMundur">⬅ Fase Sebelumnya</button>
+      <button id="btnMaju">Fase Berikutnya ➡</button>
+    </footer>
+  </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // --- CEK STATUS PREMIUM / GEMBOK ---
+    if (localStorage.getItem('status_akun') !== 'premium' && localStorage.getItem('username') !== 'winsyah') {
+      document.getElementById('premium-lock').style.display = 'flex';
+      return; 
+    }
+
+    // --- CEK SESI 1 PERANGKAT ---
+    async function cekSesi() {
+      const usr = localStorage.getItem('username');
+      const tkn = localStorage.getItem('session_token');
+      if (!usr || !tkn) return;
+      try {
+        const res = await fetch('check_session.php', { method: 'POST', body: JSON.stringify({username: usr, session_token: tkn}) });
+        const json = await res.json();
+        if (json.status === 'invalid') {
+          alert(json.message); localStorage.clear(); window.location.replace('index.html');
+        }
+      } catch(e) {}
+    }
+    cekSesi(); setInterval(cekSesi, 15000);
+
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    hamburgerBtn.addEventListener('click', () => { sidebar.classList.toggle('active'); overlay.classList.toggle('active'); });
+    overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); });
+
+    if ('speechSynthesis' in window) window.speechSynthesis.getVoices();
+
+    // DATA KITAB ASLI LENGKAP
+    const dataKitab = {
+      talim: [
+        { kataAsli: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ", kata: "بسم الله الرحمن الرحيم", arti: "Dengan menyebut nama Allah Yang Maha Pengasih lagi Maha Penyayang" },
+        { kataAsli: "الْحَمْدُ لِلَّهِ الَّذِي فَضَّلَ بَنِي آدَمَ بِالْعِلْمِ وَالْعَمَلِ عَلَى جَمِيعِ الْعَالَمِ", kata: "الحمد لله الذي فضل بني آدم بالعلم والعمل على جميع العالم", arti: "Segala puji bagi Allah yang telah melebihkan anak cucu Adam dengan ilmu dan amal atas seluruh alam" },
+        { kataAsli: "وَالصَّلَاةُ وَالسَّلَامُ عَلَى مُحَمَّدٍ سَيِّدِ الْعَرَبِ وَالْعَجَمِ", kata: "والصلاة والسلام على محمد سيد العرب والعجم", arti: "Dan selawat serta salam semoga tercurah kepada Nabi Muhammad, penghulu orang Arab dan Ajam" },
+        { kataAsli: "وَعَلَى آلِهِ وَأَصْحَابِهِ يَنَابِيعِ الْعُلُومِ وَالْحِكَمِ", kata: "وعلى آله وأصحابه ينابيع العلوم والحكم", arti: "Dan kepada keluarga serta sahabatnya yang merupakan sumber ilmu dan hikmah" }
+      ],
+      nidhom: [
+        { kataAsli: "يَنْهَضُ الإِنْسَانُ بِمَا عِنْدَهُ مِنْ فِكْرٍ عَنِ الْحَيَاةِ وَالْكَوْنِ وَالإِنْسَانِ", kata: "ينهض الإنسان بما عنده من فكر عن الحياة والكون والإنسان", arti: "Manusia bangkit dengan pemikiran yang dimilikinya tentang kehidupan, alam semesta, dan manusia" },
+        { kataAsli: "وَعَنْ عَلاقَتِهَا جَمِيعاً بِمَا قَبْلَ الْحَيَاةِ الدُّنْيَا وَمَا بَعْدَهَا", kata: "وعن علاقتها جميعاً بما قبل الحياة الدنيا وما بعدها", arti: "Dan tentang hubungannya semua itu dengan apa yang ada sebelum kehidupan dunia dan sesudahnya" },
+        { kataAsli: "لِذَلِكَ كَانَ لا بُدَّ مِنْ تَغْيِيرِ فِكْرِ الإِنْسَانِ تَغْيِيراً أَسَاسِيّاً شَامِلاً", kata: "لذلك كان لا بد من تغيير فكر الإنسان تغييراً أساسياً شاملاً", arti: "Oleh karena itu, mutlak diperlukan perubahan pemikiran manusia secara mendasar dan menyeluruh" }
+      ]
+    };
+
+    let dataPelajaran = [];
+    let indexSaatIni = 0;
+    let skorBenar = 0;
+    let skorSalah = 0;
+
+    window.pilihKitab = function(kitab) {
+      document.getElementById('btn-talim').classList.remove('active');
+      document.getElementById('btn-nidhom').classList.remove('active');
+      document.getElementById('btn-' + kitab).classList.add('active');
+
+      const isiKitab = dataKitab[kitab];
+      const namaKitab = kitab === 'talim' ? "Ta'lim Muta'alim (Salaf Klasik)" : "Nidhomul Islam (Khalaf Modern)";
+      
+      dataPelajaran = [
+        {
+          halaman: 1, judul: namaKitab,
+          penjelasan: "Fase 1: Pahami struktur kalimat aslinya. Klik pada teks untuk mendengarkan bacaan.", fase: 1,
+          kosakata: isiKitab.map(k => ({ kata: k.kataAsli, arti: k.arti, kataAsli: k.kataAsli }))
+        },
+        {
+          halaman: 2, judul: namaKitab,
+          penjelasan: "Fase 2: Latihan Kitab Kuning. Latih kemampuan Anda membaca teks asli tanpa harokat.", fase: 2,
+          kosakata: isiKitab.map(k => ({ kata: k.kata, arti: k.arti, kataAsli: k.kataAsli }))
+        },
+        {
+          halaman: 3, judul: namaKitab,
+          penjelasan: "Fase 3: Evaluasi AI. Uji kelancaran Anda! Baca teks gundul ini dan biarkan AI mengoreksi ketepatan bacaannya.", fase: 3,
+          kosakata: isiKitab.map(k => ({ kata: k.kata, arti: k.arti, kataAsli: k.kataAsli }))
+        }
+      ];
+
+      indexSaatIni = 0;
+      renderHalaman();
+    };
+
+    function updateSkor(totalSoal) {
+      let predikat = "Aadi";
+      if (skorBenar === totalSoal) predikat = "Mumtaz 🌟";
+      else if (skorBenar >= Math.ceil(totalSoal * 0.7)) predikat = "Jayyid 👍";
+      else if (skorBenar >= Math.ceil(totalSoal * 0.4)) predikat = "Aslaha 🙂";
+      
+      document.getElementById('skor-papan').innerHTML = `Skor Benar: <span style="color:#10B981">${skorBenar}</span>/${totalSoal} | Predikat: <span style="color:#2563EB">${predikat}</span>`;
+    }
+
+    function cekBacaanAI(kataTargetAsli, gridItem, spanKata, totalSoal) {
+      if (gridItem.classList.contains('terjawab')) { alert("Kalimat ini sudah dinilai! Silakan lanjut ke kalimat lain."); return; }
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) { alert("Browser Anda tidak mendukung AI Suara. Mohon gunakan Google Chrome."); return; }
+      
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ar-SA'; recognition.interimResults = false;
+      
+      const micIndicator = document.createElement('div');
+      micIndicator.innerHTML = '🎙️';
+      micIndicator.style.position = 'absolute'; micIndicator.style.top = '10px'; micIndicator.style.right = '10px';
+      micIndicator.style.fontSize = '1.2rem'; micIndicator.style.backgroundColor = 'rgba(0,0,0,0.5)';
+      micIndicator.style.color = 'white'; micIndicator.style.width = '30px'; micIndicator.style.height = '30px';
+      micIndicator.style.borderRadius = '50%'; micIndicator.style.display = 'flex';
+      micIndicator.style.alignItems = 'center'; micIndicator.style.justifyContent = 'center'; micIndicator.style.zIndex = '11';
+
+      gridItem.style.backgroundColor = "#f39c12"; spanKata.style.color = "#000000";
+      gridItem.style.transform = "scale(0.98)"; gridItem.appendChild(micIndicator);
+
+      const cleanupUI = () => {
+        if (gridItem.contains(micIndicator)) gridItem.removeChild(micIndicator);
+        gridItem.style.backgroundColor = ""; spanKata.style.color = ""; gridItem.style.transform = "";
+      };
+
+      recognition.onresult = (event) => {
+        cleanupUI();
+        const hasil = event.results[0][0].transcript;
+        const hasilGundul = hasil.replace(/[\u064B-\u065F\u0670]/g, '').trim();
+        const targetGundul = kataTargetAsli.replace(/[\u064B-\u065F\u0670]/g, '').trim();
+        
+        if (hasilGundul === targetGundul) {
+          gridItem.classList.add('benar', 'terjawab'); skorBenar++;
+          alert(`✅ BACAAN BENAR!\n\nBacaan Anda: ${hasil}`);
+        } else {
+          gridItem.classList.add('salah', 'terjawab'); skorSalah++;
+          alert(`🤖 KURANG TEPAT.\n\nAnda membaca: ${hasil}\nSeharusnya: ${kataTargetAsli}`);
+          gridItem.onclick = () => { spanKata.textContent = kataTargetAsli; bacaTeksArab(kataTargetAsli); };
+        }
+        updateSkor(totalSoal);
+      };
+
+      recognition.onerror = (event) => { cleanupUI(); alert("Gagal mendengarkan suara: " + event.error); };
+      recognition.onend = () => { cleanupUI(); };
+      recognition.start();
+    }
+
+    function bacaTeksArab(teks) {
+      const urlAudio = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ar&client=tw-ob&q=${encodeURIComponent(teks)}`;
+      const audio = new Audio(urlAudio);
+      audio.play().catch(e => {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(teks); utterance.lang = 'ar-SA'; utterance.rate = 0.8;
+          window.speechSynthesis.speak(utterance);
+        }
+      });
+    }
+
+    function renderHalaman() {
+      if (dataPelajaran.length === 0) return;
+      const data = dataPelajaran[indexSaatIni];
+      
+      skorBenar = 0; skorSalah = 0;
+      if (data.fase === 3) {
+        document.getElementById('skor-papan').style.display = 'block';
+        updateSkor(data.kosakata.length);
+      } else {
+        document.getElementById('skor-papan').style.display = 'none';
+      }
+
+      document.getElementById('judul-h3').textContent = data.judul;
+      document.getElementById('kotak-besar').textContent = data.penjelasan;
+      document.getElementById('halaman-teks').textContent = 'Fase ' + data.halaman + '/3';
+
+      const grid = document.getElementById('grid-kotak');
+      grid.innerHTML = ''; 
+      
+      // Untuk Jilid 7, kotak TIDAK diacak karena ini adalah teks kitab yang harus dibaca berurutan
+      data.kosakata.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'grid-item';
+        
+        const spanKata = document.createElement('span');
+        spanKata.textContent = item.kata;
+        div.appendChild(spanKata);
+
+        if (data.fase === 1 || data.fase === 2) {
+          div.onclick = () => {
+            div.style.transform = "scale(0.98)"; setTimeout(() => div.style.transform = "", 150);
+            bacaTeksArab(item.kataAsli);
+          };
+        }
+
+        const popup = document.createElement('div');
+        popup.className = 'popup';
+        popup.innerHTML = `<div>${item.arti}</div>${data.fase === 2 ? `<div style="margin-top: 5px; font-size: 1.2rem; font-weight: bold; color: #2563EB;">${item.kataAsli}</div>` : ''}`;
+        
+        if (data.fase === 3) {
+          div.onclick = () => cekBacaanAI(item.kataAsli, div, spanKata, data.kosakata.length);
+        }
+        
+        div.appendChild(popup);
+        grid.appendChild(div);
+      });
+    }
+
+    document.getElementById('btnMaju').onclick = () => { if (indexSaatIni < dataPelajaran.length - 1) { indexSaatIni++; renderHalaman(); } };
+    document.getElementById('btnMundur').onclick = () => { if (indexSaatIni > 0) { indexSaatIni--; renderHalaman(); } };
+
+    // Otomatis muat Ta'lim Muta'alim saat halaman pertama kali dibuka
+    pilihKitab('talim');
+  });
+  </script>
+</body>
+</html>
