@@ -1,0 +1,34 @@
+<?php
+header("Content-Type: application/json");
+
+// Konfigurasi Database Hostinger (Harus sama persis dengan yang di register.php)
+$host = "localhost";
+$user = "u123456789_user";      // GANTI INI
+$password = "PasswordDbAnda!";  // GANTI INI
+$dbname = "u123456789_db";      // GANTI INI
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+    echo json_encode(["status" => "error", "message" => "Koneksi database gagal"]);
+    exit;
+}
+
+$data = json_decode(file_get_contents("php://input"), true);
+
+if (!$data || empty($data['username']) || empty($data['password'])) {
+    echo json_encode(["status" => "error", "message" => "Username dan password wajib diisi"]);
+    exit;
+}
+
+$stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
+$stmt->execute([$data['username']]);
+$userRow = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if ($userRow && password_verify($data['password'], $userRow['password'])) {
+    echo json_encode(["status" => "success", "message" => "Login berhasil"]);
+} else {
+    echo json_encode(["status" => "error", "message" => "Username atau password salah!"]);
+}
+?>
