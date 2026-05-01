@@ -1,0 +1,2 @@
+# Folder ini disiapkan khusus untuk menyimpan file gambar.
+# Silakan simpan logo.png, banner.jpg, dan gambar lainnya di dalam folder ini.
