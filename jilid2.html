@@ -44,22 +44,28 @@
       border-bottom-left-radius: 25px;
       border-bottom-right-radius: 25px;
       position: relative; /* Untuk posisi hamburger */
+      padding: 15px; /* Padding disesuaikan */
     }
     
-    /* Tempat Logo */
-    .logo-container { display: flex; justify-content: center; margin-bottom: 15px; }
-    .logo-placeholder {
-      width: 70px; height: 70px;
-      background-color: #2563EB; color: white;
-      border-radius: 50%; border: 3px solid #BFDBFE;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.8rem; font-weight: bold;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    .header-main {
+      display: flex;
+      align-items: center;
+      gap: 15px;
     }
 
-    h1 { text-align:center; font-size:1.3rem; color:#ffffff; margin-bottom:0.5rem; font-weight:700; letter-spacing:0.5px; margin-top:0; }
-    h2 { text-align:center; font-size:1rem; color:#BFDBFE; margin-top:0; margin-bottom:0.5rem; font-weight:500; }
-    h3 { text-align:center; font-size:0.9rem; color:#ffffff; margin-bottom:0; }
+    .header-logo {
+      width: 55px; height: 55px; border-radius: 50%;
+      background-color: white; border: 2px solid #BFDBFE;
+      object-fit: contain; flex-shrink: 0;
+    }
+
+    .header-text h1 { text-align:left; font-size:1.2rem; color:#ffffff; margin:0; font-weight:700; }
+    .header-text h2 { text-align:left; font-size:0.85rem; color:#BFDBFE; margin:3px 0 0 0; font-weight:500; }
+    
+    #judul-h3 { 
+      text-align:center; font-size:0.9rem; color:#ffffff; margin: 15px 0 0 0; 
+      border-top: 1px solid rgba(191, 219, 254, 0.3); padding-top: 10px;
+    }
 
     .kotak-besar { 
       background-color:#EFF6FF; /* Biru sangat muda yang elegan */
@@ -186,7 +192,7 @@
 
     .hamburger-btn {
       position: absolute;
-      top: 50%;
+      top: 38px; /* Disesuaikan agar pas di tengah logo */
       transform: translateY(-50%);
       left: 20px;
       display: none; /* Sembunyi di PC */
@@ -281,6 +287,9 @@
       .sidebar { transform: translateX(-100%); }
       .sidebar.active { transform: translateX(0); }
       .hamburger-btn { display: flex; }
+      .header-main {
+        margin-left: 40px; /* Beri ruang untuk hamburger */
+      }
     }
 
   </style>
@@ -319,14 +328,14 @@
         <span></span>
         <span></span>
       </button>
-      <!-- Placeholder Logo, ganti tag div ini dengan <img> nanti -->
-      <div class="logo-container">
-        <!-- <img src="URL_LOGO_ANDA" alt="Logo" style="width: 70px; height: 70px; border-radius: 50%; border: 3px solid #BFDBFE;"> -->
-        <div class="logo-placeholder">LOGO</div>
+      <div class="header-main">
+        <img src="assets/images/logo.png" alt="Logo" class="header-logo">
+        <div class="header-text">
+          <h1>QIROATUL KUTUB</h1>
+          <h2>Metode Al Mustadjabi</h2>
+        </div>
       </div>
 
-      <h1>QIROATUL KUTUB METODE AL MUSTADJABI</h1>
-      <h2>Cara Mudah Bisa Baca Kitab Secara Alami Tanpa Ribet</h2>
       <h3 id="judul-h3">Judul Halaman Placeholder</h3>
     </header>
 
