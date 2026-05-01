@@ -26,6 +26,8 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           
+          # Gunakan protokol ftp biasa untuk menghindari timeout
+          protocol: ftp
           # Memastikan GitHub menggunakan port FTP yang tepat agar tidak timeout
           port: 21
           
