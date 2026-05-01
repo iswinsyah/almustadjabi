@@ -216,17 +216,12 @@
       dataPelajaran = [
         {
           halaman: 1, judul: namaKitab,
-          penjelasan: "Fase 1: Pahami struktur kalimat aslinya. Klik pada teks untuk mendengarkan bacaan.", fase: 1,
-          kosakata: isiKitab.map(k => ({ kata: k.kataAsli, arti: k.arti, kataAsli: k.kataAsli }))
-        },
-        {
-          halaman: 2, judul: namaKitab,
-          penjelasan: "Fase 2: Latihan Kitab Kuning. Latih kemampuan Anda membaca teks asli tanpa harokat.", fase: 2,
+          penjelasan: "Fase 1: Latihan Membaca. Teks tampil 100% tanpa harokat. Klik kotak untuk mendengarkan contoh bacaan yang benar.", fase: 1,
           kosakata: isiKitab.map(k => ({ kata: k.kata, arti: k.arti, kataAsli: k.kataAsli }))
         },
         {
-          halaman: 3, judul: namaKitab,
-          penjelasan: "Fase 3: Evaluasi AI. Uji kelancaran Anda! Baca teks gundul ini dan biarkan AI mengoreksi ketepatan bacaannya.", fase: 3,
+          halaman: 2, judul: namaKitab,
+          penjelasan: "Fase 2: Evaluasi AI. Uji kelancaran Anda! Baca teks gundul ini dan biarkan AI mengoreksi ketepatan bacaannya.", fase: 3,
           kosakata: isiKitab.map(k => ({ kata: k.kata, arti: k.arti, kataAsli: k.kataAsli }))
         }
       ];
@@ -255,14 +250,14 @@
       
       const micIndicator = document.createElement('div');
       micIndicator.innerHTML = '🎙️';
-      micIndicator.style.position = 'absolute'; micIndicator.style.top = '10px'; micIndicator.style.right = '10px';
-      micIndicator.style.fontSize = '1.2rem'; micIndicator.style.backgroundColor = 'rgba(0,0,0,0.5)';
-      micIndicator.style.color = 'white'; micIndicator.style.width = '30px'; micIndicator.style.height = '30px';
+      micIndicator.style.position = 'absolute'; micIndicator.style.top = '5px'; micIndicator.style.right = '5px';
+      micIndicator.style.fontSize = '1rem'; micIndicator.style.backgroundColor = 'rgba(0,0,0,0.5)';
+      micIndicator.style.color = 'white'; micIndicator.style.width = '24px'; micIndicator.style.height = '24px';
       micIndicator.style.borderRadius = '50%'; micIndicator.style.display = 'flex';
       micIndicator.style.alignItems = 'center'; micIndicator.style.justifyContent = 'center'; micIndicator.style.zIndex = '11';
 
       gridItem.style.backgroundColor = "#f39c12"; spanKata.style.color = "#000000";
-      gridItem.style.transform = "scale(0.98)"; gridItem.appendChild(micIndicator);
+      gridItem.style.transform = "scale(0.95)"; gridItem.appendChild(micIndicator);
 
       const cleanupUI = () => {
         if (gridItem.contains(micIndicator)) gridItem.removeChild(micIndicator);
@@ -350,7 +345,7 @@
 
       document.getElementById('judul-h3').textContent = data.judul;
       document.getElementById('kotak-besar').textContent = data.penjelasan;
-      document.getElementById('halaman-teks').textContent = 'Fase ' + data.halaman + '/3';
+      document.getElementById('halaman-teks').textContent = 'Fase ' + data.halaman + '/2';
 
       const grid = document.getElementById('grid-kotak');
       grid.innerHTML = ''; 
@@ -366,14 +361,14 @@
 
         if (data.fase === 1 || data.fase === 2) {
           div.onclick = () => {
-            div.style.transform = "scale(0.98)"; setTimeout(() => div.style.transform = "", 150);
+            div.style.transform = "scale(0.95)"; setTimeout(() => div.style.transform = "", 150);
             bacaTeksArab(item.kataAsli);
           };
         }
 
         const popup = document.createElement('div');
         popup.className = 'popup';
-        popup.innerHTML = `<div>${item.arti}</div>${data.fase === 2 ? `<div style="margin-top: 5px; font-size: 1.2rem; font-weight: bold; color: #2563EB;">${item.kataAsli}</div>` : ''}`;
+        popup.innerHTML = `<div>${item.arti}</div>`;
         
         if (data.fase === 3) {
           div.onclick = () => cekBacaanAI(item.kataAsli, div, spanKata, data.kosakata.length);
