@@ -277,13 +277,46 @@
         
         if (hasilGundul === targetGundul) {
           gridItem.classList.add('benar', 'terjawab'); skorBenar++;
-          alert(`✅ BACAAN BENAR!\n\nBacaan Anda: ${hasil}`);
         } else {
           gridItem.classList.add('salah', 'terjawab'); skorSalah++;
-          alert(`🤖 KURANG TEPAT.\n\nAnda membaca: ${hasil}\nSeharusnya: ${kataTargetAsli}`);
+          
+          // AI mencari letak kesalahan secara spesifik (kata per kata)
+          let hasilArr = hasil.split(' ');
+          let targetArr = kataTargetAsli.split(' ');
+          let targetGundulArr = targetGundul.split(' ');
+          let hasilGundulArr = hasilGundul.split(' ');
+          
+          let diffMsg = "Ada bagian yang terlewat atau pengucapan kurang jelas.";
+          for(let i=0; i<targetGundulArr.length; i++) {
+             if(hasilGundulArr[i] !== targetGundulArr[i]) {
+                 diffMsg = `Coba perhatikan kata ke-${i+1} ("${targetArr[i]}").\nAnda membacanya: "${hasilArr[i] || '(kosong)'}"`;
+                 break;
+             }
+          }
+          
+          alert(`🤖 KOREKSI AI:\n\n${diffMsg}`);
           gridItem.onclick = () => { spanKata.textContent = kataTargetAsli; bacaTeksArab(kataTargetAsli); };
         }
         updateSkor(totalSoal);
+
+        // Cek apakah seluruh baris di halaman ini sudah selesai dibaca
+        if (skorBenar + skorSalah === totalSoal) {
+          setTimeout(() => {
+            let predikat = "Aadi";
+            let pesan = "Tetap semangat! Jangan menyerah, ulangi lagi pelan-pelan ya. ✊";
+            if (skorBenar === totalSoal) {
+                predikat = "Mumtaz 🌟";
+                pesan = "Masyaallah Luar Biasa! Sempurna tiada cacat. Pertahankan prestasimu! 🎉";
+            } else if (skorBenar >= Math.ceil(totalSoal * 0.7)) {
+                predikat = "Jayyid 👍";
+                pesan = "Alhamdulillah Bagus Sekali! Sedikit lagi menuju kesempurnaan. Mantap! 🔥";
+            } else if (skorBenar >= Math.ceil(totalSoal * 0.4)) {
+                predikat = "Aslaha 🙂";
+                pesan = "Kamu sudah berusaha dengan baik! Terus berlatih ya agar lebih lancar. 💪";
+            }
+            alert(`🎓 PENILAIAN AKHIR HALAMAN\n\nSkor: ${skorBenar}/${totalSoal}\nPredikat: ${predikat}\n\nKomentar AI: "${pesan}"`);
+          }, 500); // Jeda setengah detik agar kotak sempat berubah warna
+        }
       };
 
       recognition.onerror = (event) => { cleanupUI(); alert("Gagal mendengarkan suara: " + event.error); };
