@@ -94,14 +94,14 @@
       background-color:#2563EB;
       color:white; 
       border-radius:12px; 
-      padding:15px; 
-      text-align:center; 
+      padding:35px; 
+      text-align:justify;
+      direction: rtl;
       font-weight:bold;
-      min-height:60px; 
-      display:flex; 
-      align-items:center; 
-      justify-content:center; 
-      font-size:2rem;
+      min-height:250px; 
+      display:block; 
+      font-size:1.4rem;
+      line-height: 2;
       position:relative;
       cursor:pointer;
       box-shadow: 0 4px 6px rgba(37, 99, 235, 0.15);
@@ -119,9 +119,9 @@
         grid-template-columns: repeat(1, 1fr); /* 1 Kolom di HP */
       }
       .grid-item {
-        font-size: 1.3rem;
-        padding: 10px 5px;
-        min-height: 50px;
+        font-size: 1.1rem;
+        padding: 20px;
+        min-height: 150px;
       }
     }
 
@@ -140,7 +140,8 @@
       white-space:normal;
       z-index:10;
       width:max-content;
-      max-width:250px;
+      max-width:350px;
+      line-height: 1.5;
       pointer-events: none;
     }
 
@@ -396,9 +397,8 @@
     async function muatDataPelajaran() {
       document.getElementById('judul-h3').textContent = 'Memuat Data Pelajaran...';
       try {
-        const response = await fetch(gasApiUrl, { cache: 'no-store' });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const dataBab = await response.json();
+        // Memuat 16 Bab Artikel Panjang (1 Halaman Penuh)
+        const dataBab = generateDataArtikelPanjang();
         dataBabGlobal = dataBab;
         
         prosesDataBab(dataBabGlobal);
@@ -411,6 +411,19 @@
       }
     }
 
+    function generateDataArtikelPanjang() {
+      const artikel = [
+        { kata: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ. الْحَمْدُ لِلَّهِ الَّذِي فَضَّلَ بَنِي آدَمَ بِالْعِلْمِ وَالْعَمَلِ عَلَى جَمِيعِ الْعَالَمِ، وَالصَّلَاةُ وَالسَّلَامُ عَلَى مُحَمَّدٍ سَيِّدِ الْعَرَبِ وَالْعَجَمِ. وَبَعْدُ: فَلَمَّا رَأَيْتُ كَثِيرًا مِنْ طُلَّابِ الْعِلْمِ فِي زَمَانِنَا يَجِدُّونَ إِلَى الْعِلْمِ وَلَا يَصِلُونَ إِلَيْهِ، وَمِنْ مَنَافِعِهِ وَثَمَرَاتِهِ يُحْرَمُونَ، لِمَا أَنَّهُمْ أَخْطَأُوا طَرِيقَهُ، وَتَرَكُوا شَرَائِطَهُ. فَأَرَدْتُ وَأَحْبَبْتُ أَنْ أُبَيِّنَ لَهُمْ طَرِيقَ التَّعَلُّمِ عَلَى مَا رَأَيْتُ فِي الْكُتُبِ، رَجَاءَ الدُّعَاءِ لِي مِنْهُمْ بِالْفَوْزِ.", arti: "Dengan menyebut nama Allah. Segala puji bagi Allah yang melebihkan anak Adam dengan ilmu dan amal. Amma ba'du: Ketika aku melihat banyak santri bersungguh-sungguh tapi tak sampai hasilnya karena salah jalan. Maka aku menyusun penjelasan cara belajar ini." },
+        { kata: "فَصْلٌ فِي بَيَانِ الْعِلْمِ وَالْفِقْهِ وَفَضْلِهِ. قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ وَمُسْلِمَةٍ. اعْلَمْ بِأَنَّهُ لَا يُفْتَرَضُ عَلَى كُلِّ مُسْلِمٍ طَلَبُ كُلِّ عِلْمٍ، بَلْ يُفْتَرَضُ عَلَيْهِ طَلَبُ عِلْمِ الْحَالِ، كَمَا قِيلَ: أَفْضَلُ الْعِلْمِ عِلْمُ الْحَالِ، وَأَفْضَلُ الْعَمَلِ حِفْظُ الْحَالِ. فَيُفْتَرَضُ عَلَى الْمُسْلِمِ طَلَبُ مَا يَقَعُ لَهُ فِي حَالِهِ فِي أَيِّ حَالَةٍ كَانَ مِنَ الصَّلَاةِ وَالصِّيَامِ.", arti: "Pasal tentang ilmu dan fiqih. Nabi SAW bersabda: Menuntut ilmu itu wajib. Ketahuilah bahwa yang wajib bukanlah semua ilmu, melainkan 'Ilmu Hal' (ilmu yang sangat dibutuhkan saat itu), seperti ilmu tentang shalat jika tiba waktunya shalat." },
+        { kata: "الْكَلَامُ هُوَ اللَّفْظُ الْمُرَكَّبُ الْمُفِيدُ بِالْوَضْعِ. وَأَقْسَامُهُ ثَلَاثَةٌ: اسْمٌ، وَفِعْلٌ، وَحَرْفٌ جَاءَ لِمَعْنًى. فَالِاسْمُ يُعْرَفُ بِالْخَفْضِ، وَالتَّنْوِينِ، وَدُخُولِ الْأَلِفِ وَاللَّامِ، وَحُرُوفِ الْخَفْضِ وَهِيَ: مِنْ، وَإِلَى، وَعَنْ، وَعَلَى، وَفِي، وَرُبَّ، وَالْبَاءُ، وَالْكَافُ، وَاللَّامُ. وَالْفِعْلُ يُعْرَفُ بِقَدْ، وَالسِّينِ، وَسَوْفَ، وَتَاءِ التَّأْنِيثِ السَّاكِنَةِ. وَالْحَرْفُ مَا لَا يَصْلُحُ مَعَهُ دَلِيلُ الِاسْمِ وَلَا دَلِيلُ الْفِعْلِ كَهَلْ وَبَلْ.", arti: "Kalam adalah lafaz tersusun, berfaedah, berbahasa Arab. Dibagi 3: Isim, Fi'il, Huruf. Isim dikenal dengan kasrah, tanwin, alif lam, dan huruf jar. Fi'il dikenal dengan qod, sin, saufa, ta' ta'nits. Huruf tidak cocok menerima tanda isim dan fi'il." },
+        { kata: "الْمِيَاهُ الَّتِي يَجُوزُ بِهَا التَّطْهِيرُ سَبْعُ مِيَاهٍ: مَاءُ السَّمَاءِ، وَمَاءُ الْبَحْرِ، وَمَاءُ النَّهْرِ، وَمَاءُ الْبِئْرِ، وَمَاءُ الْعَيْنِ، وَمَاءُ الثَّلْجِ، وَمَاءُ الْبَرَدِ. ثُمَّ الْمِيَاهُ عَلَى أَرْبَعَةِ أَقْسَامٍ: طَاهِرٌ مُطَهِّرٌ غَيْرُ مَكْرُوهٍ وَهُوَ الْمَاءُ الْمُطْلَقُ، وَطَاهِرٌ مُطَهِّرٌ مَكْرُوهٌ وَهُوَ الْمَاءُ الْمُشَمَّسُ، وَطَاهِرٌ غَيْرُ مُطَهِّرٍ وَهُوَ الْمَاءُ الْمُسْتَعْمَلُ وَالْمُتَغَيِّرُ بِطَاهِرٍ، وَمَاءٌ نَجِسٌ وَهُوَ الَّذِي حَلَّتْ فِيهِ نَجَاسَةٌ وَهُوَ دُونَ الْقُلَّتَيْنِ.", arti: "Air yang sah untuk bersuci ada 7: air hujan, laut, sungai, sumur, mata air, salju, embun. Air terbagi 4: Suci mensucikan tanpa makruh, suci mensucikan tapi makruh (musyammas), suci tidak mensucikan (musta'mal), dan air najis (terkena najis kurang dari 2 qullah)." }
+      ];
+      let babs = [];
+      for(let i=1; i<=16; i++) {
+        babs.push({ judul: "Latihan Artikel (Bab " + i + ")", penjelasan: "Membaca teks utuh satu halaman kitab kuning salaf/khalaf untuk melatih pernafasan.", kosakata: [artikel[i % artikel.length]] });
+      }
+      return babs;
+    }
     function prosesDataBab(dataBab) {
       dataPelajaran = [];
       let nomorHalaman = 1;

@@ -94,14 +94,14 @@
       background-color:#2563EB;
       color:white; 
       border-radius:12px; 
-      padding:15px; 
-      text-align:center; 
+      padding:25px; 
+      text-align:justify;
+      direction: rtl;
       font-weight:bold;
-      min-height:60px; 
-      display:flex; 
-      align-items:center; 
-      justify-content:center; 
-      font-size:2rem;
+      min-height:120px; 
+      display:block; 
+      font-size:1.5rem;
+      line-height: 1.8;
       position:relative;
       cursor:pointer;
       box-shadow: 0 4px 6px rgba(37, 99, 235, 0.15);
@@ -119,9 +119,9 @@
         grid-template-columns: repeat(1, 1fr); /* 1 Kolom di HP */
       }
       .grid-item {
-        font-size: 1.3rem;
-        padding: 10px 5px;
-        min-height: 50px;
+        font-size: 1.2rem;
+        padding: 15px;
+        min-height: 100px;
       }
     }
 
@@ -140,7 +140,8 @@
       white-space:normal;
       z-index:10;
       width:max-content;
-      max-width:250px;
+      max-width:350px;
+      line-height: 1.5;
       pointer-events: none;
     }
 
@@ -396,9 +397,8 @@
     async function muatDataPelajaran() {
       document.getElementById('judul-h3').textContent = 'Memuat Data Pelajaran...';
       try {
-        const response = await fetch(gasApiUrl, { cache: 'no-store' });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const dataBab = await response.json();
+        // Memuat 16 Bab Paragraf Panjang Salaf & Khalaf
+        const dataBab = generateDataParagrafPanjang();
         dataBabGlobal = dataBab;
         
         prosesDataBab(dataBabGlobal);
@@ -411,6 +411,24 @@
       }
     }
 
+    function generateDataParagrafPanjang() {
+      const paragraf = [
+        { kata: "يَنْبَغِي لِطَالِبِ الْعِلْمِ أَنْ يَخْتَارَ مِنْ كُلِّ عِلْمٍ أَحْسَنَهُ، وَمَا يَحْتَاجُ إِلَيْهِ فِي أَمْرِ دِينِهِ فِي الْحَالِ، ثُمَّ مَا يَحْتَاجُ إِلَيْهِ فِي الْمَآلِ. وَيُقَدِّمُ عِلْمَ التَّوْحِيدِ وَالْمَعْرِفَةِ، وَيَعْرِفُ اللَّهَ تَعَالَى بِالدَّلِيلِ.", arti: "Seorang pelajar harus memilih ilmu yang terbaik dan yang paling dibutuhkannya untuk urusan agamanya saat ini, lalu yang dibutuhkannya di masa depan. Wajib mendahulukan ilmu tauhid." },
+        { kata: "وَأَمَّا اخْتِيَارُ الْأُسْتَاذِ: فَيَنْبَغِي أَنْ يَخْتَارَ الْأَعْلَمَ وَالْأَوْرَعَ وَالْأَسَنَّ، كَمَا اخْتَارَ أَبُو حَنِيفَةَ رَحِمَهُ اللَّهُ حَمَّادَ بْنَ أَبِي سُلَيْمَانَ بَعْدَ التَّأَمُّلِ وَالتَّفَكُّرِ، وَقَالَ: وَجَدْتُهُ شَيْخًا وَقُورًا حَلِيمًا صَبُورًا فِي الْأُمُورِ.", arti: "Adapun memilih guru: Seyogianya memilih yang paling alim, wara', dan paling sepuh, sebagaimana Abu Hanifah memilih Hammad bin Abi Sulaiman setelah merenung dan berpikir." },
+        { kata: "وَمِنْ تَعْظِيمِ الْعِلْمِ تَعْظِيمُ الْمُعَلِّمِ، قَالَ عَلِيٌّ رَضِيَ اللَّهُ عَنْهُ: أَنَا عَبْدُ مَنْ عَلَّمَنِي حَرْفًا وَاحِدًا، إِنْ شَاءَ بَاعَ، وَإِنْ شَاءَ اسْتَرَقَّ. وَقَدْ قِيلَ: مَنْ قَصَدَ أَنْ يَكُونَ ابْنُهُ عَالِمًا يَنْبَغِي أَنْ يُرَاعِيَ الْغُرَبَاءَ مِنَ الْفُقَهَاءِ.", arti: "Termasuk mengagungkan ilmu adalah mengagungkan guru. Ali RA berkata: Aku adalah hamba bagi orang yang mengajariku satu huruf. Siapa yang ingin anaknya menjadi ulama, hendaknya ia memuliakan para fuqaha." },
+        { kata: "وَلَا بُدَّ لِطَالِبِ الْعِلْمِ مِنَ الْمُوَاظَبَةِ وَالْمُلَازَمَةِ عَلَى الدَّرْسِ وَالتَّكْرَارِ فِي أَوَّلِ اللَّيْلِ وَآخِرِهِ، فَإِنَّ مَا بَيْنَ الْعِشَائَيْنِ وَوَقْتَ السَّحَرِ وَقْتُ بَرَكَةٍ. وَيَنْبَغِي أَنْ يَتَحَمَّلَ الْمَشَقَّةَ وَالنَّصَبَ فِي طَلَبِ الْعِلْمِ.", arti: "Pelajar harus tekun dan terus-menerus belajar serta mengulang pelajaran di awal dan akhir malam, karena waktu maghrib-isya dan sahur adalah waktu berkah. Rela menanggung kesulitan." },
+        { kata: "يَنْهَضُ الْإِنْسَانُ بِمَا عِنْدَهُ مِنْ فِكْرٍ عَنِ الْحَيَاةِ وَالْكَوْنِ وَالْإِنْسَانِ، وَعَنْ عَلَاقَتِهَا جَمِيعًا بِمَا قَبْلَ الْحَيَاةِ الدُّنْيَا وَمَا بَعْدَهَا. لِذَلِكَ كَانَ لَا بُدَّ مِنْ تَغْيِيرِ فِكْرِ الْإِنْسَانِ تَغْيِيرًا أَسَاسِيًّا شَامِلًا.", arti: "Manusia bangkit dengan pemikirannya tentang kehidupan, alam, dan manusia. Karena itu, pemikiran manusia harus diubah secara mendasar dan komprehensif agar kebangkitannya benar." }
+      ];
+      let babs = [];
+      for(let i=1; i<=16; i++) {
+        let kosa = [];
+        for(let j=0; j<3; j++) {
+            kosa.push(paragraf[(i+j) % paragraf.length]);
+        }
+        babs.push({ judul: "Latihan Paragraf (Bab " + i + ")", penjelasan: "Membaca 3 paragraf utuh kitab kuning salaf dan khalaf untuk melatih ketahanan.", kosakata: kosa });
+      }
+      return babs;
+    }
     function prosesDataBab(dataBab) {
       dataPelajaran = [];
       let nomorHalaman = 1;
