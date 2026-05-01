@@ -413,60 +413,40 @@
 
     function generateDataArtikelPanjang() {
       const artikel = [
-        { kata: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ. الْحَمْدُ لِلَّهِ الَّذِي فَضَّلَ بَنِي آدَمَ بِالْعِلْمِ وَالْعَمَلِ عَلَى جَمِيعِ الْعَالَمِ، وَالصَّلَاةُ وَالسَّلَامُ عَلَى مُحَمَّدٍ سَيِّدِ الْعَرَبِ وَالْعَجَمِ. وَبَعْدُ: فَلَمَّا رَأَيْتُ كَثِيرًا مِنْ طُلَّابِ الْعِلْمِ فِي زَمَانِنَا يَجِدُّونَ إِلَى الْعِلْمِ وَلَا يَصِلُونَ إِلَيْهِ، وَمِنْ مَنَافِعِهِ وَثَمَرَاتِهِ يُحْرَمُونَ، لِمَا أَنَّهُمْ أَخْطَأُوا طَرِيقَهُ، وَتَرَكُوا شَرَائِطَهُ. فَأَرَدْتُ وَأَحْبَبْتُ أَنْ أُبَيِّنَ لَهُمْ طَرِيقَ التَّعَلُّمِ عَلَى مَا رَأَيْتُ فِي الْكُتُبِ، رَجَاءَ الدُّعَاءِ لِي مِنْهُمْ بِالْفَوْزِ.", arti: "Dengan menyebut nama Allah. Segala puji bagi Allah yang melebihkan anak Adam dengan ilmu dan amal. Amma ba'du: Ketika aku melihat banyak santri bersungguh-sungguh tapi tak sampai hasilnya karena salah jalan. Maka aku menyusun penjelasan cara belajar ini." },
-        { kata: "فَصْلٌ فِي بَيَانِ الْعِلْمِ وَالْفِقْهِ وَفَضْلِهِ. قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ وَمُسْلِمَةٍ. اعْلَمْ بِأَنَّهُ لَا يُفْتَرَضُ عَلَى كُلِّ مُسْلِمٍ طَلَبُ كُلِّ عِلْمٍ، بَلْ يُفْتَرَضُ عَلَيْهِ طَلَبُ عِلْمِ الْحَالِ، كَمَا قِيلَ: أَفْضَلُ الْعِلْمِ عِلْمُ الْحَالِ، وَأَفْضَلُ الْعَمَلِ حِفْظُ الْحَالِ. فَيُفْتَرَضُ عَلَى الْمُسْلِمِ طَلَبُ مَا يَقَعُ لَهُ فِي حَالِهِ فِي أَيِّ حَالَةٍ كَانَ مِنَ الصَّلَاةِ وَالصِّيَامِ.", arti: "Pasal tentang ilmu dan fiqih. Nabi SAW bersabda: Menuntut ilmu itu wajib. Ketahuilah bahwa yang wajib bukanlah semua ilmu, melainkan 'Ilmu Hal' (ilmu yang sangat dibutuhkan saat itu), seperti ilmu tentang shalat jika tiba waktunya shalat." },
-        { kata: "الْكَلَامُ هُوَ اللَّفْظُ الْمُرَكَّبُ الْمُفِيدُ بِالْوَضْعِ. وَأَقْسَامُهُ ثَلَاثَةٌ: اسْمٌ، وَفِعْلٌ، وَحَرْفٌ جَاءَ لِمَعْنًى. فَالِاسْمُ يُعْرَفُ بِالْخَفْضِ، وَالتَّنْوِينِ، وَدُخُولِ الْأَلِفِ وَاللَّامِ، وَحُرُوفِ الْخَفْضِ وَهِيَ: مِنْ، وَإِلَى، وَعَنْ، وَعَلَى، وَفِي، وَرُبَّ، وَالْبَاءُ، وَالْكَافُ، وَاللَّامُ. وَالْفِعْلُ يُعْرَفُ بِقَدْ، وَالسِّينِ، وَسَوْفَ، وَتَاءِ التَّأْنِيثِ السَّاكِنَةِ. وَالْحَرْفُ مَا لَا يَصْلُحُ مَعَهُ دَلِيلُ الِاسْمِ وَلَا دَلِيلُ الْفِعْلِ كَهَلْ وَبَلْ.", arti: "Kalam adalah lafaz tersusun, berfaedah, berbahasa Arab. Dibagi 3: Isim, Fi'il, Huruf. Isim dikenal dengan kasrah, tanwin, alif lam, dan huruf jar. Fi'il dikenal dengan qod, sin, saufa, ta' ta'nits. Huruf tidak cocok menerima tanda isim dan fi'il." },
-        { kata: "الْمِيَاهُ الَّتِي يَجُوزُ بِهَا التَّطْهِيرُ سَبْعُ مِيَاهٍ: مَاءُ السَّمَاءِ، وَمَاءُ الْبَحْرِ، وَمَاءُ النَّهْرِ، وَمَاءُ الْبِئْرِ، وَمَاءُ الْعَيْنِ، وَمَاءُ الثَّلْجِ، وَمَاءُ الْبَرَدِ. ثُمَّ الْمِيَاهُ عَلَى أَرْبَعَةِ أَقْسَامٍ: طَاهِرٌ مُطَهِّرٌ غَيْرُ مَكْرُوهٍ وَهُوَ الْمَاءُ الْمُطْلَقُ، وَطَاهِرٌ مُطَهِّرٌ مَكْرُوهٌ وَهُوَ الْمَاءُ الْمُشَمَّسُ، وَطَاهِرٌ غَيْرُ مُطَهِّرٍ وَهُوَ الْمَاءُ الْمُسْتَعْمَلُ وَالْمُتَغَيِّرُ بِطَاهِرٍ، وَمَاءٌ نَجِسٌ وَهُوَ الَّذِي حَلَّتْ فِيهِ نَجَاسَةٌ وَهُوَ دُونَ الْقُلَّتَيْنِ.", arti: "Air yang sah untuk bersuci ada 7: air hujan, laut, sungai, sumur, mata air, salju, embun. Air terbagi 4: Suci mensucikan tanpa makruh, suci mensucikan tapi makruh (musyammas), suci tidak mensucikan (musta'mal), dan air najis (terkena najis kurang dari 2 qullah)." }
+        { kata: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ. الْحَمْدُ لِلَّهِ تَبَرُّكًا بِفَاتِحَةِ الْكِتَابِ، لِأَنَّهَا مَبْدَأُ كُلِّ أَمْرٍ ذِي بَالٍ، وَخَاتِمَةُ كُلِّ دُعَاءٍ مُجَابٍ، وَآيَةُ كُلِّ سُورَةٍ. قَالَ الْقَاضِي أَبُو شُجَاعٍ أَحْمَدُ بْنُ الْحُسَيْنِ بْنِ أَحْمَدَ الْأَصْفَهَانِيُّ رَحِمَهُ اللَّهُ تَعَالَى: سَأَلَنِي بَعْضُ الْأَصْدِقَاءِ حَفِظَهُمُ اللَّهُ تَعَالَى أَنْ أَعْمَلَ مُخْتَصَرًا فِي الْفِقْهِ عَلَى مَذْهَبِ الْإِمَامِ الشَّافِعِيِّ رَحْمَةُ اللَّهِ تَعَالَى عَلَيْهِ وَرِضْوَانُهُ، فِي غَايَةِ الِاخْتِصَارِ وَنِهَايَةِ الْإِيجَازِ، لِيَقْرُبَ عَلَى الْمُتَعَلِّمِ دَرْسُهُ، وَيَسْهُلَ عَلَى الْمُبْتَدِئِ حِفْظُهُ.", arti: "Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang. Segala puji bagi Allah sebagai tabarruk dengan Fatihah Al-Kitab... Al-Qadhi Abu Syuja' berkata: Sebagian teman memintaku membuat ringkasan fiqih mazhab Syafi'i yang sangat ringkas agar mudah dipelajari dan dihafal." },
+        { kata: "فَصْلٌ: شُرُوطُ الصَّلَاةِ ثَمَانِيَةٌ: طَهَارَةُ الْحَدَثَيْنِ، وَطَهَارَةُ النَّجَسِ فِي الثَّوْبِ وَالْبَدَنِ وَالْمَكَانِ، وَسَتْرُ الْعَوْرَةِ، وَاسْتِقْبَالُ الْقِبْلَةِ، وَدُخُولُ الْوَقْتِ، وَالْعِلْمُ بِفَرْضِيَّتِهَا، وَأَنْ لَا يَعْتَقِدَ فَرْضًا مِنْ فُرُوضِهَا سُنَّةً، وَاجْتِنَابُ الْمُبْطِلَاتِ. الْأَحْدَاثُ اثْنَانِ: أَصْغَرُ وَأَكْبَرُ، فَالْأَصْغَرُ مَا أَوْجَبَ الْوُضُوءَ، وَالْأَكْبَرُ مَا أَوْجَبَ الْغُسْلَ. الْعَوْرَاتُ أَرْبَعٌ: عَوْرَةُ الرَّجُلِ مُطْلَقًا وَالْأَمَةِ فِي الصَّلَاةِ مَا بَيْنَ السُّرَّةِ وَالرُّكْبَةِ، وَعَوْرَةُ الْحُرَّةِ فِي الصَّلَاةِ جَمِيعُ بَدَنِهَا إِلَّا الْوَجْهَ وَالْكَفَّيْنِ.", arti: "Syarat shalat ada 8: suci dari hadats, suci dari najis, menutup aurat, menghadap kiblat, masuk waktu... Hadats ada 2: kecil dan besar... Aurat laki-laki antara pusar dan lutut, wanita merdeka seluruh tubuh kecuali wajah dan telapak tangan." },
+        { kata: "الْكَلَامُ هُوَ اللَّفْظُ الْمُرَكَّبُ الْمُفِيدُ بِالْوَضْعِ. وَأَقْسَامُهُ ثَلَاثَةٌ: اسْمٌ، وَفِعْلٌ، وَحَرْفٌ جَاءَ لِمَعْنًى. فَالِاسْمُ يُعْرَفُ بِالْخَفْضِ، وَالتَّنْوِينِ، وَدُخُولِ الْأَلِفِ وَاللَّامِ، وَحُرُوفِ الْخَفْضِ وَهِيَ: مِنْ، وَإِلَى، وَعَنْ، وَعَلَى، وَفِي، وَرُبَّ، وَالْبَاءُ، وَالْكَافُ، وَاللَّامُ، وَحُرُوفِ الْقَسَمِ وَهِيَ الْوَاوُ وَالْبَاءُ وَالتَّاءُ. وَالْفِعْلُ يُعْرَفُ بِقَدْ، وَالسِّينِ، وَسَوْفَ، وَتَاءِ التَّأْنِيثِ السَّاكِنَةِ. وَالْحَرْفُ مَا لَا يَصْلُحُ مَعَهُ دَلِيلُ الِاسْمِ وَلَا دَلِيلُ الْفِعْلِ.", arti: "Kalam adalah lafaz yang tersusun, berfaedah, dan disengaja. Pembagiannya ada tiga: Isim, Fi'il, dan Huruf. Isim dikenali dengan khafadh, tanwin, kemasukan alif-lam, dan huruf jar... Fi'il dikenali dengan qod, sin, saufa, dan ta' ta'nits." },
+        { kata: "بَابُ الْإِعْرَابِ. الْإِعْرَابُ هُوَ تَغْيِيرُ أَوَاخِرِ الْكَلِمِ لِاخْتِلَافِ الْعَوَامِلِ الدَّاخِلَةِ عَلَيْهَا لَفْظًا أَوْ تَقْدِيرًا. وَأَقْسَامُهُ أَرْبَعَةٌ: رَفْعٌ، وَنَصْبٌ، وَخَفْضٌ، وَجَزْمٌ. فَلِلْأَسْمَاءِ مِنْ ذَلِكَ الرَّفْعُ وَالنَصْبُ وَالْخَفْضُ وَلَا جَزْمَ فِيهَا، وَلِلْأَفْعَالِ مِنْ ذَلِكَ الرَّفْعُ وَالنَصْبُ وَالْجَزْمُ وَلَا خَفْضَ فِيهَا. بَابُ مَعْرِفَةِ عَلَامَاتِ الْإِعْرَابِ. لِلرَّفْعِ أَرْبَعُ عَلَامَاتٍ: الضَّمَّةُ، وَالْوَاوُ، وَالْأَلِفُ، وَالنُّونُ. فَأَمَّا الضَّمَّةُ فَتَكُونُ عَلَامَةً لِلرَّفْعِ فِي أَرْبَعَةِ مَوَاضِعَ.", arti: "Bab I'rab. I'rab adalah perubahan akhir kalimat karena perbedaan amil yang memasukinya... Pembagiannya ada empat: Rafa', Nashab, Khafadh, dan Jazm. Isim bisa rafa, nashab, khafadh (tanpa jazm). Fi'il bisa rafa, nashab, jazm (tanpa khafadh)." },
+        { kata: "فَصْلٌ فِي النِّيَّةِ فِي حَالِ التَّعَلُّمِ. ثُمَّ لَا بُدَّ لَهُ مِنَ النِّيَّةِ فِي زَمَانِ تَعَلُّمِ الْعِلْمِ، إِذِ النِّيَّةُ هِيَ الْأَصْلُ فِي جَمِيعِ الْأَحْوَالِ، لِقَوْلِهِ عَلَيْهِ السَّلَامُ: إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ. يَنْبَغِي أَنْ يَنْوِيَ الْمُتَعَلِّمُ بِطَلَبِ الْعِلْمِ رِضَا اللَّهِ تَعَالَى وَالدَّارَ الْآخِرَةَ، وَإِزَالَةَ الْجَهْلِ عَنْ نَفْسِهِ وَعَنْ سَائِرِ الْجُهَّالِ، وَإِحْيَاءَ الدِّينِ، وَإِبْقَاءَ الْإِسْلَامِ، فَإِنَّ بَقَاءَ الْإِسْلَامِ بِالْعِلْمِ، وَلَا يَصِحُّ الزُّهْدُ وَالتَّقْوَى مَعَ الْجَهْلِ.", arti: "Pasal tentang niat saat belajar. Pelajar wajib berniat saat menuntut ilmu, karena niat adalah pokok segala amal... Hendaknya berniat mencari ridha Allah, akhirat, menghilangkan kebodohan dari diri dan orang lain, menghidupkan agama, dan melestarikan Islam." },
+        { kata: "وَأَمَّا اخْتِيَارُ الْأُسْتَاذِ، فَيَنْبَغِي أَنْ يَخْتَارَ الْأَعْلَمَ وَالْأَوْرَعَ وَالْأَسَنَّ، كَمَا اخْتَارَ أَبُو حَنِيفَةَ رَحِمَهُ اللَّهُ حَمَّادَ بْنَ أَبِي سُلَيْمَانَ بَعْدَ التَّأَمُّلِ وَالتَّفَكُّرِ. وَقَالَ: وَجَدْتُهُ شَيْخًا وَقُورًا حَلِيمًا صَبُورًا فِي الْأُمُورِ. وَقَالَ أَبُو حَنِيفَةَ: ثَبَتُّ عِنْدَ حَمَّادِ بْنِ أَبِي سُلَيْمَانَ فَنَبَتُّ. وَيَنْبَغِي أَنْ يُشَاوِرَ فِي أَمْرِ التَّعَلُّمِ، فَإِنَّ اللَّهَ تَعَالَى أَمَرَ رَسُولَهُ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ بِالْمُشَاوَرَةِ فِي الْأُمُورِ.", arti: "Adapun memilih guru, hendaknya memilih yang paling alim, wara', dan sepuh, sebagaimana Abu Hanifah memilih Hammad bin Abi Sulaiman setelah merenung... Dan hendaknya bermusyawarah dalam urusan belajar." },
+        { kata: "يَنْهَضُ الْإِنْسَانُ بِمَا عِنْدَهُ مِنْ فِكْرٍ عَنِ الْحَيَاةِ وَالْكَوْنِ وَالْإِنْسَانِ، وَعَنْ عَلَاقَتِهَا جَمِيعًا بِمَا قَبْلَ الْحَيَاةِ الدُّنْيَا وَمَا بَعْدَهَا. لِذَلِكَ كَانَ لَا بُدَّ مِنْ تَغْيِيرِ فِكْرِ الْإِنْسَانِ تَغْيِيرًا أَسَاسِيًّا شَامِلًا حَتَّى يَنْهَضَ، لِأَنَّ الْفِكْرَ هُوَ الَّذِي يُوجِدُ الْمَفَاهِيمَ عَنِ الْأَشْيَاءِ، وَيُرَكِّزُ هَذِهِ الْمَفَاهِيمَ. وَالْإِنْسَانُ يُكَيِّفُ سُلُوكَهُ فِي الْحَيَاةِ بِحَسَبِ مَفَاهِيمِهِ عَنْهَا، فَالسُّلُوكُ الْإِنْسَانِيُّ مُرْتَبِطٌ بِمَفَاهِيمِ الْإِنْسَانِ ارْتِبَاطًا مُحْكَمًا.", arti: "Manusia bangkit dengan pemikirannya tentang kehidupan, alam semesta, dan manusia, serta hubungannya dengan sebelum dan sesudah dunia. Oleh karena itu, mutlak diperlukan perubahan pemikiran secara mendasar dan menyeluruh agar ia bangkit..." },
+        { kata: "وَالطَّرِيقُ لِنَهْضَةِ الْإِنْسَانِ هُوَ أَنْ يَحْصُلَ لَدَيْهِ تَغَيُّرٌ شَامِلٌ لِمَفَاهِيمِهِ السَّابِقَةِ، وَأَنْ تُوجَدَ لَدَيْهِ مَفَاهِيمُ جَدِيدَةٌ تُوجِدُ عِنْدَهُ هَذَا الْفِكْرَ. وَلِكَيْ تُوجَدَ هَذِهِ الْمَفَاهِيمُ وَتَتَغَيَّرَ الْمَفَاهِيمُ السَّابِقَةُ، لَا بُدَّ أَنْ تُوجَدَ الْفِكْرَةُ الْكُلِّيَّةُ عَنِ الْحَيَاةِ وَالْكَوْنِ وَالْإِنْسَانِ، لِأَنَّهَا هِيَ الْقَاعِدَةُ الْفِكْرِيَّةُ الَّتِي تُبْنَى عَلَيْهَا جَمِيعُ الْأَفْكَارِ، وَتَنْبَثِقُ عَنْهَا جَمِيعُ الْمَفَاهِيمِ.", arti: "Jalan kebangkitan manusia adalah dengan mengubah konsep lamanya... Harus ada pemikiran menyeluruh tentang kehidupan, alam, dan manusia, yang menjadi kaidah berpikir dan melahirkan seluruh konsep lainnya." }
       ];
       let babs = [];
-      for(let i=1; i<=16; i++) {
-        babs.push({ judul: "Latihan Artikel (Bab " + i + ")", penjelasan: "Membaca teks utuh satu halaman kitab kuning salaf/khalaf untuk melatih pernafasan.", kosakata: [artikel[i % artikel.length]] });
+      for(let i=0; i<16; i++) {
+        babs.push({ 
+          judul: "Kitab Gundul " + (i % 2 === 0 ? "Salaf" : "Khalaf") + " (Halaman " + (i+1) + ")", 
+          penjelasan: "Membaca teks kitab kuning tanpa harokat satu halaman penuh untuk melatih insting I'rob dan pernafasan.", 
+          kosakata: [artikel[i % artikel.length]] 
+        });
       }
       return babs;
     }
+
     function prosesDataBab(dataBab) {
       dataPelajaran = [];
       let nomorHalaman = 1;
       
-      // Fase 1
       dataBab.forEach(bab => {
         dataPelajaran.push({
           halaman: nomorHalaman++,
-          judul: bab.judul + (modeImtihan ? " (Mode Imtihan)" : " (Fase 1: Harokat Lengkap)"),
-          penjelasan: modeImtihan ? "UJIAN: Tebak bacaan Arab Gundul. Benar = Biru, Salah = Merah." : bab.penjelasan + " 💡 Klik kotak untuk mendengarkan bacaan.",
-          fase: modeImtihan ? 3 : 1,
-          kosakata: modeImtihan ? bab.kosakata.map(k => ({kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), arti: k.arti, kataAsli: k.kata})) : bab.kosakata.map(k => ({
-            kata: k.kata,
-            arti: k.arti,
-            kataAsli: k.kata
-          }))
-        });
-      });
-
-      // Fase 2
-      dataBab.forEach(bab => {
-        dataPelajaran.push({
-          halaman: nomorHalaman++,
-          judul: bab.judul + (modeImtihan ? " (Mode Imtihan)" : " (Fase 2: Harokat Akhir Saja)"),
-          penjelasan: modeImtihan ? "UJIAN: Tebak bacaan Arab Gundul. Benar = Biru, Salah = Merah." : "Latih insting I'rob Anda. Harokat di tengah kata dihilangkan, sisa harokat akhirnya saja.",
-          fase: modeImtihan ? 3 : 2,
-          kosakata: modeImtihan ? bab.kosakata.map(k => ({kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), arti: k.arti, kataAsli: k.kata})) : bab.kosakata.map(k => ({
-            kata: k.kata.replace(/[\u064B-\u065F\u0670]+(?=[^\s\u064B-\u065F\u0670])/g, ''), 
-            arti: k.arti,
-            kataAsli: k.kata
-          }))
-        });
-      });
-
-      // Fase 3
-      dataBab.forEach(bab => {
-        dataPelajaran.push({
-          halaman: nomorHalaman++,
-          judul: bab.judul + (modeImtihan ? " (Mode Imtihan)" : " (Fase 3: Gundul Total + Cek Suara AI)"),
-          penjelasan: modeImtihan ? "UJIAN: Tebak bacaan Arab Gundul. Benar = Biru, Salah = Merah." : "Tebak bacaan Arab Gundul ini, lalu klik kotak dan tekan tombol 🎤 untuk dikoreksi AI.",
-          fase: 3,
+          judul: bab.judul + (modeImtihan ? " (Evaluasi Suara AI)" : " (Latihan Baca)"),
+          penjelasan: modeImtihan 
+            ? "UJIAN AI: Baca seluruh teks gundul ini. AI akan mendengarkan dan menilai ketepatan Anda!" 
+            : "LATIHAN 100% GUNDUL. Klik teks untuk mendengarkan contoh bacaan (harokat/i'rob) yang benar dari ustadz AI.",
+          fase: modeImtihan ? 3 : 1, // Fase 3 = Ujian AI, Fase 1 = Klik memutar suara
           kosakata: bab.kosakata.map(k => ({
-            kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), 
+            kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), // SELALU GUNDUL 100%
             arti: k.arti,
             kataAsli: k.kata
           }))
