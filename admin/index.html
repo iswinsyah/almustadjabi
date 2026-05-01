@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Admin — Qiroatul Kutub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0; padding: 0; background-color: #F3F4F6;
+      font-family: 'Poppins', sans-serif; color: #333;
+    }
+    
+    /* Tampilan Form Login Admin */
+    .login-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #1E3A8A; display: flex; align-items: center; justify-content: center; z-index: 1000;
+    }
+    .login-box {
+      background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 350px;
+      text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    .login-box h2 { margin-top: 0; color: #1E3A8A; }
+    .login-box input {
+      width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc;
+      border-radius: 8px; box-sizing: border-box; font-family: 'Poppins';
+    }
+    .login-box button {
+      width: 100%; background: #2563EB; color: white; padding: 12px; border: none;
+      border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Poppins';
+    }
+    .login-box button:hover { background: #1D4ED8; }
+
+    /* Tampilan Dashboard Utama */
+    .admin-nav { display: flex; gap: 10px; margin-bottom: 20px; }
+    .admin-nav button { background: #E5E7EB; color: #4B5563; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .admin-nav button.active { background: #2563EB; color: white; }
+    .panel-tab { display: none; }
+    .panel-tab.active { display: block; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from {opacity: 0; transform: translateY(5px);} to {opacity: 1; transform: translateY(0);} }
+
+    .dashboard-container { display: none; padding: 20px; max-width: 1000px; margin: auto; }
+    .header-dashboard {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #1E3A8A; color: white; padding: 20px; border-radius: 12px; margin-bottom: 25px;
+    }
+    .header-dashboard h1 { margin: 0; font-size: 1.5rem; }
+    .btn-logout { background: #EF4444; color: white; padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
+
+    /* Grid Kartu Statistik */
+    .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+    .stat-card {
+      background: white; padding: 20px; border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 5px solid #2563EB;
+    }
+    .stat-card h3 { margin: 0; font-size: 0.9rem; color: #6B7280; font-weight: 600; text-transform: uppercase; }
+    .stat-card .value { font-size: 2rem; font-weight: bold; color: #1E3A8A; margin-top: 10px; }
+    
+    .card-green { border-left-color: #10B981; }
+    .card-green .value { color: #10B981; }
+    
+    .card-pink { border-left-color: #EC4899; }
+    .card-pink .value { color: #EC4899; }
+    
+    .card-gold { border-left-color: #F59E0B; background: linear-gradient(to right, white, #FEF3C7); }
+    .card-gold .value { color: #D97706; }
+
+    /* Tabel Data */
+    .table-container { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .table-container h3 { margin-top: 0; color: #1E3A8A; margin-bottom: 15px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #E5E7EB; }
+    th { background-color: #F9FAFB; color: #4B5563; font-weight: 600; }
+    tr:hover { background-color: #F3F4F6; }
+
+    /* Upload Media & Form */
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
+    .media-card { background: white; padding: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
+    .media-card img, .media-card video { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; }
+    .media-card p { margin: 0; font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 5px; color: #1E3A8A; }
+    .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #D1D5DB; border-radius: 8px; font-family: 'Poppins'; box-sizing: border-box; }
+    .btn-save { background: #10B981; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <!-- Ovelay Login -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-box">
+      <h2>Masuk Ruang Kendali</h2>
+      <input type="text" id="adminUser" placeholder="Username">
+      <input type="password" id="adminPwd" placeholder="Password VVIP">
+      <button id="btnLogin" onclick="prosesLogin()">Buka Dashboard</button>
+    </div>
+  </div>
+
+  <!-- Dashboard (Disembunyikan sebelum login) -->
+  <div class="dashboard-container" id="dashboardPanel">
+    
+    <div class="header-dashboard">
+      <div>
+        <h1>Pusat Pantau CEO</h1>
+        <span style="font-size: 0.85rem; color: #BFDBFE;">Selamat Bertugas, Bos Winsyah!</span>
+      </div>
+      <button class="btn-logout" onclick="logoutAdmin()">Tutup & Keluar</button>
+    </div>
+
+    <div class="admin-nav">
+      <button class="active" onclick="switchAdminTab('tab-statistik', this)">Statistik</button>
+      <button onclick="switchAdminTab('tab-media', this)">Kelola Media</button>
+      <button onclick="switchAdminTab('tab-pengaturan', this)">Pengaturan Web</button>
+    </div>
+
+    <!-- TAB STATISTIK -->
+    <div id="tab-statistik" class="panel-tab active">
+    <div class="grid-stats">
+      <div class="stat-card">
+        <h3>Total Pengguna</h3>
+        <div class="value" id="val-total">0</div>
+      </div>
+      <div class="stat-card card-green">
+        <h3>Santri Laki-laki</h3>
+        <div class="value" id="val-laki">0</div>
+      </div>
+      <div class="stat-card card-pink">
+        <h3>Santri Perempuan</h3>
+        <div class="value" id="val-perempuan">0</div>
+      </div>
+      <div class="stat-card card-gold">
+        <h3>Perolehan Wakaf</h3>
+        <div class="value" id="val-wakaf" style="font-size: 1.5rem; margin-top: 15px;">Rp 0</div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <h3>🌍 Sebaran Domisili Pengguna</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Peringkat</th>
+            <th>Nama Kota / Kabupaten</th>
+            <th>Jumlah Santri</th>
+          </tr>
+        </thead>
+        <tbody id="tabel-domisili">
+          <tr><td colspan="3" style="text-align: center;">Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    </div>
+
+    <!-- TAB KELOLA MEDIA -->
+    <div id="tab-media" class="panel-tab">
+      <div class="table-container">
+        <h3>Unggah Gambar / Video Baru</h3>
+        <input type="file" id="fileUpload" accept="image/*,video/*" style="margin-bottom: 10px;">
+        <button class="btn-save" onclick="unggahMedia()">Unggah Media</button>
+        
+        <h3 style="margin-top: 30px;">Galeri Media Tersimpan</h3>
+        <div class="media-grid" id="galeri-media">Memuat media...</div>
+      </div>
+    </div>
+
+    <!-- TAB PENGATURAN -->
+    <div id="tab-pengaturan" class="panel-tab">
+      <div class="table-container">
+        <h3>Pengaturan Halaman Depan</h3>
+        <div class="form-group"><label>Judul Website</label><input type="text" id="set-judul" placeholder="Contoh: Qiroatul Kutub"></div>
+        <div class="form-group"><label>Teks Pengumuman Beranda</label><textarea id="set-pengumuman" rows="3" placeholder="Contoh: Selamat datang di aplikasi..."></textarea></div>
+        <button class="btn-save" onclick="simpanPengaturan()">Simpan Pengaturan</button>
+        <p style="font-size: 0.85rem; color: #6B7280; margin-top: 15px;">*Catatan: Anda perlu menerapkan kode pemanggil di halaman index.html dan menu.html untuk menampilkan pengaturan ini.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Cek apakah Admin sudah login sebelumnya (menyimpan sesi sementara)
+    if(sessionStorage.getItem('adminToken') === 'Khilafet@1924') {
+      bukaDashboard('Khilafet@1924');
+    }
+
+    function switchAdminTab(tabId, btnElement) {
+      document.querySelectorAll('.panel-tab').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.admin-nav button').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btnElement.classList.add('active');
+      if(tabId === 'tab-media') muatGaleri();
+    }
+
+    async function prosesLogin() {
+      const user = document.getElementById('adminUser').value;
+      const pass = document.getElementById('adminPwd').value;
+      const btn = document.getElementById('btnLogin');
+
+      if(user !== 'winsyah') {
+        alert('Username Admin Tidak Dikenali!');
+        return;
+      }
+
+      btn.textContent = 'Memeriksa Kunci...';
+      btn.disabled = true;
+
+      try {
+        // Tembak ke API PHP kita
+        const res = await fetch('api.php', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ password: pass })
+        });
+        const json = await res.json();
+
+        if(json.status === 'success') {
+          sessionStorage.setItem('adminToken', pass); // Simpan password sementara
+          renderData(json.data);
+          
+          // Buka Tirai
+          document.getElementById('loginOverlay').style.display = 'none';
+          document.getElementById('dashboardPanel').style.display = 'block';
+        } else {
+          alert(json.message);
+        }
+      } catch(e) {
+        alert('Koneksi ke server gagal. Cek pengaturan database API.');
+      }
+
+      btn.textContent = 'Buka Dashboard';
+      btn.disabled = false;
+    }
+
+    // Fungsi untuk memuat data tanpa perlu input ulang jika halaman di-refresh
+    async function bukaDashboard(pass) {
+      try {
+        const res = await fetch('api.php', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ password: pass })
+        });
+        const json = await res.json();
+        
+        if(json.status === 'success') {
+          renderData(json.data);
+          document.getElementById('loginOverlay').style.display = 'none';
+          document.getElementById('dashboardPanel').style.display = 'block';
+        } else {
+          sessionStorage.removeItem('adminToken');
+        }
+      } catch(e) {
+        console.log("Menunggu koneksi...");
+      }
+    }
+
+    // Fungsi Menempelkan Data ke Layar
+    function renderData(data) {
+      document.getElementById('val-total').textContent = data.total_users;
+      document.getElementById('val-laki').textContent = data.total_l;
+      document.getElementById('val-perempuan').textContent = data.total_p;
+      
+      // Format Uang Rupiah
+      document.getElementById('val-wakaf').textContent = "Rp " + parseInt(data.total_wakaf).toLocaleString('id-ID');
+
+      // Buat Tabel Domisili
+      const tbody = document.getElementById('tabel-domisili');
+      tbody.innerHTML = ''; // Kosongkan dulu
+      
+      data.domisili.forEach((item, index) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>#${index + 1}</td>
+            <td style="font-weight: 600;">${item.domisili}</td>
+            <td><span style="background: #E5E7EB; padding: 3px 10px; border-radius: 15px; font-size: 0.85rem;">${item.jumlah} User</span></td>
+          </tr>
+        `;
+      });
+    }
+
+    function logoutAdmin() {
+      sessionStorage.removeItem('adminToken');
+      window.location.reload();
+    }
+
+    // FITUR UPLOAD MEDIA
+    async function unggahMedia() {
+      const fileInput = document.getElementById('fileUpload');
+      if(!fileInput.files[0]) return alert("Pilih file terlebih dahulu!");
+
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+      formData.append('action', 'upload_media');
+      formData.append('password', sessionStorage.getItem('adminToken'));
+
+      try {
+        const res = await fetch('api.php', { method: 'POST', body: formData });
+        const json = await res.json();
+        alert(json.message);
+        if(json.status === 'success') { fileInput.value = ''; muatGaleri(); }
+      } catch(e) { alert("Gagal mengunggah file."); }
+    }
+
+    async function muatGaleri() {
+      try {
+        const res = await fetch('api.php', {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ password: sessionStorage.getItem('adminToken'), action: 'get_media' })
+        });
+        const json = await res.json();
+        if(json.status === 'success') {
+          const galeri = document.getElementById('galeri-media');
+          galeri.innerHTML = '';
+          json.data.forEach(item => {
+            const isVideo = item.match(/\.(mp4|webm|ogg)$/i);
+            const mediaTag = isVideo ? `<video src="../${item}" controls></video>` : `<img src="../${item}" alt="media">`;
+            galeri.innerHTML += `<div class="media-card">${mediaTag}<p>/${item}</p></div>`;
+          });
+          if(json.data.length === 0) galeri.innerHTML = '<p>Belum ada media.</p>';
+        }
+      } catch(e) {}
+    }
+
+    // FITUR SIMPAN PENGATURAN
+    async function simpanPengaturan() {
+      const dataSet = {
+        password: sessionStorage.getItem('adminToken'),
+        action: 'save_settings',
+        judul: document.getElementById('set-judul').value,
+        pengumuman: document.getElementById('set-pengumuman').value
+      };
+      try {
+        const res = await fetch('api.php', {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(dataSet)
+        });
+        const json = await res.json();
+        alert(json.message);
+      } catch(e) { alert("Gagal menyimpan pengaturan."); }
+    }
+  </script>
+</body>
+</html>
