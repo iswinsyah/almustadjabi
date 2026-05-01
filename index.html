@@ -195,6 +195,7 @@
           localStorage.setItem('isLoggedIn', 'true');
           localStorage.setItem('username', data.username);
           localStorage.setItem('status_akun', result.status_akun || 'free'); // Simpan status premium
+          localStorage.setItem('session_token', result.session_token); // Simpan kunci perangkat
           
           window.location.href = 'menu.html';
         } else {

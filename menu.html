@@ -240,6 +240,21 @@
       }
     };
 
+    // 1b. CEK SESI 1 PERANGKAT (Setiap 15 Detik)
+    async function cekSesiAktif() {
+      const usr = localStorage.getItem('username');
+      const tkn = localStorage.getItem('session_token');
+      if (!usr || !tkn) return;
+      try {
+        const res = await fetch('check_session.php', { method: 'POST', body: JSON.stringify({username: usr, session_token: tkn}) });
+        const json = await res.json();
+        if (json.status === 'invalid') {
+          alert(json.message); localStorage.clear(); window.location.replace('index.html');
+        }
+      } catch(e) {}
+    }
+    cekSesiAktif(); setInterval(cekSesiAktif, 15000);
+
     // 2. TAMPILKAN IDENTITAS: Ambil username dari Local Storage
     const username = localStorage.getItem('username') || 'Pengguna';
     document.getElementById('user-greeting').textContent = username;

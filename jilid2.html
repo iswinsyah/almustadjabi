@@ -369,6 +369,21 @@
       return; // Hentikan script, cegah halaman memuat pelajaran
     }
 
+    // --- CEK SESI 1 PERANGKAT ---
+    async function cekSesi() {
+      const usr = localStorage.getItem('username');
+      const tkn = localStorage.getItem('session_token');
+      if (!usr || !tkn) return;
+      try {
+        const res = await fetch('check_session.php', { method: 'POST', body: JSON.stringify({username: usr, session_token: tkn}) });
+        const json = await res.json();
+        if (json.status === 'invalid') {
+          alert(json.message); localStorage.clear(); window.location.replace('index.html');
+        }
+      } catch(e) {}
+    }
+    cekSesi(); setInterval(cekSesi, 15000);
+
     // Logika untuk Hamburger Menu
     const hamburgerBtn = document.getElementById('hamburger-btn');
     const sidebar = document.getElementById('sidebar');
