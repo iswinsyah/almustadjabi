@@ -11,7 +11,8 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $e) {
-    echo json_encode(["status" => "error", "message" => "Koneksi database gagal"]);
+    // Tampilkan error detail untuk debugging
+    echo json_encode(["status" => "error", "message" => "Koneksi database gagal: " . $e->getMessage()]);
     exit;
 }
 

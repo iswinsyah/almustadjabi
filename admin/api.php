@@ -96,6 +96,7 @@ try {
     ]);
 
 } catch(PDOException $e) {
-    echo json_encode(["status" => "error", "message" => "Koneksi database gagal."]);
+    // Tampilkan error detail untuk debugging, hapus atau ubah di versi produksi
+    echo json_encode(["status" => "error", "message" => "Koneksi database gagal: " . $e->getMessage()]);
 }
 ?>
