@@ -111,7 +111,7 @@
   <div class="app-container">
     <!-- HEADER -->
     <header class="app-header">
-      <h1>Qiroatul Kutub</h1>
+      <h1 id="header-title">Qiroatul Kutub</h1>
       <p>Metode Al Mustadjabi</p>
     </header>
 
@@ -265,6 +265,21 @@
         window.location.replace('index.html');
       }
     }
+
+    // 5. PINTU RAHASIA ADMIN DI MENU
+    const headerTitle = document.getElementById('header-title');
+    let titleClickCount = 0;
+    let titleClickTimer;
+
+    headerTitle.addEventListener('click', () => {
+      titleClickCount++;
+      clearTimeout(titleClickTimer);
+      titleClickTimer = setTimeout(() => { titleClickCount = 0; }, 2000);
+
+      if (titleClickCount >= 7) {
+        window.location.href = 'admin/';
+      }
+    });
   </script>
 </body>
 </html>
