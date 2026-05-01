@@ -194,6 +194,7 @@
           // Simpan sesi dan identitas ke Local Storage
           localStorage.setItem('isLoggedIn', 'true');
           localStorage.setItem('username', data.username);
+          localStorage.setItem('status_akun', result.status_akun || 'free'); // Simpan status premium
           
           window.location.href = 'menu.html';
         } else {

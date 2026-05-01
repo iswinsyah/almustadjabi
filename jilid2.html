@@ -300,6 +300,15 @@
     <a href="jilid6.html" class="sidebar-link">Jilid 6</a>
   </nav>
 
+  <!-- PREMIUM LOCK OVERLAY -->
+  <div id="premium-lock" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.95); z-index:100000; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px; box-sizing:border-box;">
+    <div style="font-size: 4rem; margin-bottom: 10px;">🔒</div>
+    <h2 style="color: #1E3A8A; margin: 0 0 10px 0;">Akses Terkunci</h2>
+    <p style="color: #4B5563; max-width: 400px; margin-bottom: 20px; line-height: 1.6;">Jilid ini khusus untuk Pengguna Premium.<br>Buka akses semua jilid seumur hidup dengan menyalurkan Sedekah terbaik Anda.</p>
+    <button onclick="window.location.href='menu.html#sedekah'" style="background: #2563EB; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; font-family: 'Poppins', sans-serif; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 10px rgba(37,99,235,0.3);">Buka Akses Premium Sekarang</button>
+    <button onclick="window.location.href='menu.html'" style="background: transparent; color: #6B7280; border: none; margin-top: 15px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer;">Kembali ke Beranda</button>
+  </div>
+
   <!-- Overlay untuk menu mobile -->
   <div class="overlay" id="overlay"></div>
 
@@ -345,6 +354,12 @@
 
   <script>
   document.addEventListener('DOMContentLoaded', async () => {
+    // --- CEK STATUS PREMIUM / GEMBOK ---
+    if (localStorage.getItem('status_akun') !== 'premium' && localStorage.getItem('username') !== 'winsyah') {
+      document.getElementById('premium-lock').style.display = 'flex';
+      return; // Hentikan script, cegah halaman memuat pelajaran
+    }
+
     // Logika untuk Hamburger Menu
     const hamburgerBtn = document.getElementById('hamburger-btn');
     const sidebar = document.getElementById('sidebar');

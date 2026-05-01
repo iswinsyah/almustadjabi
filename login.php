@@ -35,7 +35,8 @@ $stmt->execute([$data['username']]);
 $userRow = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($userRow && password_verify($data['password'], $userRow['password'])) {
-    echo json_encode(["status" => "success", "message" => "Login berhasil"]);
+    $status_akun = isset($userRow['status_akun']) ? $userRow['status_akun'] : 'free';
+    echo json_encode(["status" => "success", "message" => "Login berhasil", "status_akun" => $status_akun]);
 } else {
     echo json_encode(["status" => "error", "message" => "Username atau password salah!"]);
 }

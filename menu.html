@@ -122,11 +122,11 @@
         <h2 style="font-size: 1.3rem; margin-top: 0;">Ahlan wa Sahlan, <span id="user-greeting" style="color: #2563EB;">Pengguna</span>! 👋</h2>
         <p style="color: #6B7280; font-size: 0.9rem; margin-bottom: 20px;">Semoga Allah mudahkan jalanmu menguasai ilmu agama hari ini.</p>
 
-        <!-- Shortcut Wakaf -->
-        <div class="card" onclick="switchTab('tab-wakaf')" style="cursor:pointer; background: linear-gradient(135deg, #1E3A8A, #2563EB); color: white; border:none;">
-          <h3 style="margin: 0 0 5px 0;">Pahala Jariyah 🕌</h3>
-          <p style="margin: 0; font-size: 0.85rem; opacity: 0.9;">Mari ikut serta membangun Pesantren Villa Quran.</p>
-          <div style="margin-top: 15px; display: inline-block; background: white; color: #1E3A8A; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">Lihat Detail ➡</div>
+        <!-- Shortcut Sedekah Premium -->
+        <div class="card" onclick="switchTab('tab-sedekah')" style="cursor:pointer; background: linear-gradient(135deg, #1E3A8A, #2563EB); color: white; border:none;">
+          <h3 style="margin: 0 0 5px 0;">Sedekah Berhadiah Akses 🎁</h3>
+          <p style="margin: 0; font-size: 0.85rem; opacity: 0.9;">Infaq operasional IT & Wakaf Pesantren.</p>
+          <div style="margin-top: 15px; display: inline-block; background: white; color: #1E3A8A; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">Buka Akses Jilid 2-6 ➡</div>
         </div>
 
         <!-- Shortcut PSB -->
@@ -158,27 +158,34 @@
         </div>
       </div>
 
-      <!-- TAB: PROGRAM WAKAF PESANTREN -->
-      <div id="tab-wakaf" class="tab-pane">
-        <div class="banner-img">Pembangunan Asrama<br>Pesantren Villa Quran</div>
+      <!-- TAB: PROGRAM SEDEKAH -->
+      <div id="tab-sedekah" class="tab-pane">
+        <div class="banner-img">Program Sedekah<br>Pembebasan Lahan</div>
         
         <div class="card">
-          <h3 class="card-title">Pembebasan Lahan & Asrama</h3>
+          <h3 class="card-title">Buka Akses Semua Jilid (Premium)</h3>
           <p style="font-size: 0.9rem; color: #4B5563; line-height: 1.6;">
-            Mari raih pahala jariyah yang tak terputus dengan berwakaf untuk pembangunan fasilitas dan asrama para santri penghafal Al-Quran di <b>Pesantren Villa Quran</b>.
+            Akses pelajaran tingkat lanjut (Jilid 2 hingga 6) dapat dibuka secara penuh dan permanen dengan menyalurkan <b>Sedekah Terbaik</b> Anda.
           </p>
           
-          <div class="progress-box">
-            <div class="progress-fill"></div>
-          </div>
-          
-          <div class="wakaf-stats">
-            <div>Terkumpul<br><span style="color:#10B981; font-size:1rem;">Rp 250 Juta</span></div>
-            <div style="text-align:right;">Target<br><span style="color:#2563EB; font-size:1rem;">Rp 1 Miliar</span></div>
+          <div style="background: #EFF6FF; border: 1px solid #BFDBFE; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+            <p style="margin: 0; font-size: 0.85rem; color: #1E3A8A; font-weight: 600;">Sedekah Anda akan dibagi menjadi 2 alokasi kebaikan:</p>
+            <ul style="margin: 5px 0 0 0; padding-left: 20px; font-size: 0.85rem; color: #333;">
+              <li><b>Infaq:</b> Untuk maintenance dan biaya operasional server aplikasi ini.</li>
+              <li><b>Wakaf:</b> Untuk pembebasan lahan & pembangunan Pesantren Villa Quran.</li>
+            </ul>
+            <p style="margin: 10px 0 0 0; font-size: 0.8rem; color: #6B7280; font-style: italic;">*Persentase pembagian disesuaikan dengan urgensi dan kebutuhan riil di lapangan.</p>
           </div>
 
+          <p style="font-size: 0.85rem; text-align: center; color: #4B5563; margin-bottom: 10px;">Kirimkan Sedekah Terbaik Anda melalui rekening:</p>
+          <div style="background: #F3F4F6; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; font-size: 1.1rem; color: #1E3A8A; margin-bottom: 15px;">
+            BSI (Bank Syariah Indonesia)<br>
+            <span style="font-size: 1.4rem; color: #10B981; letter-spacing: 1px;">777 888 9999</span><br> <!-- Ganti dengan No Rek Asli Bos -->
+            <span style="font-size: 0.8rem; color: #6B7280; font-weight: normal;">a.n. Pesantren Villa Quran</span>
+          </div>
+          
           <hr style="border: 0; border-top: 1px solid #E5E7EB; margin: 20px 0;">
-          <button class="btn-primary" onclick="alert('Program Wakaf ini masih dalam mode simulasi. Fitur Donasi akan segera aktif!')">💳 Donasi Sekarang</button>
+          <button class="btn-primary" onclick="konfirmasiSedekah()">📲 Konfirmasi via WhatsApp</button>
         </div>
       </div>
 
@@ -209,9 +216,9 @@
         <span class="icon">📚</span>
         <span>Level</span>
       </div>
-      <div class="nav-item" onclick="switchTab('tab-wakaf', this)">
-        <span class="icon">🕌</span>
-        <span>Wakaf</span>
+      <div class="nav-item" onclick="switchTab('tab-sedekah', this)">
+        <span class="icon">🎁</span>
+        <span>Sedekah</span>
       </div>
       <div class="nav-item" onclick="switchTab('tab-profil', this)">
         <span class="icon">👤</span>
@@ -225,6 +232,13 @@
     if (localStorage.getItem('isLoggedIn') !== 'true') {
       window.location.replace('index.html'); // Usir kembali ke halaman login jika menyusup
     }
+
+    // Cek apakah ada request pindah tab otomatis dari link (misal dari Gembok Jilid)
+    window.onload = () => {
+      if(window.location.hash === '#sedekah') {
+        switchTab('tab-sedekah');
+      }
+    };
 
     // 2. TAMPILKAN IDENTITAS: Ambil username dari Local Storage
     const username = localStorage.getItem('username') || 'Pengguna';
@@ -264,6 +278,13 @@
         localStorage.removeItem('username');
         window.location.replace('index.html');
       }
+    }
+
+    // Fungsi Hubungi WhatsApp
+    function konfirmasiSedekah() {
+      const pesan = "Assalamu'alaikum Admin, saya dengan username *" + (localStorage.getItem('username') || 'Pengguna') + "* ingin mengkonfirmasi transfer Sedekah untuk membuka akses Premium Jilid 2-6 Qiroatul Kutub.";
+      const urlWA = "https://wa.me/6281234567890?text=" + encodeURIComponent(pesan); // GANTI DENGAN NO WA BOS (Awali dengan 62)
+      window.open(urlWA, '_blank');
     }
 
     // 5. PINTU RAHASIA ADMIN DI MENU
