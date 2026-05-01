@@ -3,9 +3,9 @@ header("Content-Type: application/json");
 
 // Konfigurasi Database Hostinger (Ganti dengan kredensial asli milik bos)
 $host = "localhost";
-$user = "u123456789_user";      // GANTI INI
-$password = "PasswordDbAnda!";  // GANTI INI
-$dbname = "u123456789_db";      // GANTI INI
+$user = "u829486010_amustadjabi";
+$password = "Khilafet@1924";
+$dbname = "u829486010_almustadjabi";
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
