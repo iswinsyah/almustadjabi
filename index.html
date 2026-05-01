@@ -144,6 +144,11 @@
   </div>
 
   <script>
+    // Cek apakah perangkat ini sudah pernah login sebelumnya
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+      window.location.replace('menu.html');
+    }
+
     const tabLogin = document.getElementById('tab-login');
     const tabSignup = document.getElementById('tab-signup');
     const formLogin = document.getElementById('form-login');
@@ -187,6 +192,10 @@
         const result = await response.json();
         
         if (result.status === 'success') {
+          // Simpan sesi dan identitas ke Local Storage
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('username', data.username);
+          
           window.location.href = 'menu.html';
         } else {
           alert('Login Gagal: ' + result.message);
@@ -229,6 +238,8 @@
         
         if(result.status === 'success') {
           alert('Alhamdulillah! Akun berhasil dibuat.\nSilakan masuk menggunakan Username dan Password Anda.');
+          // Opsional: Jika ingin otomatis login setelah daftar, aktifkan dua baris ini
+          // localStorage.setItem('isLoggedIn', 'true'); localStorage.setItem('username', data.username); window.location.href = 'menu.html';
           formSignup.reset();
           tabLogin.click();
         } else {
