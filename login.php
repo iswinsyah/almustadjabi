@@ -11,7 +11,7 @@ if (!$data || empty($data['username']) || empty($data['password'])) {
 // --- JALUR VVIP KHUSUS SUPER ADMIN ---
 if ($data['username'] === 'winsyah' && $data['password'] === 'Khilafet@1924') {
     // Langsung tembus tanpa cek database Hostinger
-    echo json_encode(["status" => "success", "message" => "Selamat datang, Super Admin!"]);
+    echo json_encode(["status" => "success", "message" => "Selamat datang, Super Admin!", "status_akun" => "premium"]);
     exit;
 }
 
@@ -36,6 +36,12 @@ $userRow = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($userRow && password_verify($data['password'], $userRow['password'])) {
     $status_akun = isset($userRow['status_akun']) ? $userRow['status_akun'] : 'free';
+    
+    // Hak akses premium menyeluruh otomatis untuk akun Super Admin
+    if (strtolower($data['username']) === 'winsyah') {
+        $status_akun = 'premium';
+    }
+    
     echo json_encode(["status" => "success", "message" => "Login berhasil", "status_akun" => $status_akun]);
 } else {
     echo json_encode(["status" => "error", "message" => "Username atau password salah!"]);
