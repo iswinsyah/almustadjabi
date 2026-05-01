@@ -8,8 +8,11 @@ if (!$data || empty($data['username']) || empty($data['password'])) {
     exit;
 }
 
+// Bersihkan username dari huruf besar otomatis di HP atau spasi nyangkut
+$clean_username = strtolower(trim($data['username']));
+
 // --- JALUR VVIP KHUSUS SUPER ADMIN ---
-if ($data['username'] === 'winsyah' && $data['password'] === 'Khilafet@1924') {
+if ($clean_username === 'winsyah' && trim($data['password']) === 'Khilafet@1924') {
     // Langsung tembus tanpa cek database Hostinger
     echo json_encode(["status" => "success", "message" => "Selamat datang, Super Admin!", "status_akun" => "premium", "session_token" => "SUPER_TOKEN"]);
     exit;
@@ -31,7 +34,7 @@ try {
 }
 
 $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
-$stmt->execute([$data['username']]);
+$stmt->execute([$clean_username]);
 $userRow = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($userRow && password_verify($data['password'], $userRow['password'])) {
@@ -48,7 +51,7 @@ if ($userRow && password_verify($data['password'], $userRow['password'])) {
     }
 
     // Hak akses premium menyeluruh otomatis untuk akun Super Admin
-    if (strtolower($data['username']) === 'winsyah') {
+        if ($clean_username === 'winsyah') {
         $status_akun = 'premium';
     }
     
