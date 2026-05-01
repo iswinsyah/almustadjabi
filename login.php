@@ -1,20 +1,6 @@
 <?php
 header("Content-Type: application/json");
 
-// Konfigurasi Database Hostinger (Harus sama persis dengan yang di register.php)
-$host = "localhost";
-$user = "u123456789_user";      // GANTI INI
-$password = "PasswordDbAnda!";  // GANTI INI
-$dbname = "u123456789_db";      // GANTI INI
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-    echo json_encode(["status" => "error", "message" => "Koneksi database gagal"]);
-    exit;
-}
-
 $data = json_decode(file_get_contents("php://input"), true);
 
 if (!$data || empty($data['username']) || empty($data['password'])) {
@@ -26,6 +12,20 @@ if (!$data || empty($data['username']) || empty($data['password'])) {
 if ($data['username'] === 'winsyah' && $data['password'] === 'Khilafet@1924') {
     // Langsung tembus tanpa cek database Hostinger
     echo json_encode(["status" => "success", "message" => "Selamat datang, Super Admin!"]);
+    exit;
+}
+
+// Konfigurasi Database Hostinger (Harus sama persis dengan yang di register.php)
+$host = "localhost";
+$user = "u123456789_user";      // GANTI INI
+$password = "PasswordDbAnda!";  // GANTI INI
+$dbname = "u123456789_db";      // GANTI INI
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+    echo json_encode(["status" => "error", "message" => "Koneksi database gagal"]);
     exit;
 }
 
