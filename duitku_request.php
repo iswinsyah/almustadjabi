@@ -1,0 +1,59 @@
+<?php
+header('Content-Type: application/json');
+$data = json_decode(file_get_contents('php://input'), true);
+
+if (!$data || empty($data['username']) || empty($data['nominal'])) {
+    echo json_encode(['status' => 'error', 'message' => 'Data tidak lengkap']);
+    exit;
+}
+
+$nominal = (int)$data['nominal'];
+if ($nominal < 10000) { // Batas minimal transaksi Duitku
+    echo json_encode(['status' => 'error', 'message' => 'Nominal sedekah minimal Rp 10.000']);
+    exit;
+}
+
+// --- KONFIGURASI DUITKU BOS (GANTI DENGAN MILIK BOS) ---
+$merchantCode = "KODE_MERCHANT_DUITKU_BOS"; 
+$apiKey = "API_KEY_DUITKU_BOS";
+$isSandbox = true; // Ubah ke 'false' jika nanti mau diaktifkan ke Production (Live)
+
+// Persiapkan data transaksi
+$merchantOrderId = "SDKH-" . $data['username'] . "-" . time(); // Kita sisipkan username di dalam Order ID
+$productDetails = "Sedekah & Buka Akses Premium Qiroatul Kutub";
+$email = "santri@villaquranindonesia.com"; // Email dummy/default
+$phoneNumber = "081234567890";
+$customerVaName = $data['username'];
+$callbackUrl = "https://almustadjabi.villaquranindonesia.com/duitku_callback.php";
+$returnUrl = "https://almustadjabi.villaquranindonesia.com/menu.html";
+
+$signature = md5($merchantCode . $merchantOrderId . $nominal . $apiKey);
+
+$params = array(
+    'merchantCode' => $merchantCode,
+    'paymentAmount' => $nominal,
+    'merchantOrderId' => $merchantOrderId,
+    'productDetails' => $productDetails,
+    'email' => $email,
+    'phoneNumber' => $phoneNumber,
+    'customerVaName' => $customerVaName,
+    'callbackUrl' => $callbackUrl,
+    'returnUrl' => $returnUrl,
+    'signature' => $signature,
+    'expiryPeriod' => 1440 // Tagihan kadaluarsa dalam 24 jam
+);
+
+$url = $isSandbox ? 'https://sandbox.duitku.com/webapi/api/merchant/v2/inquiry' : 'https://passport.duitku.com/webapi/api/merchant/v2/inquiry';
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_POST, true); curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen(json_encode($params))));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); $responseStr = curl_exec($ch); curl_close($ch);
+
+$response = json_decode($responseStr, true);
+if (isset($response['statusCode']) && $response['statusCode'] == '00') {
+    echo json_encode(['status' => 'success', 'paymentUrl' => $response['paymentUrl']]);
+} else {
+    echo json_encode(['status' => 'error', 'message' => $response['statusMessage'] ?? 'Sistem Duitku sedang gangguan']);
+}
+?>

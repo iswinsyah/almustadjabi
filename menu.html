@@ -177,15 +177,15 @@
             <p style="margin: 10px 0 0 0; font-size: 0.8rem; color: #6B7280; font-style: italic;">*Persentase pembagian disesuaikan dengan urgensi dan kebutuhan riil di lapangan.</p>
           </div>
 
-          <p style="font-size: 0.85rem; text-align: center; color: #4B5563; margin-bottom: 10px;">Kirimkan Sedekah Terbaik Anda melalui rekening:</p>
-          <div style="background: #F3F4F6; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; font-size: 1.1rem; color: #1E3A8A; margin-bottom: 15px;">
-            BSI (Bank Syariah Indonesia)<br>
-            <span style="font-size: 1.4rem; color: #10B981; letter-spacing: 1px;">777 888 9999</span><br> <!-- Ganti dengan No Rek Asli Bos -->
-            <span style="font-size: 0.8rem; color: #6B7280; font-weight: normal;">a.n. Pesantren Villa Quran</span>
+          <p style="font-size: 0.85rem; text-align: center; color: #4B5563; margin-bottom: 10px;">Pilih nominal sedekah terbaik Anda:</p>
+          <div style="margin-bottom: 15px;">
+            <input type="number" id="nominal-sedekah" placeholder="Contoh: 50000" min="10000" style="width: 100%; padding: 12px; border: 1px solid #D1D5DB; border-radius: 8px; font-family: 'Poppins'; box-sizing: border-box; font-size:1.1rem; text-align:center;">
           </div>
           
-          <hr style="border: 0; border-top: 1px solid #E5E7EB; margin: 20px 0;">
-          <button class="btn-primary" onclick="konfirmasiSedekah()">📲 Konfirmasi via WhatsApp</button>
+          <button class="btn-primary" id="btn-duitku" onclick="bayarDuitku()" style="background: #10B981; margin-bottom: 10px;">💳 Bayar Otomatis (Akses Langsung Terbuka)</button>
+          
+          <div style="text-align: center; font-size: 0.8rem; color: #6B7280; margin: 10px 0;">atau transfer manual:</div>
+          <button class="btn-primary" onclick="konfirmasiSedekah()" style="background: #2563EB;">📲 Konfirmasi via WhatsApp</button>
         </div>
       </div>
 
@@ -300,6 +300,35 @@
       const pesan = "Assalamu'alaikum Admin, saya dengan username *" + (localStorage.getItem('username') || 'Pengguna') + "* ingin mengkonfirmasi transfer Sedekah untuk membuka akses Premium Jilid 2-6 Qiroatul Kutub.";
       const urlWA = "https://wa.me/6281234567890?text=" + encodeURIComponent(pesan); // GANTI DENGAN NO WA BOS (Awali dengan 62)
       window.open(urlWA, '_blank');
+    }
+
+    // 4b. FUNGSI BAYAR OTOMATIS DUITKU
+    async function bayarDuitku() {
+      const nom = document.getElementById('nominal-sedekah').value;
+      const usr = localStorage.getItem('username');
+      
+      if (!nom || nom < 10000) return alert("Minimal sedekah Rp 10.000 ya bos untuk menggunakan gateway otomatis.");
+      if (!usr) return alert("Gagal mengidentifikasi pengguna. Silakan login ulang.");
+      
+      const btn = document.getElementById('btn-duitku');
+      btn.textContent = "Membangun Jembatan Pembayaran..."; btn.disabled = true;
+      
+      try {
+        const res = await fetch('duitku_request.php', {
+          method: 'POST',
+          body: JSON.stringify({username: usr, nominal: nom}),
+          headers: {'Content-Type': 'application/json'}
+        });
+        const json = await res.json();
+        if (json.status === 'success') {
+          window.location.href = json.paymentUrl; // Arahkan ke halaman Duitku
+        } else {
+          alert("Gagal: " + json.message);
+        }
+      } catch(e) {
+        alert("Terjadi kesalahan koneksi saat memproses pembayaran.");
+      }
+      btn.textContent = "💳 Bayar Otomatis (Akses Langsung Terbuka)"; btn.disabled = false;
     }
 
     // 5. PINTU RAHASIA ADMIN DI MENU

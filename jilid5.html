@@ -83,7 +83,7 @@
 
     .grid-kotak { 
       display: grid; 
-      grid-template-columns: repeat(2, 1fr); /* 2 Kolom untuk kalimat lumayan panjang */
+      grid-template-columns: repeat(1, 1fr); /* 1 Kolom untuk paragraf */
       gap: 10px; 
       margin-bottom: 20px; 
       width: 95%;
@@ -326,7 +326,7 @@
       <h3 id="judul-h3">Judul Halaman Placeholder</h3>
     </header>
 
-    <div class="skor-papan" id="skor-papan">Skor Benar: 0/20 | Predikat: Aadi</div>
+    <div class="skor-papan" id="skor-papan">Skor Benar: 0/3 | Predikat: Aadi</div>
 
     <div class="kotak-besar" id="kotak-besar">Kotak Besar Kosong</div>
     
@@ -381,7 +381,7 @@
       window.speechSynthesis.getVoices();
     }
 
-    const TARGET_JUMLAH_KOTAK = 20; // Diatur menjadi 20 kotak (2 kolom x 10 baris)
+    const TARGET_JUMLAH_KOTAK = 3; // Diatur menjadi 3 kotak (1 kolom x 3 baris)
 
     // URL Web App dari Google Apps Script Anda akan diletakkan di sini
     const gasApiUrl = 'https://script.google.com/macros/s/AKfycbxGU7L45qfp-xNXV-M6uqI8t1S0P81qT5fymbCX6tv1zj_Cvry-3XY1sUURBN9MB_U/exec';
