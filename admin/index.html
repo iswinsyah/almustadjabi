@@ -255,7 +255,16 @@
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({ password: pass })
         });
-        const json = await res.json();
+        
+        // Tangkap teks asli dari server untuk melacak error PHP
+        const textResponse = await res.text();
+        let json;
+        try {
+          json = JSON.parse(textResponse);
+        } catch(err) {
+          alert("Terdapat error pada server PHP Hostinger:\n\n" + textResponse.substring(0, 200));
+          throw new Error("Bukan JSON");
+        }
 
         if(json.status === 'success') {
           sessionStorage.setItem('adminToken', pass); // Simpan password sementara
@@ -268,7 +277,9 @@
           alert(json.message);
         }
       } catch(e) {
-        alert('Koneksi API gagal! Pastikan file config.php sudah diunggah secara manual ke Hostinger.');
+        if(e.message !== "Bukan JSON") {
+          alert('Koneksi internet terputus atau API tidak dapat dihubungi.');
+        }
       }
 
       btn.textContent = 'Buka Dashboard';
