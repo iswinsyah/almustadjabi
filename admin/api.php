@@ -5,6 +5,12 @@ header("Content-Type: application/json");
 $isMultipart = strpos($_SERVER["CONTENT_TYPE"] ?? '', 'multipart/form-data') !== false;
 $data = $isMultipart ? $_POST : json_decode(file_get_contents("php://input"), true);
 
+// Cek apakah file config.php ada dan namanya benar (huruf kecil)
+if (!file_exists(__DIR__ . '/../config.php')) {
+    echo json_encode(["status" => "error", "message" => "SISTEM ERROR: File config.php tidak ditemukan! Pastikan Anda sudah mengunggahnya ke Hostinger dan pastikan namanya menggunakan huruf kecil semua (config.php)."]);
+    exit;
+}
+
 // Muat konfigurasi rahasia
 require_once __DIR__ . '/../config.php';
 

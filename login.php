@@ -11,6 +11,12 @@ if (!$data || empty($data['username']) || empty($data['password'])) {
 // Bersihkan username dari huruf besar otomatis di HP atau spasi nyangkut
 $clean_username = strtolower(trim($data['username']));
 
+// Cek apakah file config.php ada dan namanya benar
+if (!file_exists(__DIR__ . '/config.php')) {
+    echo json_encode(["status" => "error", "message" => "SISTEM ERROR: File config.php tidak ditemukan di server!"]);
+    exit;
+}
+
 // Muat konfigurasi rahasia
 require_once __DIR__ . '/config.php';
 
