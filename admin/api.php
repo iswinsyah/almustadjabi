@@ -18,15 +18,40 @@ if ($action === 'upload_media') {
     $targetDir = __DIR__ . "/../assets/images/";
     if (!is_dir($targetDir)) @mkdir($targetDir, 0777, true);
 
-    if (!isset($_FILES["file"])) {
-        echo json_encode(["status" => "error", "message" => "Tidak ada file yang dipilih."]);
+    if (!isset($_FILES["file"]) || $_FILES["file"]["error"] !== UPLOAD_ERR_OK) {
+        echo json_encode(["status" => "error", "message" => "Tidak ada file yang dipilih atau terjadi error saat upload."]);
         exit;
     }
 
-    $fileName = str_replace(" ", "_", basename($_FILES["file"]["name"]));
+    // --- TAMBAHAN KEAMANAN: VALIDASI EKSTENSI & MIME TYPE ---
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    
+    $fileNameOriginal = $_FILES["file"]["name"];
+    $fileTmp = $_FILES["file"]["tmp_name"];
+    $fileExtension = strtolower(pathinfo($fileNameOriginal, PATHINFO_EXTENSION));
+    
+    // 1. Cek Ekstensi File
+    if (!in_array($fileExtension, $allowedExtensions)) {
+        echo json_encode(["status" => "error", "message" => "Format file tidak diizinkan. Hanya JPG, PNG, GIF, dan WEBP."]);
+        exit;
+    }
+    
+    // 2. Cek MIME Type menggunakan finfo (Mencegah file PHP disamarkan jadi JPG)
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mimeType = finfo_file($finfo, $fileTmp);
+    finfo_close($finfo);
+    
+    if (!in_array($mimeType, $allowedMimeTypes)) {
+        echo json_encode(["status" => "error", "message" => "File terdeteksi berbahaya atau bukan gambar."]);
+        exit;
+    }
+
+    // 3. Rename File agar aman dari karakter aneh dan eksekusi ilegal
+    $fileName = uniqid("img_") . "." . $fileExtension;
     $targetFilePath = $targetDir . $fileName;
 
-    if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
+    if (move_uploaded_file($fileTmp, $targetFilePath)) {
         echo json_encode(["status" => "success", "message" => "Media berhasil diunggah!"]);
     } else {
         echo json_encode(["status" => "error", "message" => "Gagal menyimpan file di server. Pastikan folder assets/images memiliki izin tulis."]);
@@ -54,15 +79,10 @@ if ($action === 'save_settings') {
     exit;
 }
 
-// Konfigurasi Database Hostinger (Ganti dengan milik bos)
-$host = "localhost";
-$user = "u829486010_amustadjabi";
-$password = "Khilafet@1924";
-$dbname = "u829486010_almustadjabi";
+// Panggil koneksi database tersentralisasi dari direktori root
+require_once __DIR__ . '/../db.php';
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // 1. Dapatkan Total User
     $stmt = $pdo->query("SELECT COUNT(*) as total FROM users");
