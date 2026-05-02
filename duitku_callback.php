@@ -20,15 +20,10 @@ if (!empty($amount) && !empty($merchantOrderId) && !empty($signature)) {
             if (count($parts) >= 2) {
                 $username = $parts[1];
                 
-                // --- KONEKSI DATABASE HOSTINGER ---
-                $host = "localhost";
-                $user = "u829486010_amustadjabi";
-                $password = "Khilafet@1924";
-                $dbname = "u829486010_almustadjabi";
+                // --- KONEKSI DATABASE ---
+                require_once __DIR__ . '/db.php';
                 
                 try {
-                    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
-                    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                     $stmt = $pdo->prepare("UPDATE users SET status_akun = 'premium' WHERE username = ?");
                     $stmt->execute([$username]);
                 } catch(PDOException $e) {}

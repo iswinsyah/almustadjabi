@@ -1,20 +1,8 @@
 <?php
 header("Content-Type: application/json");
 
-// Konfigurasi Database Hostinger (Ganti dengan kredensial asli milik bos)
-$host = "localhost";
-$user = "u829486010_amustadjabi";
-$password = "Khilafet@1924";
-$dbname = "u829486010_almustadjabi";
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-    // Tampilkan error detail untuk debugging
-    echo json_encode(["status" => "error", "message" => "Koneksi database gagal: " . $e->getMessage()]);
-    exit;
-}
+// Panggil koneksi database tersentralisasi
+require_once __DIR__ . '/db.php';
 
 // Ambil data yang dikirim oleh Javascript
 $data = json_decode(file_get_contents("php://input"), true);

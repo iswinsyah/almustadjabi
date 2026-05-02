@@ -7,21 +7,16 @@ if (!$data || empty($data['username']) || empty($data['session_token'])) {
     exit;
 }
 
-// Bypass khusus bos (Super Admin)
-if ($data['username'] === 'winsyah' && $data['session_token'] === 'SUPER_TOKEN') {
+// Bypass Total khusus bos (Super Admin) - Bisa buka di banyak device (PC & HP) sekaligus
+if (strtolower(trim($data['username'])) === 'winsyah') {
     echo json_encode(["status" => "valid"]);
     exit;
 }
 
-$host = "localhost";
-$user = "u829486010_amustadjabi";
-$password = "Khilafet@1924";
-$dbname = "u829486010_almustadjabi";
+// Panggil koneksi database tersentralisasi
+require_once __DIR__ . '/db.php';
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
     $stmt = $pdo->prepare("SELECT session_token FROM users WHERE username = ?");
     $stmt->execute([$data['username']]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
