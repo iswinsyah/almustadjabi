@@ -1,9 +1,12 @@
 <?php
+// Muat konfigurasi rahasia
+require_once __DIR__ . '/config.php';
+
 // Konfigurasi Database Tersentralisasi Hostinger
-$host = "localhost";
-$user = "u829486010_amustadjabi";
-$password = "Khilafet@1924";
-$dbname = "u829486010_almustadjabi";
+$host = DB_HOST;
+$user = DB_USER;
+$password = DB_PASS;
+$dbname = DB_NAME;
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);

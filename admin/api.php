@@ -5,8 +5,14 @@ header("Content-Type: application/json");
 $isMultipart = strpos($_SERVER["CONTENT_TYPE"] ?? '', 'multipart/form-data') !== false;
 $data = $isMultipart ? $_POST : json_decode(file_get_contents("php://input"), true);
 
-// Keamanan Lapis 1: Cek Password Super Admin
-if (!isset($data['password']) || $data['password'] !== 'Khilafet@1924') {
+// Muat konfigurasi rahasia
+require_once __DIR__ . '/../config.php';
+
+// Panggil koneksi database dari root (dipindah ke atas untuk cek password)
+require_once __DIR__ . '/../db.php';
+
+// Keamanan Lapis 1: Cek Password Super Admin langsung dari config
+if (!isset($data['password']) || $data['password'] !== SUPER_ADMIN_PASS) {
     echo json_encode(["status" => "error", "message" => "Akses Ditolak! Password Salah."]);
     exit;
 }
@@ -78,9 +84,6 @@ if ($action === 'save_settings') {
     echo json_encode(["status" => "success", "message" => "Pengaturan halaman depan berhasil disimpan!"]);
     exit;
 }
-
-// Panggil koneksi database tersentralisasi dari direktori root
-require_once __DIR__ . '/../db.php';
 
 try {
     

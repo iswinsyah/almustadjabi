@@ -11,6 +11,15 @@ if (!$data || empty($data['username']) || empty($data['password'])) {
 // Bersihkan username dari huruf besar otomatis di HP atau spasi nyangkut
 $clean_username = strtolower(trim($data['username']));
 
+// Muat konfigurasi rahasia
+require_once __DIR__ . '/config.php';
+
+// --- JALUR VVIP: Cek Super Admin tanpa database ---
+if ($clean_username === SUPER_ADMIN_USER && $data['password'] === SUPER_ADMIN_PASS) {
+    echo json_encode(["status" => "success", "message" => "Selamat datang, Super Admin!", "status_akun" => "super_admin", "session_token" => "SUPER_TOKEN"]);
+    exit;
+}
+
 // Panggil koneksi database tersentralisasi
 require_once __DIR__ . '/db.php';
 
@@ -21,11 +30,6 @@ $userRow = $stmt->fetch(PDO::FETCH_ASSOC);
 if ($userRow && password_verify($data['password'], $userRow['password'])) {
     // SISTEM ROLE: super_admin, tester, premium, atau free
     $status_akun = !empty($userRow['status_akun']) ? $userRow['status_akun'] : 'free';
-    
-    // Override khusus akun utama agar selalu jadi Super Admin
-    if ($clean_username === 'winsyah') {
-        $status_akun = 'super_admin';
-    }
     
     // Generate Token Unik untuk perangkat ini
     $session_token = bin2hex(random_bytes(16));
