@@ -260,7 +260,14 @@
         const textResponse = await res.text();
         let json;
         try {
-          json = JSON.parse(textResponse);
+          // --- TRIK AMPUH: Ekstrak hanya teks JSON (mengabaikan spasi/error PHP) ---
+          const jsonStart = textResponse.indexOf('{');
+          const jsonEnd = textResponse.lastIndexOf('}') + 1;
+          if (jsonStart !== -1 && jsonEnd !== -1 && jsonStart < jsonEnd) {
+            json = JSON.parse(textResponse.substring(jsonStart, jsonEnd));
+          } else {
+            throw new Error("Gagal membaca respons dari server");
+          }
         } catch(err) {
           alert("Terdapat error pada server PHP Hostinger:\n\n" + textResponse.substring(0, 200));
           throw new Error("Bukan JSON");
