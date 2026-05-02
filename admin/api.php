@@ -85,6 +85,39 @@ if ($action === 'save_settings') {
     exit;
 }
 
+// FITUR 4: Ambil Daftar Pengguna
+if ($action === 'get_users') {
+    try {
+        $stmt = $pdo->query("SELECT id, username, nama, whatsapp, domisili, status_akun FROM users ORDER BY id DESC");
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode(["status" => "success", "data" => $users]);
+    } catch(PDOException $e) {
+        echo json_encode(["status" => "error", "message" => "Gagal mengambil data pengguna: " . $e->getMessage()]);
+    }
+    exit;
+}
+
+// FITUR 5: Ubah Role Pengguna
+if ($action === 'update_role') {
+    $target_username = $data['target_username'] ?? '';
+    $new_role = $data['new_role'] ?? '';
+    
+    $valid_roles = ['free', 'premium', 'tester', 'super_admin'];
+    if (!in_array($new_role, $valid_roles) || empty($target_username)) {
+        echo json_encode(["status" => "error", "message" => "Data tidak valid atau role tidak diizinkan."]);
+        exit;
+    }
+
+    try {
+        $stmt = $pdo->prepare("UPDATE users SET status_akun = ? WHERE username = ?");
+        $stmt->execute([$new_role, $target_username]);
+        echo json_encode(["status" => "success", "message" => "Role $target_username berhasil diubah menjadi $new_role."]);
+    } catch(PDOException $e) {
+        echo json_encode(["status" => "error", "message" => "Gagal mengubah role: " . $e->getMessage()]);
+    }
+    exit;
+}
+
 try {
     
     // 1. Dapatkan Total User
