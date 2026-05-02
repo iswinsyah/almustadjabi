@@ -215,8 +215,9 @@
 
   <script>
     // Cek apakah Admin sudah login sebelumnya (menyimpan sesi sementara)
-    if(sessionStorage.getItem('adminToken') === 'Khilafet@1924') {
-      bukaDashboard('Khilafet@1924');
+    const savedToken = sessionStorage.getItem('adminToken');
+    if(savedToken) {
+      bukaDashboard(savedToken);
     }
 
     // Fungsi Toggle Password
@@ -267,7 +268,7 @@
           alert(json.message);
         }
       } catch(e) {
-        alert('Koneksi ke server gagal. Cek pengaturan database API.');
+        alert('Koneksi API gagal! Pastikan file config.php sudah diunggah secara manual ke Hostinger.');
       }
 
       btn.textContent = 'Buka Dashboard';
