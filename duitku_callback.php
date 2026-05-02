@@ -17,8 +17,10 @@ if (!empty($amount) && !empty($merchantOrderId) && !empty($signature)) {
             
             // Ambil username dari Order ID (Format kita tadi: SDKH-Username-Waktu)
             $parts = explode('-', $merchantOrderId);
-            if (count($parts) >= 2) {
-                $username = $parts[1];
+            if (count($parts) >= 3) {
+                array_shift($parts); // Hapus 'SDKH' di awal
+                array_pop($parts);   // Hapus Timestamp di akhir
+                $username = implode('-', $parts); // Gabungkan kembali jika username punya tanda strip
                 
                 // --- KONEKSI DATABASE ---
                 require_once __DIR__ . '/db.php';

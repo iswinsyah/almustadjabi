@@ -374,7 +374,10 @@
     async function cekSesi() {
       const usr = localStorage.getItem('username');
       const tkn = localStorage.getItem('session_token');
-      if (!usr || !tkn) return;
+      if (!usr || !tkn) {
+        window.location.replace('index.html');
+        return;
+      }
       try {
         const res = await fetch('check_session.php', { method: 'POST', body: JSON.stringify({username: usr, session_token: tkn}) });
         const json = await res.json();

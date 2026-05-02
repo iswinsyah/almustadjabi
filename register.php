@@ -7,8 +7,8 @@ require_once __DIR__ . '/db.php';
 // Ambil data yang dikirim oleh Javascript
 $data = json_decode(file_get_contents("php://input"), true);
 
-if (!$data) {
-    echo json_encode(["status" => "error", "message" => "Data tidak valid"]);
+if (!$data || empty(trim($data['username'] ?? '')) || empty(trim($data['password'] ?? ''))) {
+    echo json_encode(["status" => "error", "message" => "Semua kolom wajib diisi dengan benar!"]);
     exit;
 }
 
