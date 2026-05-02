@@ -25,6 +25,13 @@
       width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc;
       border-radius: 8px; box-sizing: border-box; font-family: 'Poppins';
     }
+    /* Tambahan untuk Mata Password */
+    .password-wrapper { position: relative; margin-bottom: 15px; }
+    .password-wrapper input { margin-bottom: 0; padding-right: 40px; }
+    .toggle-password {
+      position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+      cursor: pointer; font-size: 1.2rem; user-select: none; color: #6B7280;
+    }
     .login-box button {
       width: 100%; background: #2563EB; color: white; padding: 12px; border: none;
       border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Poppins';
@@ -90,7 +97,10 @@
   <div class="login-overlay" id="loginOverlay">
     <div class="login-box">
       <h2>Masuk Ruang Kendali</h2>
-      <input type="password" id="adminPwd" placeholder="Password VVIP">
+      <div class="password-wrapper">
+        <input type="password" id="adminPwd" placeholder="Password VVIP">
+        <span class="toggle-password" onclick="togglePassword('adminPwd', this)">👁️</span>
+      </div>
       <button id="btnLogin" onclick="prosesLogin()">Buka Dashboard</button>
     </div>
   </div>
@@ -203,6 +213,18 @@
     // Cek apakah Admin sudah login sebelumnya (menyimpan sesi sementara)
     if(sessionStorage.getItem('adminToken') === 'Khilafet@1924') {
       bukaDashboard('Khilafet@1924');
+    }
+
+    // Fungsi Toggle Password
+    function togglePassword(inputId, icon) {
+      const input = document.getElementById(inputId);
+      if (input.type === "password") {
+        input.type = "text";
+        icon.textContent = "🙈";
+      } else {
+        input.type = "password";
+        icon.textContent = "👁️";
+      }
     }
 
     function switchAdminTab(tabId, btnElement) {

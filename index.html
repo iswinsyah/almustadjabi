@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Selamat Datang — Qiroatul Kutub</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1E3A8A">
+  <link rel="apple-touch-icon" href="assets/images/logo.png">
   <style>
     html, body {
       margin: 0; padding: 0;
@@ -58,6 +61,13 @@
     .btn-submit:hover { background-color: #1D4ED8; }
     .btn-submit:active { transform: scale(0.98); }
     
+    /* Mata Password */
+    .password-wrapper { position: relative; }
+    .toggle-password {
+      position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+      cursor: pointer; font-size: 1.1rem; user-select: none; color: #6B7280;
+    }
+
     /* Animasi pergantian form */
     .auth-form { display: none; }
     .auth-form.active { display: block; animation: fadeIn 0.4s ease-in-out; }
@@ -93,7 +103,10 @@
         </div>
         <div class="form-group">
           <label>Password</label>
-          <input type="password" id="login-password" class="form-control" placeholder="Masukkan password" required>
+          <div class="password-wrapper">
+            <input type="password" id="login-password" class="form-control" placeholder="Masukkan password" required style="padding-right: 40px;">
+            <span class="toggle-password" onclick="togglePassword('login-password', this)">👁️</span>
+          </div>
         </div>
         <button type="submit" class="btn-submit">Masuk ke Pelajaran</button>
       </form>
@@ -135,7 +148,10 @@
         </div>
         <div class="form-group">
           <label>Password</label>
-          <input type="password" id="reg-password" class="form-control" placeholder="Buat password" required>
+          <div class="password-wrapper">
+            <input type="password" id="reg-password" class="form-control" placeholder="Buat password" required style="padding-right: 40px;">
+            <span class="toggle-password" onclick="togglePassword('reg-password', this)">👁️</span>
+          </div>
         </div>
         <button type="submit" class="btn-submit">Buat Akun Sekarang</button>
       </form>
@@ -152,6 +168,18 @@
     const tabSignup = document.getElementById('tab-signup');
     const formLogin = document.getElementById('form-login');
     const formSignup = document.getElementById('form-signup');
+
+    // Fungsi Mata Password
+    function togglePassword(inputId, icon) {
+      const input = document.getElementById(inputId);
+      if (input.type === "password") {
+        input.type = "text";
+        icon.textContent = "🙈";
+      } else {
+        input.type = "password";
+        icon.textContent = "👁️";
+      }
+    }
 
     // Logika berpindah Tab
     tabLogin.addEventListener('click', () => {
@@ -269,6 +297,15 @@
         window.location.href = 'admin/'; // Arahkan ke folder admin
       }
     });
+
+    // --- REGISTRASI SERVICE WORKER UNTUK PWA ---
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('PWA Service Worker terdaftar!'))
+          .catch(err => console.log('PWA Service Worker gagal:', err));
+      });
+    }
   </script>
   <script src="security.js"></script>
 </body>
