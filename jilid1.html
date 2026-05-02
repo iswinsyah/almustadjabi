@@ -366,7 +366,9 @@
         if (json.status === 'invalid') {
           alert(json.message); localStorage.clear(); window.location.replace('index.html');
         }
-      } catch(e) {}
+      } catch(e) {
+        console.error("Kesalahan jaringan saat cek sesi:", e);
+      }
     }
     cekSesi(); setInterval(cekSesi, 15000);
 

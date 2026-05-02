@@ -43,7 +43,8 @@ if ($userRow && password_verify($data['password'], $userRow['password'])) {
         $updateStmt = $pdo->prepare("UPDATE users SET session_token = ? WHERE id = ?");
         $updateStmt->execute([$session_token, $userRow['id']]);
     } catch(PDOException $e) {
-        // Abaikan jika kolom database belum dibuat oleh bos
+        // Catat di error log server jika kolom session_token belum ada atau error
+        error_log("Login DB Error (session_token): " . $e->getMessage());
     }
 
     

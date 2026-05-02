@@ -329,7 +329,12 @@
             `;
           });
         }
-      } catch(e) {}
+      } catch(e) {
+        console.error("Gagal memuat pengguna:", e);
+      }
+      } catch(e) {
+        console.error("Gagal memuat galeri:", e);
+      }
     }
 
     async function ubahRole(username) {
