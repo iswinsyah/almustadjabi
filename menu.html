@@ -18,16 +18,16 @@
 
     /* Container utama (Dibatasi ukurannya seperti layar HP) */
     .app-container {
-      max-width: 480px; margin: 0 auto; background-color: #ffffff;
-      min-height: 100vh; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05);
+      max-width: 480px; margin: 0 auto; background-color: #ffffff; border-left: 1px solid #E5E7EB; border-right: 1px solid #E5E7EB;
+      min-height: 100vh; position: relative;
       display: flex; flex-direction: column;
     }
 
     /* Header */
     .app-header {
       background-color: #1E3A8A; color: white; padding: 20px;
-      border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
-      text-align: center; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.15);
+      border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; border-bottom: 2px solid #1D4ED8;
+      text-align: center;
       z-index: 10; position: relative;
     }
     .app-header h1 { margin: 0; font-size: 1.3rem; font-weight: 700; letter-spacing: 0.5px; }
@@ -45,8 +45,7 @@
 
     /* Desain Kartu (Panel Putih) */
     .card {
-      background: white; border-radius: 15px; padding: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px;
+      background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px;
       border: 1px solid #E5E7EB;
     }
     .card-title { font-weight: 700; font-size: 1.1rem; margin-top: 0; color: #1E3A8A; margin-bottom: 15px; }
@@ -87,16 +86,16 @@
       position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
       width: 100%; max-width: 480px; background: white;
       display: flex; justify-content: space-around; padding: 12px 0;
-      box-shadow: 0 -2px 15px rgba(0,0,0,0.08); border-top-left-radius: 20px; border-top-right-radius: 20px;
+      border-top: 1px solid #E5E7EB; border-top-left-radius: 20px; border-top-right-radius: 20px;
       z-index: 100; padding-bottom: calc(12px + env(safe-area-inset-bottom));
     }
     .nav-item {
       display: flex; flex-direction: column; align-items: center;
-      color: #9CA3AF; text-decoration: none; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: 0.2s;
+      color: #9CA3AF; text-decoration: none; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: 0.2s; filter: none;
     }
-    .nav-item .icon { font-size: 1.4rem; margin-bottom: 4px; transition: transform 0.2s; filter: grayscale(100%) opacity(0.6); }
+    .nav-item .icon { font-size: 1.4rem; margin-bottom: 4px; transition: transform 0.2s; opacity: 0.5; }
     .nav-item.active { color: #2563EB; }
-    .nav-item.active .icon { transform: translateY(-3px); filter: grayscale(0%) opacity(1); }
+    .nav-item.active .icon { transform: translateY(-3px); opacity: 1; }
 
     /* Banner Image Dummy */
     .banner-img { 
