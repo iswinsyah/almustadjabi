@@ -26,7 +26,9 @@ if (!empty($amount) && !empty($merchantOrderId) && !empty($signature)) {
                 try {
                     $stmt = $pdo->prepare("UPDATE users SET status_akun = 'premium' WHERE username = ?");
                     $stmt->execute([$username]);
-                } catch(PDOException $e) {}
+                } catch(PDOException $e) {
+                    error_log("Duitku Callback DB Error: " . $e->getMessage());
+                }
             }
         }
     }

@@ -11,13 +11,6 @@ if (!$data || empty($data['username']) || empty($data['password'])) {
 // Bersihkan username dari huruf besar otomatis di HP atau spasi nyangkut
 $clean_username = strtolower(trim($data['username']));
 
-// --- JALUR VVIP KHUSUS SUPER ADMIN ---
-if ($clean_username === 'winsyah' && trim($data['password']) === 'Khilafet@1924') {
-    // Langsung tembus tanpa cek database Hostinger
-    echo json_encode(["status" => "success", "message" => "Selamat datang, Super Admin!", "status_akun" => "premium", "session_token" => "SUPER_TOKEN"]);
-    exit;
-}
-
 // Panggil koneksi database tersentralisasi
 require_once __DIR__ . '/db.php';
 
@@ -26,11 +19,22 @@ $stmt->execute([$clean_username]);
 $userRow = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($userRow && password_verify($data['password'], $userRow['password'])) {
-    $status_akun = isset($userRow['status_akun']) ? $userRow['status_akun'] : 'free';
+    // SISTEM ROLE: super_admin, tester, premium, atau free
+    $status_akun = !empty($userRow['status_akun']) ? $userRow['status_akun'] : 'free';
+    
+    // Override khusus akun utama agar selalu jadi Super Admin
+    if ($clean_username === 'winsyah') {
+        $status_akun = 'super_admin';
+    }
     
     // Generate Token Unik untuk perangkat ini
     $session_token = bin2hex(random_bytes(16));
     
+    // Jika dia super_admin, gunakan token sakti agar bisa multi-device
+    if ($status_akun === 'super_admin') {
+        $session_token = "SUPER_TOKEN";
+    }
+
     try {
         $updateStmt = $pdo->prepare("UPDATE users SET session_token = ? WHERE id = ?");
         $updateStmt->execute([$session_token, $userRow['id']]);
@@ -38,10 +42,6 @@ if ($userRow && password_verify($data['password'], $userRow['password'])) {
         // Abaikan jika kolom database belum dibuat oleh bos
     }
 
-    // Hak akses premium menyeluruh otomatis untuk akun Super Admin
-        if ($clean_username === 'winsyah') {
-        $status_akun = 'premium';
-    }
     
     echo json_encode(["status" => "success", "message" => "Login berhasil", "status_akun" => $status_akun, "session_token" => $session_token]);
 } else {

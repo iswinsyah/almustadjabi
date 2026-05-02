@@ -16,7 +16,7 @@ if (!$data) {
 $hashed_password = password_hash($data['password'], PASSWORD_DEFAULT);
 
 try {
-    $stmt = $pdo->prepare("INSERT INTO users (nama, gender, tanggal_lahir, email, whatsapp, domisili, username, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO users (nama, gender, tanggal_lahir, email, whatsapp, domisili, username, password, status_akun) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([
         $data['nama'],
         $data['gender'],
@@ -25,7 +25,8 @@ try {
         $data['whatsapp'],
         $data['domisili'],
         $data['username'],
-        $hashed_password
+        $hashed_password,
+        'free'
     ]);
     
     echo json_encode(["status" => "success", "message" => "Pendaftaran berhasil"]);

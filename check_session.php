@@ -7,8 +7,8 @@ if (!$data || empty($data['username']) || empty($data['session_token'])) {
     exit;
 }
 
-// Bypass Total khusus bos (Super Admin) - Bisa buka di banyak device (PC & HP) sekaligus
-if (strtolower(trim($data['username'])) === 'winsyah') {
+// Bypass cek session khusus role Super Admin (karena memegang SUPER_TOKEN)
+if ($data['session_token'] === 'SUPER_TOKEN') {
     echo json_encode(["status" => "valid"]);
     exit;
 }
@@ -27,7 +27,7 @@ try {
         echo json_encode(["status" => "invalid", "message" => "Sesi berakhir! Akun ini sedang digunakan di perangkat lain."]);
     }
 } catch(PDOException $e) {
-    // Jika ada error database, biarkan valid agar user tidak terlogout masal
-    echo json_encode(["status" => "valid"]);
+    // Perbaikan Silent Failure: Laporkan error jika server database tumbang
+    echo json_encode(["status" => "error", "message" => "Koneksi database terputus. " . $e->getMessage()]);
 }
 ?>
