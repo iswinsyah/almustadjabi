@@ -28,7 +28,7 @@ $stmt->execute([$clean_username]);
 $userRow = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($userRow && password_verify($data['password'], $userRow['password'])) {
-    // SISTEM ROLE: super_admin, tester, premium, atau free
+    // SISTEM ROLE: super_admin, premium, atau free
     $status_akun = !empty($userRow['status_akun']) ? $userRow['status_akun'] : 'free';
     
     // Generate Token Unik untuk perangkat ini

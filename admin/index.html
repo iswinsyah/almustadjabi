@@ -108,6 +108,7 @@
 
     <div class="admin-nav">
       <button class="active" onclick="switchAdminTab('tab-statistik', this)">Statistik</button>
+      <button onclick="switchAdminTab('tab-pengguna', this)">Kelola Pengguna</button>
       <button onclick="switchAdminTab('tab-media', this)">Kelola Media</button>
       <button onclick="switchAdminTab('tab-pengaturan', this)">Pengaturan Web</button>
     </div>
@@ -150,6 +151,29 @@
     </div>
     </div>
 
+    <!-- TAB KELOLA PENGGUNA -->
+    <div id="tab-pengguna" class="panel-tab">
+      <div class="table-container">
+        <h3>👥 Daftar Pengguna Terdaftar</h3>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Nama Santri</th>
+                <th>Status Akses</th>
+                <th>Aksi (Ubah Role)</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-pengguna">
+              <tr><td colspan="5" style="text-align: center;">Memuat data pengguna...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!-- TAB KELOLA MEDIA -->
     <div id="tab-media" class="panel-tab">
       <div class="table-container">
@@ -187,6 +211,7 @@
       document.getElementById(tabId).classList.add('active');
       btnElement.classList.add('active');
       if(tabId === 'tab-media') muatGaleri();
+      if(tabId === 'tab-pengguna') muatPengguna();
     }
 
     async function prosesLogin() {
@@ -272,6 +297,53 @@
     function logoutAdmin() {
       sessionStorage.removeItem('adminToken');
       window.location.reload();
+    }
+
+    // FITUR KELOLA PENGGUNA (ROLE)
+    async function muatPengguna() {
+      try {
+        const res = await fetch('api.php', {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ password: sessionStorage.getItem('adminToken'), action: 'get_users' })
+        });
+        const json = await res.json();
+        if(json.status === 'success') {
+          const tbody = document.getElementById('tabel-pengguna');
+          tbody.innerHTML = '';
+          json.data.forEach(u => {
+            tbody.innerHTML += `
+              <tr>
+                <td>#${u.id}</td>
+                <td><strong>${u.username}</strong></td>
+                <td>${u.nama}</td>
+                <td><span style="background: #E5E7EB; padding: 3px 10px; border-radius: 15px; font-size: 0.85rem;">${u.status_akun}</span></td>
+                <td>
+                  <select id="role-${u.username}" style="padding: 5px; border-radius: 5px;">
+                    <option value="free" ${u.status_akun === 'free' ? 'selected' : ''}>Free</option>
+                    <option value="premium" ${u.status_akun === 'premium' ? 'selected' : ''}>Premium</option>
+                    <option value="super_admin" ${u.status_akun === 'super_admin' ? 'selected' : ''}>Super Admin</option>
+                  </select>
+                  <button onclick="ubahRole('${u.username}')" style="background: #10B981; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">Simpan</button>
+                </td>
+              </tr>
+            `;
+          });
+        }
+      } catch(e) {}
+    }
+
+    async function ubahRole(username) {
+      const newRole = document.getElementById('role-' + username).value;
+      if(!confirm(`Yakin ingin mengubah role ${username} menjadi ${newRole}?`)) return;
+      try {
+        const res = await fetch('api.php', {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ password: sessionStorage.getItem('adminToken'), action: 'update_role', target_username: username, new_role: newRole })
+        });
+        const json = await res.json();
+        alert(json.message);
+        if(json.status === 'success') muatPengguna();
+      } catch(e) { alert("Gagal mengubah role."); }
     }
 
     // FITUR UPLOAD MEDIA

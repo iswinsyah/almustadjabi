@@ -102,7 +102,7 @@ if ($action === 'update_role') {
     $target_username = $data['target_username'] ?? '';
     $new_role = $data['new_role'] ?? '';
     
-    $valid_roles = ['free', 'premium', 'tester', 'super_admin'];
+    $valid_roles = ['free', 'premium', 'super_admin'];
     if (!in_array($new_role, $valid_roles) || empty($target_username)) {
         echo json_encode(["status" => "error", "message" => "Data tidak valid atau role tidak diizinkan."]);
         exit;
