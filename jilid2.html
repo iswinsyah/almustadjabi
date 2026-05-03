@@ -364,8 +364,9 @@
   <script>
   document.addEventListener('DOMContentLoaded', async () => {
     // --- CEK STATUS PREMIUM / GEMBOK ---
-    const statusAkun = localStorage.getItem('status_akun');
-    if (statusAkun !== 'premium' && statusAkun !== 'super_admin') {
+    // Gunakan normalisasi string agar kebal terhadap salah ketik (huruf besar/spasi)
+    const statusAkun = String(localStorage.getItem('status_akun') || '').trim().toLowerCase();
+    if (statusAkun !== 'premium' && statusAkun !== 'super_admin' && statusAkun !== 'super admin' && statusAkun !== 'admin') {
       document.getElementById('premium-lock').style.display = 'flex';
       return; // Hentikan script, cegah halaman memuat pelajaran
     }
@@ -428,7 +429,11 @@
         const response = await fetch(gasApiUrl, { cache: 'no-store' });
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const dataBab = await response.json();
-        dataBabGlobal = dataBab; // Simpan data utuh
+        
+        // --- SANITASI DATA: Perbaiki typo dari server secara otomatis ---
+        let dataString = JSON.stringify(dataBab);
+        dataString = dataString.replace(/تذhهّبُ/g, 'تَذْهَبُ');
+        dataBabGlobal = JSON.parse(dataString); // Simpan data utuh yang sudah diperbaiki
         
         // === MAGIC SCRIPT: Mengubah Bab menjadi Halaman (3 Fase) secara Otomatis ===
         prosesDataBab(dataBabGlobal);
