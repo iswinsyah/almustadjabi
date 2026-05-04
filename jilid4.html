@@ -83,7 +83,7 @@
 
     .grid-kotak { 
       display: grid; 
-      grid-template-columns: repeat(2, 1fr); /* Diubah menjadi 2 kolom untuk PC/Tablet */
+      grid-template-columns: repeat(3, 1fr); /* Diubah menjadi 3 kolom untuk PC/Tablet */
       gap: 10px; 
       margin-bottom: 20px; 
       width: 95%;
@@ -326,7 +326,7 @@
       <h3 id="judul-h3">Judul Halaman Placeholder</h3>
     </header>
 
-    <div class="skor-papan" id="skor-papan">Skor Benar: 0/30 | Predikat: Aadi</div>
+    <div class="skor-papan" id="skor-papan">Skor Benar: 0/18 | Predikat: Aadi</div>
 
     <div class="kotak-besar" id="kotak-besar">Kotak Besar Kosong</div>
     
@@ -349,8 +349,9 @@
   <script>
   document.addEventListener('DOMContentLoaded', async () => {
     // --- CEK STATUS PREMIUM / GEMBOK ---
-    const statusAkun = localStorage.getItem('status_akun');
-    if (statusAkun !== 'premium' && statusAkun !== 'super_admin') {
+    // Gunakan normalisasi string agar kebal terhadap salah ketik (huruf besar/spasi)
+    const statusAkun = String(localStorage.getItem('status_akun') || '').trim().toLowerCase();
+    if (statusAkun !== 'premium' && statusAkun !== 'super_admin' && statusAkun !== 'super admin' && statusAkun !== 'admin') {
       document.getElementById('premium-lock').style.display = 'flex';
       return; // Hentikan script, cegah halaman memuat pelajaran
     }
@@ -392,6 +393,8 @@
     if ('speechSynthesis' in window) {
       window.speechSynthesis.getVoices();
     }
+
+    const TARGET_JUMLAH_KOTAK = 18; // Jumlah total kotak di grid (3 kolom x 6 baris)
 
     // URL Web App dari Google Apps Script Anda akan diletakkan di sini
     const gasApiUrl = 'https://script.google.com/macros/s/AKfycbylkuitkS3rD_Z_C2aX_c-ZGoDVJu1Nube_1-8T0znc2veVkcujqKJYAlVq7gPKdco/exec';
@@ -482,11 +485,11 @@
 
     function updateSkor() {
       let predikat = "Aadi";
-      if (skorBenar === 30) predikat = "Mumtaz 🌟";
-      else if (skorBenar >= 21) predikat = "Jayyid 👍";
-      else if (skorBenar >= 11) predikat = "Aslaha 🙂";
+      if (skorBenar === TARGET_JUMLAH_KOTAK) predikat = "Mumtaz 🌟";
+      else if (skorBenar >= Math.ceil(TARGET_JUMLAH_KOTAK * 0.7)) predikat = "Jayyid 👍";
+      else if (skorBenar >= Math.ceil(TARGET_JUMLAH_KOTAK * 0.4)) predikat = "Aslaha 🙂";
       
-      document.getElementById('skor-papan').innerHTML = `Skor Benar: <span style="color:#10B981">${skorBenar}</span>/30 | Predikat: <span style="color:#2563EB">${predikat}</span>`;
+      document.getElementById('skor-papan').innerHTML = `Skor Benar: <span style="color:#10B981">${skorBenar}</span>/${TARGET_JUMLAH_KOTAK} | Predikat: <span style="color:#2563EB">${predikat}</span>`;
     }
 
     function cekBacaanAI(kataTargetAsli, gridItem, spanKata) {
@@ -614,14 +617,13 @@
       const grid = document.getElementById('grid-kotak');
       grid.innerHTML = ''; 
       
-      const targetJumlahKotak = 30;
       let kosakataUntukGrid = [];
       if (data.kosakata.length > 0) {
-        for (let i = 0; i < targetJumlahKotak; i++) {
+        for (let i = 0; i < TARGET_JUMLAH_KOTAK; i++) {
           kosakataUntukGrid.push(data.kosakata[i % data.kosakata.length]);
         }
       } else {
-        for (let i = 0; i < targetJumlahKotak; i++) {
+        for (let i = 0; i < TARGET_JUMLAH_KOTAK; i++) {
           kosakataUntukGrid.push({ kata: '&nbsp;', arti: '' });
         }
       }
