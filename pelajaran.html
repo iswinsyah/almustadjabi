@@ -218,10 +218,10 @@
 
     // --- 2. CEK STATUS PREMIUM / GEMBOK (Khusus Jilid 2 ke atas) ---
     const statusAkun = String(localStorage.getItem('status_akun') || '').trim().toLowerCase();
-    if (jilid > 1 && statusAkun !== 'premium' && statusAkun !== 'super_admin' && statusAkun !== 'super admin' && statusAkun !== 'admin') {
-      document.getElementById('premium-lock').style.display = 'flex';
-      return; 
-    }
+    // SEMENTARA DIBEBEASKAN: if (jilid > 1 && statusAkun !== 'premium' && statusAkun !== 'super_admin' && statusAkun !== 'super admin' && statusAkun !== 'admin') {
+    //   document.getElementById('premium-lock').style.display = 'flex';
+    //   return; 
+    // }
 
     // --- 3. CEK SESI 1 PERANGKAT ---
     async function cekSesi() {

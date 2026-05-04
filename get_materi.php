@@ -56,10 +56,11 @@ if (in_array($status_akun, ['admin', 'super admin', 'administrator'])) {
 }
 
 // --- BLOKIR BACKEND UNTUK USER FREE (Jilid 2-6) ---
-if ($jilid > 1 && $status_akun !== 'premium' && $status_akun !== 'super_admin') {
-    echo json_encode(["status" => "locked", "message" => "Akses ditolak permanen. Jilid ini khusus pengguna Premium."]);
-    exit;
-}
+/* SEMENTARA DIBEBEASKAN (MENUNGGU PG AKTIF)
+ if ($jilid > 1 && $status_akun !== 'premium' && $status_akun !== 'super_admin') {
+     echo json_encode(["status" => "locked", "message" => "Akses ditolak permanen. Jilid ini khusus pengguna Premium."]);
+     exit;
+ } */
 
 // --- AMBIL DATA DARI GOOGLE SCRIPT ---
 $ch = curl_init($kurikulum_gas[$jilid]);

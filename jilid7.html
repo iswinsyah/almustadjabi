@@ -158,10 +158,10 @@
     // --- CEK STATUS PREMIUM / GEMBOK ---
     // Gunakan normalisasi string agar kebal terhadap salah ketik (huruf besar/spasi)
     const statusAkun = String(localStorage.getItem('status_akun') || '').trim().toLowerCase();
-    if (statusAkun !== 'premium' && statusAkun !== 'super_admin' && statusAkun !== 'super admin' && statusAkun !== 'admin') {
-      document.getElementById('premium-lock').style.display = 'flex';
-      return; 
-    }
+    // SEMENTARA DIBEBEASKAN: if (statusAkun !== 'premium' && statusAkun !== 'super_admin' && statusAkun !== 'super admin' && statusAkun !== 'admin') {
+    //   document.getElementById('premium-lock').style.display = 'flex';
+    //   return; 
+    // }
 
     // --- CEK SESI 1 PERANGKAT ---
     async function cekSesi() {
