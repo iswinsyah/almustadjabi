@@ -453,15 +453,10 @@
           };
         }
 
-        const popup = document.createElement('div');
-        popup.className = 'popup';
-        popup.innerHTML = `<div>${item.arti}</div>`;
-        
         if (data.fase === 3) {
           div.onclick = () => cekBacaanAI(item.kataAsli, div, spanKata, data.kosakata.length);
         }
         
-        div.appendChild(popup);
         grid.appendChild(div);
       });
     }
