@@ -18,12 +18,12 @@ $hashed_password = password_hash($data['password'], PASSWORD_DEFAULT);
 try {
     $stmt = $pdo->prepare("INSERT INTO users (nama, gender, tanggal_lahir, email, whatsapp, domisili, username, password, status_akun) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([
-        $data['nama'],
-        $data['gender'],
-        $data['tanggal_lahir'],
-        $data['email'],
-        $data['whatsapp'],
-        $data['domisili'],
+        $data['nama'] ?? null,
+        $data['gender'] ?? null,
+        $data['tanggal_lahir'] ?? null,
+        $data['email'] ?? null,
+        $data['whatsapp'] ?? null,
+        $data['domisili'] ?? null,
         $data['username'],
         $hashed_password,
         'free'
@@ -35,7 +35,7 @@ try {
     if ($e->getCode() == 23000) {
         echo json_encode(["status" => "error", "message" => "Username atau Email sudah terdaftar!"]);
     } else {
-        echo json_encode(["status" => "error", "message" => "Gagal menyimpan data"]);
+        echo json_encode(["status" => "error", "message" => "Gagal menyimpan data: " . $e->getMessage()]);
     }
 }
 ?>
