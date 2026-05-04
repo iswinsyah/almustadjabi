@@ -83,7 +83,7 @@
 
     .grid-kotak { 
       display: grid; 
-      grid-template-columns: var(--grid-cols, repeat(1, 1fr));
+      grid-template-columns: repeat(3, 1fr); /* Diubah menjadi 3 kolom untuk PC/Tablet */
       gap: 10px; 
       margin-bottom: 20px; 
       width: 95%;
@@ -94,20 +94,20 @@
       background-color:#2563EB;
       color:white; 
       border-radius:12px; 
-      direction: rtl;
+      padding:15px; 
+      text-align:center; 
       font-weight:bold;
+      min-height:60px; 
+      display:flex; 
+      align-items:center; 
+      justify-content:center; 
+      font-size:2rem;
       position:relative;
       cursor:pointer;
       box-shadow: 0 4px 6px rgba(37, 99, 235, 0.15);
       transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
     }
     .grid-item:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(37, 99, 235, 0.25); }
-
-    /* Dinamika Layout Bertahap Jilid 6 */
-    .layout-pendek .grid-item { font-size: 2rem; min-height: 60px; padding: 15px; display:flex; align-items:center; justify-content:center; text-align:center; }
-    .layout-panjang .grid-item { font-size: 1.8rem; min-height: 80px; padding: 20px; display:flex; align-items:center; justify-content:center; text-align:center; }
-    .layout-paragraf .grid-item { font-size: 1.6rem; min-height: 120px; padding: 25px; display:block; text-align: center; line-height: 1.8; }
-    .layout-artikel .grid-item { font-size: 1.4rem; min-height: 250px; padding: 35px; display:block; text-align: justify; line-height: 2; }
 
     .grid-item.benar { background-color: #10B981 !important; border: 2px solid #fff; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
     .grid-item.salah { background-color: #EF4444 !important; border: 2px solid #fff; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
@@ -116,12 +116,13 @@
 
     @media (max-width: 768px) {
       .grid-kotak {
-        grid-template-columns: repeat(1, 1fr) !important; /* Otomatis 1 kolom khusus layar HP */
+        grid-template-columns: repeat(1, 1fr); /* Otomatis jadi 1 kolom di layar HP agar lega */
       }
-      .layout-pendek .grid-item { font-size: 1.3rem; padding: 10px; min-height: 50px; }
-      .layout-panjang .grid-item { font-size: 1.3rem; padding: 15px; min-height: 60px; }
-      .layout-paragraf .grid-item { font-size: 1.2rem; padding: 20px; min-height: 100px; }
-      .layout-artikel .grid-item { font-size: 1.1rem; padding: 20px; min-height: 150px; }
+      .grid-item {
+        font-size: 1.3rem;
+        padding: 10px 5px;
+        min-height: 50px;
+      }
     }
 
     .popup {
@@ -139,8 +140,7 @@
       white-space:normal;
       z-index:10;
       width:max-content;
-      max-width:350px;
-      line-height: 1.5;
+      max-width:250px;
       pointer-events: none;
     }
 
@@ -335,7 +335,7 @@
       <h3 id="judul-h3">Judul Halaman Placeholder</h3>
     </header>
 
-    <div class="skor-papan" id="skor-papan">Skor Benar: 0/1 | Predikat: Aadi</div>
+    <div class="skor-papan" id="skor-papan">Skor Benar: 0/18 | Predikat: Aadi</div>
 
     <div class="kotak-besar" id="kotak-besar">Kotak Besar Kosong</div>
     
@@ -403,6 +403,8 @@
       window.speechSynthesis.getVoices();
     }
 
+    const TARGET_JUMLAH_KOTAK = 18; // Jumlah total kotak di grid (3 kolom x 6 baris)
+
     // URL Web App dari Google Apps Script Anda akan diletakkan di sini
     const gasApiUrl = 'https://script.google.com/macros/s/AKfycbzkaPd1wxezWDzT7SLW4vdudTCA4uxnMFkmZam7HOWGZYC_c0hq_f0xQ9-xdvN5jEU7/exec';
 
@@ -419,12 +421,7 @@
         // Fetch dari URL Google Script (Mencegah cache basi)
         const response = await fetch(gasApiUrl, { cache: 'no-store' });
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        let dataBab = await response.json();
-        
-        // Fallback jika Google Sheet belum diisi atau error
-        if (!dataBab || dataBab.length === 0) {
-          dataBab = generateDataArtikelPanjang();
-        }
+        const dataBab = await response.json();
         dataBabGlobal = dataBab;
         
         prosesDataBab(dataBabGlobal);
@@ -437,60 +434,49 @@
       }
     }
 
-    function generateDataArtikelPanjang() {
-      return [
-        { 
-          judul: "Bab 1: Kalimat Pendek", 
-          penjelasan: "Membaca teks kitab kuning berupa kalimat pendek untuk melatih insting I'rob dasar.", 
-          kosakata: [ { kata: "ذَهَبَ زَيْدٌ", arti: "Zaid telah pergi" }, { kata: "جَاءَ عَمْرٌو", arti: "Amr telah datang" }, { kata: "قَرَأَ الطَّالِبُ", arti: "Siswa telah membaca" } ] 
-        },
-        { 
-          judul: "Bab 2: Kalimat Panjang", 
-          penjelasan: "Membaca teks kitab kuning berupa kalimat yang lebih panjang dan kompleks.", 
-          kosakata: [ { kata: "ذَهَبَ زَيْدٌ إِلَى الْمَسْجِدِ صَبَاحًا", arti: "Zaid telah pergi ke masjid di pagi hari" }, { kata: "قَرَأَ الطَّالِبُ الْكِتَابَ فِي الْفَصْلِ", arti: "Siswa telah membaca buku di dalam kelas" } ] 
-        },
-        { 
-          judul: "Bab 3: Paragraf", 
-          penjelasan: "Membaca teks kitab kuning dalam bentuk paragraf pendek berkesinambungan.", 
-          kosakata: [ { kata: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ. الْحَمْدُ لِلَّهِ تَبَرُّكًا بِفَاتِحَةِ الْكِتَابِ، لِأَنَّهَا مَبْدَأُ كُلِّ أَمْرٍ ذِي بَالٍ، وَخَاتِمَةُ كُلِّ دُعَاءٍ مُجَابٍ.", arti: "Dengan menyebut nama Allah Yang Maha Pengasih lagi Maha Penyayang. Segala puji bagi Allah..." } ] 
-        },
-        { 
-          judul: "Bab 4: Artikel Panjang", 
-          penjelasan: "Membaca teks kitab kuning satu halaman penuh untuk melatih insting I'rob dan pernafasan.", 
-          kosakata: [ { kata: "فَصْلٌ: شُرُوطُ الصَّلَاةِ ثَمَانِيَةٌ: طَهَارَةُ الْحَدَثَيْنِ، وَطَهَارَةُ النَّجَسِ فِي الثَّوْبِ وَالْبَدَنِ وَالْمَكَانِ، وَسَتْرُ الْعَوْرَةِ، وَاسْتِقْبَالُ الْقِبْلَةِ، وَدُخُولُ الْوَقْتِ، وَالْعِلْمُ بِفَرْضِيَّتِهَا، وَأَنْ لَا يَعْتَقِدَ فَرْضًا مِنْ فُرُوضِهَا سُنَّةً، وَاجْتِنَابُ الْمُبْطِلَاتِ.", arti: "Pasal: Syarat shalat ada delapan." } ] 
-        }
-      ];
-    }
-
     function prosesDataBab(dataBab) {
       dataPelajaran = [];
       let nomorHalaman = 1;
       
-      dataBab.forEach((bab, index) => {
-        let targetKotak = 1;
-        let kolomPC = 1;
-        let layoutClass = "layout-artikel";
-        let layoutName = "Artikel Panjang";
-
-        // Pola Layout Dinamis berulang setiap 4 Bab
-        let pola = index % 4;
-        if (pola === 0) { targetKotak = 18; kolomPC = 3; layoutClass = "layout-pendek"; layoutName = "Kalimat Pendek"; }
-        else if (pola === 1) { targetKotak = 12; kolomPC = 2; layoutClass = "layout-panjang"; layoutName = "Kalimat Panjang"; }
-        else if (pola === 2) { targetKotak = 3; kolomPC = 1; layoutClass = "layout-paragraf"; layoutName = "Paragraf"; }
-        else { targetKotak = 1; kolomPC = 1; layoutClass = "layout-artikel"; layoutName = "Artikel Panjang"; }
-
+      // Fase 1
+      dataBab.forEach(bab => {
         dataPelajaran.push({
           halaman: nomorHalaman++,
-          judul: bab.judul + ` (${layoutName})` + (modeImtihan ? " (Evaluasi AI)" : " (Latihan Baca)"),
-          penjelasan: modeImtihan 
-            ? "UJIAN AI: Baca seluruh teks gundul ini. AI akan mendengarkan dan menilai ketepatan Anda!" 
-            : `LATIHAN 100% GUNDUL. Format ${layoutName}. Klik teks untuk mendengarkan contoh bacaan (harokat/i'rob) yang benar.`,
-          fase: modeImtihan ? 3 : 1, // Fase 3 = Ujian AI, Fase 1 = Klik memutar suara
-          targetKotak: targetKotak,
-          kolomPC: kolomPC,
-          layoutClass: layoutClass,
+          judul: bab.judul + (modeImtihan ? " (Mode Imtihan)" : " (Fase 1: Harokat Lengkap)"),
+          penjelasan: modeImtihan ? "UJIAN: Tebak bacaan Arab Gundul. Benar = Biru, Salah = Merah." : bab.penjelasan + " 💡 Klik kotak untuk mendengarkan bacaan.",
+          fase: modeImtihan ? 3 : 1,
+          kosakata: modeImtihan ? bab.kosakata.map(k => ({kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), arti: k.arti, kataAsli: k.kata})) : bab.kosakata.map(k => ({
+            kata: k.kata,
+            arti: k.arti,
+            kataAsli: k.kata
+          }))
+        });
+      });
+
+      // Fase 2
+      dataBab.forEach(bab => {
+        dataPelajaran.push({
+          halaman: nomorHalaman++,
+          judul: bab.judul + (modeImtihan ? " (Mode Imtihan)" : " (Fase 2: Harokat Akhir Saja)"),
+          penjelasan: modeImtihan ? "UJIAN: Tebak bacaan Arab Gundul. Benar = Biru, Salah = Merah." : "Latih insting I'rob Anda. Harokat di tengah kata dihilangkan, sisa harokat akhirnya saja.",
+          fase: modeImtihan ? 3 : 2,
+          kosakata: modeImtihan ? bab.kosakata.map(k => ({kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), arti: k.arti, kataAsli: k.kata})) : bab.kosakata.map(k => ({
+            kata: k.kata.replace(/[\u064B-\u065F\u0670]+(?=[^\s\u064B-\u065F\u0670])/g, ''), 
+            arti: k.arti,
+            kataAsli: k.kata
+          }))
+        });
+      });
+
+      // Fase 3
+      dataBab.forEach(bab => {
+        dataPelajaran.push({
+          halaman: nomorHalaman++,
+          judul: bab.judul + (modeImtihan ? " (Mode Imtihan)" : " (Fase 3: Gundul Total + Cek Suara AI)"),
+          penjelasan: modeImtihan ? "UJIAN: Tebak bacaan Arab Gundul. Benar = Biru, Salah = Merah." : "Tebak bacaan Arab Gundul ini, lalu klik kotak dan tekan tombol 🎤 untuk dikoreksi AI.",
+          fase: 3,
           kosakata: bab.kosakata.map(k => ({
-            kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), // SELALU GUNDUL 100%
+            kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), 
             arti: k.arti,
             kataAsli: k.kata
           }))
@@ -507,16 +493,16 @@
       return arr;
     }
 
-    function updateSkor(targetKotak) {
+    function updateSkor() {
       let predikat = "Aadi";
-      if (skorBenar === targetKotak) predikat = "Mumtaz 🌟";
-      else if (skorBenar >= Math.ceil(targetKotak * 0.7)) predikat = "Jayyid 👍";
-      else if (skorBenar >= Math.ceil(targetKotak * 0.4)) predikat = "Aslaha 🙂";
+      if (skorBenar === TARGET_JUMLAH_KOTAK) predikat = "Mumtaz 🌟";
+      else if (skorBenar >= Math.ceil(TARGET_JUMLAH_KOTAK * 0.7)) predikat = "Jayyid 👍";
+      else if (skorBenar >= Math.ceil(TARGET_JUMLAH_KOTAK * 0.4)) predikat = "Aslaha 🙂";
       
-      document.getElementById('skor-papan').innerHTML = `Skor Benar: <span style="color:#10B981">${skorBenar}</span>/${targetKotak} | Predikat: <span style="color:#2563EB">${predikat}</span>`;
+      document.getElementById('skor-papan').innerHTML = `Skor Benar: <span style="color:#10B981">${skorBenar}</span>/${TARGET_JUMLAH_KOTAK} | Predikat: <span style="color:#2563EB">${predikat}</span>`;
     }
 
-    function cekBacaanAI(kataTargetAsli, gridItem, spanKata, targetKotak) {
+    function cekBacaanAI(kataTargetAsli, gridItem, spanKata) {
       if (gridItem.classList.contains('terjawab')) {
         alert("Kotak ini sudah dinilai! Silakan lanjut ke kotak lain untuk mengumpulkan skor.");
         return;
@@ -584,7 +570,7 @@
             bacaTeksArab(kataTargetAsli);
           };
         }
-        updateSkor(targetKotak);
+        updateSkor();
       };
 
       recognition.onerror = (event) => {
@@ -624,7 +610,7 @@
       skorSalah = 0;
       if (data.fase === 3) {
         document.getElementById('skor-papan').style.display = 'block';
-        updateSkor(data.targetKotak);
+        updateSkor();
       } else {
         document.getElementById('skor-papan').style.display = 'none';
       }
@@ -636,16 +622,14 @@
 
       const grid = document.getElementById('grid-kotak');
       grid.innerHTML = ''; 
-      grid.className = 'grid-kotak ' + data.layoutClass;
-      grid.style.setProperty('--grid-cols', `repeat(${data.kolomPC}, 1fr)`);
       
       let kosakataUntukGrid = [];
       if (data.kosakata.length > 0) {
-        for (let i = 0; i < data.targetKotak; i++) {
+        for (let i = 0; i < TARGET_JUMLAH_KOTAK; i++) {
           kosakataUntukGrid.push(data.kosakata[i % data.kosakata.length]);
         }
       } else {
-        for (let i = 0; i < data.targetKotak; i++) {
+        for (let i = 0; i < TARGET_JUMLAH_KOTAK; i++) {
           kosakataUntukGrid.push({ kata: '&nbsp;', arti: '' });
         }
       }
@@ -679,7 +663,7 @@
         
         if (data.fase === 3) {
           div.onclick = () => {
-            cekBacaanAI(item.kataAsli, div, spanKata, data.targetKotak);
+            cekBacaanAI(item.kataAsli, div, spanKata);
           };
         }
         
