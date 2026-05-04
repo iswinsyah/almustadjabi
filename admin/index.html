@@ -220,6 +220,17 @@
       bukaDashboard(savedToken);
     }
 
+    // Fungsi pembantu agar kebal terhadap tambahan teks/error PHP dari server Hostinger
+    async function amanFetchJSON(res) {
+      const textResponse = await res.text();
+      const jsonStart = textResponse.indexOf('{');
+      const jsonEnd = textResponse.lastIndexOf('}') + 1;
+      if (jsonStart !== -1 && jsonEnd !== -1 && jsonStart < jsonEnd) {
+        return JSON.parse(textResponse.substring(jsonStart, jsonEnd));
+      }
+      throw new Error("Respons server tidak valid:\n" + textResponse.substring(0, 100));
+    }
+
     // Fungsi Toggle Password
     function togglePassword(inputId, icon) {
       const input = document.getElementById(inputId);
@@ -256,22 +267,7 @@
           body: JSON.stringify({ password: pass })
         });
         
-        // Tangkap teks asli dari server untuk melacak error PHP
-        const textResponse = await res.text();
-        let json;
-        try {
-          // --- TRIK AMPUH: Ekstrak hanya teks JSON (mengabaikan spasi/error PHP) ---
-          const jsonStart = textResponse.indexOf('{');
-          const jsonEnd = textResponse.lastIndexOf('}') + 1;
-          if (jsonStart !== -1 && jsonEnd !== -1 && jsonStart < jsonEnd) {
-            json = JSON.parse(textResponse.substring(jsonStart, jsonEnd));
-          } else {
-            throw new Error("Gagal membaca respons dari server");
-          }
-        } catch(err) {
-          alert("Terdapat error pada server PHP Hostinger:\n\n" + textResponse.substring(0, 200));
-          throw new Error("Bukan JSON");
-        }
+        const json = await amanFetchJSON(res);
 
         if(json.status === 'success') {
           sessionStorage.setItem('adminToken', pass); // Simpan password sementara
@@ -284,9 +280,7 @@
           alert(json.message);
         }
       } catch(e) {
-        if(e.message !== "Bukan JSON") {
-          alert('Koneksi internet terputus atau API tidak dapat dihubungi.');
-        }
+        alert(e.message);
       }
 
       btn.textContent = 'Buka Dashboard';
@@ -301,7 +295,7 @@
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({ password: pass })
         });
-        const json = await res.json();
+        const json = await amanFetchJSON(res);
         
         if(json.status === 'success') {
           renderData(json.data);
@@ -351,10 +345,11 @@
           method: 'POST', headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({ password: sessionStorage.getItem('adminToken'), action: 'get_users' })
         });
-        const json = await res.json();
+        const json = await amanFetchJSON(res);
+        const tbody = document.getElementById('tabel-pengguna');
         if(json.status === 'success') {
-          const tbody = document.getElementById('tabel-pengguna');
           tbody.innerHTML = '';
+          if(json.data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Belum ada pengguna terdaftar.</td></tr>'; }
           json.data.forEach(u => {
             tbody.innerHTML += `
               <tr>
@@ -373,9 +368,11 @@
               </tr>
             `;
           });
+        } else {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">Gagal: ${json.message}</td></tr>`;
         }
       } catch(e) {
-        console.error("Gagal memuat pengguna:", e);
+        document.getElementById('tabel-pengguna').innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">Error: ${e.message}</td></tr>`;
       }
     }
 
@@ -387,7 +384,7 @@
           method: 'POST', headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({ password: sessionStorage.getItem('adminToken'), action: 'update_role', target_username: username, new_role: newRole })
         });
-        const json = await res.json();
+        const json = await amanFetchJSON(res);
         alert(json.message);
         if(json.status === 'success') muatPengguna();
       } catch(e) { alert("Gagal mengubah role."); }
@@ -405,7 +402,7 @@
 
       try {
         const res = await fetch('api.php', { method: 'POST', body: formData });
-        const json = await res.json();
+        const json = await amanFetchJSON(res);
         alert(json.message);
         if(json.status === 'success') { fileInput.value = ''; muatGaleri(); }
       } catch(e) { alert("Gagal mengunggah file."); }
@@ -417,9 +414,9 @@
           method: 'POST', headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({ password: sessionStorage.getItem('adminToken'), action: 'get_media' })
         });
-        const json = await res.json();
+        const json = await amanFetchJSON(res);
+        const galeri = document.getElementById('galeri-media');
         if(json.status === 'success') {
-          const galeri = document.getElementById('galeri-media');
           galeri.innerHTML = '';
           json.data.forEach(item => {
             const isVideo = item.match(/\.(mp4|webm|ogg)$/i);
@@ -427,9 +424,11 @@
             galeri.innerHTML += `<div class="media-card">${mediaTag}<p>/${item}</p></div>`;
           });
           if(json.data.length === 0) galeri.innerHTML = '<p>Belum ada media.</p>';
+        } else {
+          galeri.innerHTML = `<p style="color:red;">Gagal: ${json.message}</p>`;
         }
       } catch(e) {
-        console.error("Gagal memuat galeri:", e);
+        document.getElementById('galeri-media').innerHTML = `<p style="color:red;">Error: ${e.message}</p>`;
       }
     }
 
@@ -446,7 +445,7 @@
           method: 'POST', headers: {'Content-Type': 'application/json'},
           body: JSON.stringify(dataSet)
         });
-        const json = await res.json();
+        const json = await amanFetchJSON(res);
         alert(json.message);
       } catch(e) { alert("Gagal menyimpan pengaturan."); }
     }
