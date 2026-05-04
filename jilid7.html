@@ -359,6 +359,9 @@
               if (result.status === 'benar') {
                 gridItem.classList.add('benar', 'terjawab'); skorBenar++;
                 alert(`✅ BACAAN BENAR!\n\nKomentar Ustadz AI:\n${result.pesan}`);
+                if (skorBenar === totalSoal) {
+                    localStorage.setItem('jilid_7_passed', 'true');
+                }
               } else {
                 gridItem.classList.add('salah', 'terjawab'); skorSalah++;
                 alert(`🤖 KOREKSI AI:\n\n${result.pesan}`);

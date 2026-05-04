@@ -397,6 +397,9 @@
         
         if (hasilGundul === targetGundul) {
           gridItem.classList.add('benar', 'terjawab'); skorBenar++; alert(`✅ BENAR!\nAnda: ${hasil}`);
+          if (dataPelajaran[indexSaatIni] && dataPelajaran[indexSaatIni].fase === 3 && skorBenar === TARGET_JUMLAH_KOTAK) {
+              localStorage.setItem(`jilid_${jilid}_passed`, 'true');
+          }
         } else {
           gridItem.classList.add('salah', 'terjawab'); skorSalah++;
           alert(`🤖 KURANG TEPAT.\nAnda: ${hasil}\nHarusnya: ${kataTargetAsli}`);
