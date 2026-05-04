@@ -83,7 +83,7 @@
 
     .grid-kotak { 
       display: grid; 
-      grid-template-columns: repeat(1, 1fr); /* 1 Kolom untuk artikel */
+      grid-template-columns: var(--grid-cols, repeat(1, 1fr));
       gap: 10px; 
       margin-bottom: 20px; 
       width: 95%;
@@ -94,20 +94,20 @@
       background-color:#2563EB;
       color:white; 
       border-radius:12px; 
-      padding:35px; 
-      text-align:justify;
       direction: rtl;
       font-weight:bold;
-      min-height:250px; 
-      display:block; 
-      font-size:1.4rem;
-      line-height: 2;
       position:relative;
       cursor:pointer;
       box-shadow: 0 4px 6px rgba(37, 99, 235, 0.15);
       transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
     }
     .grid-item:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(37, 99, 235, 0.25); }
+
+    /* Dinamika Layout Bertahap Jilid 6 */
+    .layout-pendek .grid-item { font-size: 2rem; min-height: 60px; padding: 15px; display:flex; align-items:center; justify-content:center; text-align:center; }
+    .layout-panjang .grid-item { font-size: 1.8rem; min-height: 80px; padding: 20px; display:flex; align-items:center; justify-content:center; text-align:center; }
+    .layout-paragraf .grid-item { font-size: 1.6rem; min-height: 120px; padding: 25px; display:block; text-align: center; line-height: 1.8; }
+    .layout-artikel .grid-item { font-size: 1.4rem; min-height: 250px; padding: 35px; display:block; text-align: justify; line-height: 2; }
 
     .grid-item.benar { background-color: #10B981 !important; border: 2px solid #fff; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
     .grid-item.salah { background-color: #EF4444 !important; border: 2px solid #fff; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
@@ -116,13 +116,12 @@
 
     @media (max-width: 768px) {
       .grid-kotak {
-        grid-template-columns: repeat(1, 1fr); /* 1 Kolom di HP */
+        grid-template-columns: repeat(1, 1fr) !important; /* Otomatis 1 kolom khusus layar HP */
       }
-      .grid-item {
-        font-size: 1.1rem;
-        padding: 20px;
-        min-height: 150px;
-      }
+      .layout-pendek .grid-item { font-size: 1.3rem; padding: 10px; min-height: 50px; }
+      .layout-panjang .grid-item { font-size: 1.3rem; padding: 15px; min-height: 60px; }
+      .layout-paragraf .grid-item { font-size: 1.2rem; padding: 20px; min-height: 100px; }
+      .layout-artikel .grid-item { font-size: 1.1rem; padding: 20px; min-height: 150px; }
     }
 
     .popup {
@@ -359,8 +358,9 @@
   <script>
   document.addEventListener('DOMContentLoaded', async () => {
     // --- CEK STATUS PREMIUM / GEMBOK ---
-    const statusAkun = localStorage.getItem('status_akun');
-    if (statusAkun !== 'premium' && statusAkun !== 'super_admin') {
+    // Gunakan normalisasi string agar kebal terhadap salah ketik (huruf besar/spasi)
+    const statusAkun = String(localStorage.getItem('status_akun') || '').trim().toLowerCase();
+    if (statusAkun !== 'premium' && statusAkun !== 'super_admin' && statusAkun !== 'super admin' && statusAkun !== 'admin') {
       document.getElementById('premium-lock').style.display = 'flex';
       return; // Hentikan script, cegah halaman memuat pelajaran
     }
@@ -403,8 +403,6 @@
       window.speechSynthesis.getVoices();
     }
 
-    const TARGET_JUMLAH_KOTAK = 1; // Diatur menjadi 1 kotak (1 kolom x 1 baris)
-
     // URL Web App dari Google Apps Script Anda akan diletakkan di sini
     const gasApiUrl = 'https://script.google.com/macros/s/AKfycbzkaPd1wxezWDzT7SLW4vdudTCA4uxnMFkmZam7HOWGZYC_c0hq_f0xQ9-xdvN5jEU7/exec';
 
@@ -418,8 +416,15 @@
     async function muatDataPelajaran() {
       document.getElementById('judul-h3').textContent = 'Memuat Data Pelajaran...';
       try {
-        // Memuat 16 Bab Artikel Panjang (1 Halaman Penuh)
-        const dataBab = generateDataArtikelPanjang();
+        // Fetch dari URL Google Script (Mencegah cache basi)
+        const response = await fetch(gasApiUrl, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        let dataBab = await response.json();
+        
+        // Fallback jika Google Sheet belum diisi atau error
+        if (!dataBab || dataBab.length === 0) {
+          dataBab = generateDataArtikelPanjang();
+        }
         dataBabGlobal = dataBab;
         
         prosesDataBab(dataBabGlobal);
@@ -433,39 +438,57 @@
     }
 
     function generateDataArtikelPanjang() {
-      const artikel = [
-        { kata: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ. الْحَمْدُ لِلَّهِ تَبَرُّكًا بِفَاتِحَةِ الْكِتَابِ، لِأَنَّهَا مَبْدَأُ كُلِّ أَمْرٍ ذِي بَالٍ، وَخَاتِمَةُ كُلِّ دُعَاءٍ مُجَابٍ، وَآيَةُ كُلِّ سُورَةٍ. قَالَ الْقَاضِي أَبُو شُجَاعٍ أَحْمَدُ بْنُ الْحُسَيْنِ بْنِ أَحْمَدَ الْأَصْفَهَانِيُّ رَحِمَهُ اللَّهُ تَعَالَى: سَأَلَنِي بَعْضُ الْأَصْدِقَاءِ حَفِظَهُمُ اللَّهُ تَعَالَى أَنْ أَعْمَلَ مُخْتَصَرًا فِي الْفِقْهِ عَلَى مَذْهَبِ الْإِمَامِ الشَّافِعِيِّ رَحْمَةُ اللَّهِ تَعَالَى عَلَيْهِ وَرِضْوَانُهُ، فِي غَايَةِ الِاخْتِصَارِ وَنِهَايَةِ الْإِيجَازِ، لِيَقْرُبَ عَلَى الْمُتَعَلِّمِ دَرْسُهُ، وَيَسْهُلَ عَلَى الْمُبْتَدِئِ حِفْظُهُ.", arti: "Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang. Segala puji bagi Allah sebagai tabarruk dengan Fatihah Al-Kitab... Al-Qadhi Abu Syuja' berkata: Sebagian teman memintaku membuat ringkasan fiqih mazhab Syafi'i yang sangat ringkas agar mudah dipelajari dan dihafal." },
-        { kata: "فَصْلٌ: شُرُوطُ الصَّلَاةِ ثَمَانِيَةٌ: طَهَارَةُ الْحَدَثَيْنِ، وَطَهَارَةُ النَّجَسِ فِي الثَّوْبِ وَالْبَدَنِ وَالْمَكَانِ، وَسَتْرُ الْعَوْرَةِ، وَاسْتِقْبَالُ الْقِبْلَةِ، وَدُخُولُ الْوَقْتِ، وَالْعِلْمُ بِفَرْضِيَّتِهَا، وَأَنْ لَا يَعْتَقِدَ فَرْضًا مِنْ فُرُوضِهَا سُنَّةً، وَاجْتِنَابُ الْمُبْطِلَاتِ. الْأَحْدَاثُ اثْنَانِ: أَصْغَرُ وَأَكْبَرُ، فَالْأَصْغَرُ مَا أَوْجَبَ الْوُضُوءَ، وَالْأَكْبَرُ مَا أَوْجَبَ الْغُسْلَ. الْعَوْرَاتُ أَرْبَعٌ: عَوْرَةُ الرَّجُلِ مُطْلَقًا وَالْأَمَةِ فِي الصَّلَاةِ مَا بَيْنَ السُّرَّةِ وَالرُّكْبَةِ، وَعَوْرَةُ الْحُرَّةِ فِي الصَّلَاةِ جَمِيعُ بَدَنِهَا إِلَّا الْوَجْهَ وَالْكَفَّيْنِ.", arti: "Syarat shalat ada 8: suci dari hadats, suci dari najis, menutup aurat, menghadap kiblat, masuk waktu... Hadats ada 2: kecil dan besar... Aurat laki-laki antara pusar dan lutut, wanita merdeka seluruh tubuh kecuali wajah dan telapak tangan." },
-        { kata: "الْكَلَامُ هُوَ اللَّفْظُ الْمُرَكَّبُ الْمُفِيدُ بِالْوَضْعِ. وَأَقْسَامُهُ ثَلَاثَةٌ: اسْمٌ، وَفِعْلٌ، وَحَرْفٌ جَاءَ لِمَعْنًى. فَالِاسْمُ يُعْرَفُ بِالْخَفْضِ، وَالتَّنْوِينِ، وَدُخُولِ الْأَلِفِ وَاللَّامِ، وَحُرُوفِ الْخَفْضِ وَهِيَ: مِنْ، وَإِلَى، وَعَنْ، وَعَلَى، وَفِي، وَرُبَّ، وَالْبَاءُ، وَالْكَافُ، وَاللَّامُ، وَحُرُوفِ الْقَسَمِ وَهِيَ الْوَاوُ وَالْبَاءُ وَالتَّاءُ. وَالْفِعْلُ يُعْرَفُ بِقَدْ، وَالسِّينِ، وَسَوْفَ، وَتَاءِ التَّأْنِيثِ السَّاكِنَةِ. وَالْحَرْفُ مَا لَا يَصْلُحُ مَعَهُ دَلِيلُ الِاسْمِ وَلَا دَلِيلُ الْفِعْلِ.", arti: "Kalam adalah lafaz yang tersusun, berfaedah, dan disengaja. Pembagiannya ada tiga: Isim, Fi'il, dan Huruf. Isim dikenali dengan khafadh, tanwin, kemasukan alif-lam, dan huruf jar... Fi'il dikenali dengan qod, sin, saufa, dan ta' ta'nits." },
-        { kata: "بَابُ الْإِعْرَابِ. الْإِعْرَابُ هُوَ تَغْيِيرُ أَوَاخِرِ الْكَلِمِ لِاخْتِلَافِ الْعَوَامِلِ الدَّاخِلَةِ عَلَيْهَا لَفْظًا أَوْ تَقْدِيرًا. وَأَقْسَامُهُ أَرْبَعَةٌ: رَفْعٌ، وَنَصْبٌ، وَخَفْضٌ، وَجَزْمٌ. فَلِلْأَسْمَاءِ مِنْ ذَلِكَ الرَّفْعُ وَالنَصْبُ وَالْخَفْضُ وَلَا جَزْمَ فِيهَا، وَلِلْأَفْعَالِ مِنْ ذَلِكَ الرَّفْعُ وَالنَصْبُ وَالْجَزْمُ وَلَا خَفْضَ فِيهَا. بَابُ مَعْرِفَةِ عَلَامَاتِ الْإِعْرَابِ. لِلرَّفْعِ أَرْبَعُ عَلَامَاتٍ: الضَّمَّةُ، وَالْوَاوُ، وَالْأَلِفُ، وَالنُّونُ. فَأَمَّا الضَّمَّةُ فَتَكُونُ عَلَامَةً لِلرَّفْعِ فِي أَرْبَعَةِ مَوَاضِعَ.", arti: "Bab I'rab. I'rab adalah perubahan akhir kalimat karena perbedaan amil yang memasukinya... Pembagiannya ada empat: Rafa', Nashab, Khafadh, dan Jazm. Isim bisa rafa, nashab, khafadh (tanpa jazm). Fi'il bisa rafa, nashab, jazm (tanpa khafadh)." },
-        { kata: "فَصْلٌ فِي النِّيَّةِ فِي حَالِ التَّعَلُّمِ. ثُمَّ لَا بُدَّ لَهُ مِنَ النِّيَّةِ فِي زَمَانِ تَعَلُّمِ الْعِلْمِ، إِذِ النِّيَّةُ هِيَ الْأَصْلُ فِي جَمِيعِ الْأَحْوَالِ، لِقَوْلِهِ عَلَيْهِ السَّلَامُ: إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ. يَنْبَغِي أَنْ يَنْوِيَ الْمُتَعَلِّمُ بِطَلَبِ الْعِلْمِ رِضَا اللَّهِ تَعَالَى وَالدَّارَ الْآخِرَةَ، وَإِزَالَةَ الْجَهْلِ عَنْ نَفْسِهِ وَعَنْ سَائِرِ الْجُهَّالِ، وَإِحْيَاءَ الدِّينِ، وَإِبْقَاءَ الْإِسْلَامِ، فَإِنَّ بَقَاءَ الْإِسْلَامِ بِالْعِلْمِ، وَلَا يَصِحُّ الزُّهْدُ وَالتَّقْوَى مَعَ الْجَهْلِ.", arti: "Pasal tentang niat saat belajar. Pelajar wajib berniat saat menuntut ilmu, karena niat adalah pokok segala amal... Hendaknya berniat mencari ridha Allah, akhirat, menghilangkan kebodohan dari diri dan orang lain, menghidupkan agama, dan melestarikan Islam." },
-        { kata: "وَأَمَّا اخْتِيَارُ الْأُسْتَاذِ، فَيَنْبَغِي أَنْ يَخْتَارَ الْأَعْلَمَ وَالْأَوْرَعَ وَالْأَسَنَّ، كَمَا اخْتَارَ أَبُو حَنِيفَةَ رَحِمَهُ اللَّهُ حَمَّادَ بْنَ أَبِي سُلَيْمَانَ بَعْدَ التَّأَمُّلِ وَالتَّفَكُّرِ. وَقَالَ: وَجَدْتُهُ شَيْخًا وَقُورًا حَلِيمًا صَبُورًا فِي الْأُمُورِ. وَقَالَ أَبُو حَنِيفَةَ: ثَبَتُّ عِنْدَ حَمَّادِ بْنِ أَبِي سُلَيْمَانَ فَنَبَتُّ. وَيَنْبَغِي أَنْ يُشَاوِرَ فِي أَمْرِ التَّعَلُّمِ، فَإِنَّ اللَّهَ تَعَالَى أَمَرَ رَسُولَهُ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ بِالْمُشَاوَرَةِ فِي الْأُمُورِ.", arti: "Adapun memilih guru, hendaknya memilih yang paling alim, wara', dan sepuh, sebagaimana Abu Hanifah memilih Hammad bin Abi Sulaiman setelah merenung... Dan hendaknya bermusyawarah dalam urusan belajar." },
-        { kata: "يَنْهَضُ الْإِنْسَانُ بِمَا عِنْدَهُ مِنْ فِكْرٍ عَنِ الْحَيَاةِ وَالْكَوْنِ وَالْإِنْسَانِ، وَعَنْ عَلَاقَتِهَا جَمِيعًا بِمَا قَبْلَ الْحَيَاةِ الدُّنْيَا وَمَا بَعْدَهَا. لِذَلِكَ كَانَ لَا بُدَّ مِنْ تَغْيِيرِ فِكْرِ الْإِنْسَانِ تَغْيِيرًا أَسَاسِيًّا شَامِلًا حَتَّى يَنْهَضَ، لِأَنَّ الْفِكْرَ هُوَ الَّذِي يُوجِدُ الْمَفَاهِيمَ عَنِ الْأَشْيَاءِ، وَيُرَكِّزُ هَذِهِ الْمَفَاهِيمَ. وَالْإِنْسَانُ يُكَيِّفُ سُلُوكَهُ فِي الْحَيَاةِ بِحَسَبِ مَفَاهِيمِهِ عَنْهَا، فَالسُّلُوكُ الْإِنْسَانِيُّ مُرْتَبِطٌ بِمَفَاهِيمِ الْإِنْسَانِ ارْتِبَاطًا مُحْكَمًا.", arti: "Manusia bangkit dengan pemikirannya tentang kehidupan, alam semesta, dan manusia, serta hubungannya dengan sebelum dan sesudah dunia. Oleh karena itu, mutlak diperlukan perubahan pemikiran secara mendasar dan menyeluruh agar ia bangkit..." },
-        { kata: "وَالطَّرِيقُ لِنَهْضَةِ الْإِنْسَانِ هُوَ أَنْ يَحْصُلَ لَدَيْهِ تَغَيُّرٌ شَامِلٌ لِمَفَاهِيمِهِ السَّابِقَةِ، وَأَنْ تُوجَدَ لَدَيْهِ مَفَاهِيمُ جَدِيدَةٌ تُوجِدُ عِنْدَهُ هَذَا الْفِكْرَ. وَلِكَيْ تُوجَدَ هَذِهِ الْمَفَاهِيمُ وَتَتَغَيَّرَ الْمَفَاهِيمُ السَّابِقَةُ، لَا بُدَّ أَنْ تُوجَدَ الْفِكْرَةُ الْكُلِّيَّةُ عَنِ الْحَيَاةِ وَالْكَوْنِ وَالْإِنْسَانِ، لِأَنَّهَا هِيَ الْقَاعِدَةُ الْفِكْرِيَّةُ الَّتِي تُبْنَى عَلَيْهَا جَمِيعُ الْأَفْكَارِ، وَتَنْبَثِقُ عَنْهَا جَمِيعُ الْمَفَاهِيمِ.", arti: "Jalan kebangkitan manusia adalah dengan mengubah konsep lamanya... Harus ada pemikiran menyeluruh tentang kehidupan, alam, dan manusia, yang menjadi kaidah berpikir dan melahirkan seluruh konsep lainnya." }
+      return [
+        { 
+          judul: "Bab 1: Kalimat Pendek", 
+          penjelasan: "Membaca teks kitab kuning berupa kalimat pendek untuk melatih insting I'rob dasar.", 
+          kosakata: [ { kata: "ذَهَبَ زَيْدٌ", arti: "Zaid telah pergi" }, { kata: "جَاءَ عَمْرٌو", arti: "Amr telah datang" }, { kata: "قَرَأَ الطَّالِبُ", arti: "Siswa telah membaca" } ] 
+        },
+        { 
+          judul: "Bab 2: Kalimat Panjang", 
+          penjelasan: "Membaca teks kitab kuning berupa kalimat yang lebih panjang dan kompleks.", 
+          kosakata: [ { kata: "ذَهَبَ زَيْدٌ إِلَى الْمَسْجِدِ صَبَاحًا", arti: "Zaid telah pergi ke masjid di pagi hari" }, { kata: "قَرَأَ الطَّالِبُ الْكِتَابَ فِي الْفَصْلِ", arti: "Siswa telah membaca buku di dalam kelas" } ] 
+        },
+        { 
+          judul: "Bab 3: Paragraf", 
+          penjelasan: "Membaca teks kitab kuning dalam bentuk paragraf pendek berkesinambungan.", 
+          kosakata: [ { kata: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ. الْحَمْدُ لِلَّهِ تَبَرُّكًا بِفَاتِحَةِ الْكِتَابِ، لِأَنَّهَا مَبْدَأُ كُلِّ أَمْرٍ ذِي بَالٍ، وَخَاتِمَةُ كُلِّ دُعَاءٍ مُجَابٍ.", arti: "Dengan menyebut nama Allah Yang Maha Pengasih lagi Maha Penyayang. Segala puji bagi Allah..." } ] 
+        },
+        { 
+          judul: "Bab 4: Artikel Panjang", 
+          penjelasan: "Membaca teks kitab kuning satu halaman penuh untuk melatih insting I'rob dan pernafasan.", 
+          kosakata: [ { kata: "فَصْلٌ: شُرُوطُ الصَّلَاةِ ثَمَانِيَةٌ: طَهَارَةُ الْحَدَثَيْنِ، وَطَهَارَةُ النَّجَسِ فِي الثَّوْبِ وَالْبَدَنِ وَالْمَكَانِ، وَسَتْرُ الْعَوْرَةِ، وَاسْتِقْبَالُ الْقِبْلَةِ، وَدُخُولُ الْوَقْتِ، وَالْعِلْمُ بِفَرْضِيَّتِهَا، وَأَنْ لَا يَعْتَقِدَ فَرْضًا مِنْ فُرُوضِهَا سُنَّةً، وَاجْتِنَابُ الْمُبْطِلَاتِ.", arti: "Pasal: Syarat shalat ada delapan." } ] 
+        }
       ];
-      let babs = [];
-      for(let i=0; i<16; i++) {
-        babs.push({ 
-          judul: "Kitab Gundul " + (i % 2 === 0 ? "Salaf" : "Khalaf") + " (Halaman " + (i+1) + ")", 
-          penjelasan: "Membaca teks kitab kuning tanpa harokat satu halaman penuh untuk melatih insting I'rob dan pernafasan.", 
-          kosakata: [artikel[i % artikel.length]] 
-        });
-      }
-      return babs;
     }
 
     function prosesDataBab(dataBab) {
       dataPelajaran = [];
       let nomorHalaman = 1;
       
-      dataBab.forEach(bab => {
+      dataBab.forEach((bab, index) => {
+        let targetKotak = 1;
+        let kolomPC = 1;
+        let layoutClass = "layout-artikel";
+        let layoutName = "Artikel Panjang";
+
+        // Pola Layout Dinamis berulang setiap 4 Bab
+        let pola = index % 4;
+        if (pola === 0) { targetKotak = 18; kolomPC = 3; layoutClass = "layout-pendek"; layoutName = "Kalimat Pendek"; }
+        else if (pola === 1) { targetKotak = 12; kolomPC = 2; layoutClass = "layout-panjang"; layoutName = "Kalimat Panjang"; }
+        else if (pola === 2) { targetKotak = 3; kolomPC = 1; layoutClass = "layout-paragraf"; layoutName = "Paragraf"; }
+        else { targetKotak = 1; kolomPC = 1; layoutClass = "layout-artikel"; layoutName = "Artikel Panjang"; }
+
         dataPelajaran.push({
           halaman: nomorHalaman++,
-          judul: bab.judul + (modeImtihan ? " (Evaluasi Suara AI)" : " (Latihan Baca)"),
+          judul: bab.judul + ` (${layoutName})` + (modeImtihan ? " (Evaluasi AI)" : " (Latihan Baca)"),
           penjelasan: modeImtihan 
             ? "UJIAN AI: Baca seluruh teks gundul ini. AI akan mendengarkan dan menilai ketepatan Anda!" 
-            : "LATIHAN 100% GUNDUL. Klik teks untuk mendengarkan contoh bacaan (harokat/i'rob) yang benar dari ustadz AI.",
+            : `LATIHAN 100% GUNDUL. Format ${layoutName}. Klik teks untuk mendengarkan contoh bacaan (harokat/i'rob) yang benar.`,
           fase: modeImtihan ? 3 : 1, // Fase 3 = Ujian AI, Fase 1 = Klik memutar suara
+          targetKotak: targetKotak,
+          kolomPC: kolomPC,
+          layoutClass: layoutClass,
           kosakata: bab.kosakata.map(k => ({
             kata: k.kata.replace(/[\u064B-\u065F\u0670]/g, ''), // SELALU GUNDUL 100%
             arti: k.arti,
@@ -484,16 +507,16 @@
       return arr;
     }
 
-    function updateSkor() {
+    function updateSkor(targetKotak) {
       let predikat = "Aadi";
-      if (skorBenar === TARGET_JUMLAH_KOTAK) predikat = "Mumtaz 🌟";
-      else if (skorBenar >= Math.ceil(TARGET_JUMLAH_KOTAK * 0.7)) predikat = "Jayyid 👍";
-      else if (skorBenar >= Math.ceil(TARGET_JUMLAH_KOTAK * 0.4)) predikat = "Aslaha 🙂";
+      if (skorBenar === targetKotak) predikat = "Mumtaz 🌟";
+      else if (skorBenar >= Math.ceil(targetKotak * 0.7)) predikat = "Jayyid 👍";
+      else if (skorBenar >= Math.ceil(targetKotak * 0.4)) predikat = "Aslaha 🙂";
       
-      document.getElementById('skor-papan').innerHTML = `Skor Benar: <span style="color:#10B981">${skorBenar}</span>/${TARGET_JUMLAH_KOTAK} | Predikat: <span style="color:#2563EB">${predikat}</span>`;
+      document.getElementById('skor-papan').innerHTML = `Skor Benar: <span style="color:#10B981">${skorBenar}</span>/${targetKotak} | Predikat: <span style="color:#2563EB">${predikat}</span>`;
     }
 
-    function cekBacaanAI(kataTargetAsli, gridItem, spanKata) {
+    function cekBacaanAI(kataTargetAsli, gridItem, spanKata, targetKotak) {
       if (gridItem.classList.contains('terjawab')) {
         alert("Kotak ini sudah dinilai! Silakan lanjut ke kotak lain untuk mengumpulkan skor.");
         return;
@@ -561,7 +584,7 @@
             bacaTeksArab(kataTargetAsli);
           };
         }
-        updateSkor();
+        updateSkor(targetKotak);
       };
 
       recognition.onerror = (event) => {
@@ -601,7 +624,7 @@
       skorSalah = 0;
       if (data.fase === 3) {
         document.getElementById('skor-papan').style.display = 'block';
-        updateSkor();
+        updateSkor(data.targetKotak);
       } else {
         document.getElementById('skor-papan').style.display = 'none';
       }
@@ -613,14 +636,16 @@
 
       const grid = document.getElementById('grid-kotak');
       grid.innerHTML = ''; 
+      grid.className = 'grid-kotak ' + data.layoutClass;
+      grid.style.setProperty('--grid-cols', `repeat(${data.kolomPC}, 1fr)`);
       
       let kosakataUntukGrid = [];
       if (data.kosakata.length > 0) {
-        for (let i = 0; i < TARGET_JUMLAH_KOTAK; i++) {
+        for (let i = 0; i < data.targetKotak; i++) {
           kosakataUntukGrid.push(data.kosakata[i % data.kosakata.length]);
         }
       } else {
-        for (let i = 0; i < TARGET_JUMLAH_KOTAK; i++) {
+        for (let i = 0; i < data.targetKotak; i++) {
           kosakataUntukGrid.push({ kata: '&nbsp;', arti: '' });
         }
       }
@@ -654,7 +679,7 @@
         
         if (data.fase === 3) {
           div.onclick = () => {
-            cekBacaanAI(item.kataAsli, div, spanKata);
+            cekBacaanAI(item.kataAsli, div, spanKata, data.targetKotak);
           };
         }
         
