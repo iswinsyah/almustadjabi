@@ -94,8 +94,33 @@ if ($action === 'save_settings') {
 // FITUR 4: Ambil Daftar Pengguna
 if ($action === 'get_users') {
     try {
+        // --- FITUR SELF-HEALING DATABASE ---
+        // Otomatis menambahkan kolom baru jika tabel users masih versi lama
+        $kolom_baru = [
+            "nama VARCHAR(100) NULL",
+            "gender ENUM('L','P') NULL",
+            "tanggal_lahir DATE NULL",
+            "email VARCHAR(100) NULL",
+            "whatsapp VARCHAR(20) NULL",
+            "domisili VARCHAR(100) NULL",
+            "status_akun VARCHAR(20) DEFAULT 'free'",
+            "session_token VARCHAR(255) NULL"
+        ];
+        foreach ($kolom_baru as $kolom) {
+            try { $pdo->exec("ALTER TABLE users ADD COLUMN $kolom"); } 
+            catch (PDOException $e) { /* Abaikan jika kolom sudah ada */ }
+        }
+
         $stmt = $pdo->query("SELECT id, username, nama, whatsapp, domisili, status_akun FROM users ORDER BY id DESC");
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Rapikan data null menjadi tanda strip agar enak dilihat di tabel
+        foreach($users as &$u) {
+            $u['nama'] = $u['nama'] ?: '-';
+            $u['whatsapp'] = $u['whatsapp'] ?: '-';
+            $u['status_akun'] = $u['status_akun'] ?: 'free';
+        }
+
         echo json_encode(["status" => "success", "data" => $users]);
     } catch(PDOException $e) {
         echo json_encode(["status" => "error", "message" => "Gagal mengambil data pengguna: " . $e->getMessage()]);
