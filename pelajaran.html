@@ -408,7 +408,11 @@
         updateSkor();
       };
 
-      recognition.onerror = (event) => { cleanupUI(); alert("Gagal mendengarkan: " + event.error); };
+      recognition.onerror = (event) => { 
+        cleanupUI(); 
+        let pesanError = event.error === 'network' ? 'Koneksi internet terputus atau tidak stabil. Silakan periksa jaringan Anda.' : event.error;
+        alert("Gagal mendengarkan suara AI: " + pesanError); 
+      };
       recognition.onend = () => { cleanupUI(); };
       recognition.start();
     }
