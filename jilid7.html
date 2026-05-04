@@ -105,12 +105,12 @@
   <nav class="sidebar" id="sidebar">
     <div class="sidebar-header"><h3>Menu Navigasi</h3></div>
     <a href="menu.html" class="sidebar-link">🏠 Beranda</a>
-    <a href="jilid1.html" class="sidebar-link">Jilid 1: Isim</a>
-    <a href="jilid2.html" class="sidebar-link">Jilid 2: Fi'il</a>
-    <a href="jilid3.html" class="sidebar-link">Jilid 3: Kalimat</a>
-    <a href="jilid4.html" class="sidebar-link">Jilid 4: Lanjutan</a>
-    <a href="jilid5.html" class="sidebar-link">Jilid 5: Jamak</a>
-    <a href="jilid6.html" class="sidebar-link">Jilid 6: Khusus</a>
+    <a href="pelajaran.html?jilid=1" class="sidebar-link">Jilid 1: Isim</a>
+    <a href="pelajaran.html?jilid=2" class="sidebar-link">Jilid 2: Fi'il</a>
+    <a href="pelajaran.html?jilid=3" class="sidebar-link">Jilid 3: Kalimat</a>
+    <a href="pelajaran.html?jilid=4" class="sidebar-link">Jilid 4: Lanjutan</a>
+    <a href="pelajaran.html?jilid=5" class="sidebar-link">Jilid 5: Jamak</a>
+    <a href="pelajaran.html?jilid=6" class="sidebar-link">Jilid 6: Khusus</a>
     <a href="jilid7.html" class="sidebar-link active">Jilid 7: Kitab Asli</a>
   </nav>
 
@@ -156,8 +156,9 @@
   <script>
   document.addEventListener('DOMContentLoaded', () => {
     // --- CEK STATUS PREMIUM / GEMBOK ---
-    const statusAkun = localStorage.getItem('status_akun');
-    if (statusAkun !== 'premium' && statusAkun !== 'super_admin') {
+    // Gunakan normalisasi string agar kebal terhadap salah ketik (huruf besar/spasi)
+    const statusAkun = String(localStorage.getItem('status_akun') || '').trim().toLowerCase();
+    if (statusAkun !== 'premium' && statusAkun !== 'super_admin' && statusAkun !== 'super admin' && statusAkun !== 'admin') {
       document.getElementById('premium-lock').style.display = 'flex';
       return; 
     }
