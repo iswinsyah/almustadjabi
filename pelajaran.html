@@ -41,7 +41,7 @@
     }
 
     .grid-kotak { 
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; width: 95%; max-width: 900px;
+      display: grid; grid-template-columns: var(--grid-cols-pc, repeat(3, 1fr)); gap: 10px; margin-bottom: 20px; width: 95%; max-width: 900px;
     }
 
     .grid-item { 
@@ -57,7 +57,7 @@
     .grid-item.salah.terjawab { cursor: pointer; }
 
     @media (max-width: 768px) {
-      .grid-kotak { grid-template-columns: repeat(1, 1fr); }
+      .grid-kotak { grid-template-columns: var(--grid-cols-hp, repeat(1, 1fr)); }
       .grid-item { font-size: 1.3rem; padding: 10px 5px; min-height: 50px; }
     }
 
@@ -193,12 +193,12 @@
     const jilid = parseInt(urlParams.get('jilid')) || 1;
 
     const kurikulum = {
-      1: { title: "Jilid 1: Isim", url: "https://script.google.com/macros/s/AKfycbxSUFw79hAluE84LK6kToEyBkDuW0BLSS8gWcofSfagi-cQYH9j2_jeWk7LUFSz4OF8/exec" },
-      2: { title: "Jilid 2: Fi'il", url: "https://script.google.com/macros/s/AKfycbwIVgae6B5evRTQovqt5FZXayjbpTDSwWTXRZpSf3TWGpdfq_SUdnGCUcfOweoieahH/exec" },
-      3: { title: "Jilid 3: Kalimat", url: "https://script.google.com/macros/s/AKfycbwJMzHqLjnaKKEo2Z-oZwRQa6iqfnokRN7QttjpW87v8rvHoMdmxS5c0iq8O-TL0WY/exec" },
-      4: { title: "Jilid 4: Lanjutan", url: "https://script.google.com/macros/s/AKfycbylkuitkS3rD_Z_C2aX_c-ZGoDVJu1Nube_1-8T0znc2veVkcujqKJYAlVq7gPKdco/exec" },
-      5: { title: "Jilid 5: Jamak", url: "https://script.google.com/macros/s/AKfycbxGU7L45qfp-xNXV-M6uqI8t1S0P81qT5fymbCX6tv1zj_Cvry-3XY1sUURBN9MB_U/exec" },
-      6: { title: "Jilid 6: Khusus", url: "https://script.google.com/macros/s/AKfycbzkaPd1wxezWDzT7SLW4vdudTCA4uxnMFkmZam7HOWGZYC_c0hq_f0xQ9-xdvN5jEU7/exec" }
+      1: { title: "Jilid 1: Isim" },
+      2: { title: "Jilid 2: Fi'il" },
+      3: { title: "Jilid 3: Kalimat" },
+      4: { title: "Jilid 4: Lanjutan" },
+      5: { title: "Jilid 5: Jamak" },
+      6: { title: "Jilid 6: Khusus" }
     };
 
     if (!kurikulum[jilid]) {
@@ -247,8 +247,14 @@
 
     if ('speechSynthesis' in window) window.speechSynthesis.getVoices();
 
-    const TARGET_JUMLAH_KOTAK = 18; // Jumlah total kotak di grid (3 kolom x 6 baris)
-    const gasApiUrl = kurikulum[jilid].url;
+    // --- SETUP GRID DINAMIS ---
+    const TARGET_JUMLAH_KOTAK = (jilid === 1 || jilid === 2) ? 30 : 18;
+    const gridColsPC = (jilid === 1 || jilid === 2) ? 5 : 3;
+    const gridColsHP = (jilid === 1 || jilid === 2) ? 5 : 1; // Jilid 1 & 2 kata pendek, muat 5 kolom di HP
+
+    document.getElementById('grid-kotak').style.setProperty('--grid-cols-pc', `repeat(${gridColsPC}, 1fr)`);
+    document.getElementById('grid-kotak').style.setProperty('--grid-cols-hp', `repeat(${gridColsHP}, 1fr)`);
+    document.getElementById('skor-papan').innerHTML = `Skor Benar: 0/${TARGET_JUMLAH_KOTAK} | Predikat: Aadi`;
 
     let dataPelajaran = [];
     let indexSaatIni = 0;
@@ -260,10 +266,28 @@
     async function muatDataPelajaran() {
       document.getElementById('judul-h3').textContent = 'Memuat Data Pelajaran...';
       try {
-        const response = await fetch(gasApiUrl, { cache: 'no-store' });
+        const usr = localStorage.getItem('username');
+        const tkn = localStorage.getItem('session_token');
+        if (!usr || !tkn) { window.location.replace('index.html'); return; }
+
+        // --- KEAMANAN: Memanggil Backend PHP (get_materi.php) ---
+        const response = await fetch('get_materi.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: usr, session_token: tkn, jilid: jilid })
+        });
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const dataBab = await response.json();
         
+        // Jika ditolak oleh backend (Bypass localStorage atau Token kedaluwarsa)
+        if (dataBab.status === 'locked' || dataBab.status === 'invalid' || dataBab.status === 'error') {
+            document.getElementById('judul-h3').textContent = 'Akses Ditolak';
+            document.getElementById('kotak-besar').textContent = dataBab.message;
+            document.getElementById('grid-kotak').innerHTML = '';
+            if (dataBab.status === 'invalid') { alert(dataBab.message); localStorage.clear(); window.location.replace('index.html'); }
+            return;
+        }
+
         // Sanitasi: Perbaiki typo "تذhهّبُ" secara otomatis jika ada
         let dataString = JSON.stringify(dataBab);
         dataString = dataString.replace(/تذhهّبُ/g, 'تَذْهَبُ');
