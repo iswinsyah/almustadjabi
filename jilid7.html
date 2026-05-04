@@ -145,11 +145,11 @@
     
     <div class="grid-kotak" id="grid-kotak"></div>
 
-    <div class="halaman"><span id="halaman-teks">Fase 1/3</span></div>
+    <div class="halaman"><span id="halaman-teks">Halaman 1/15</span></div>
 
     <footer>
-      <button id="btnMundur">⬅ Fase Sebelumnya</button>
-      <button id="btnMaju">Fase Berikutnya ➡</button>
+      <button id="btnMundur">⬅ Halaman Sebelumnya</button>
+      <button id="btnMaju">Halaman Berikutnya ➡</button>
     </footer>
   </div>
 
@@ -195,15 +195,38 @@
     // DATA KITAB ASLI LENGKAP
     const dataKitab = {
       talim: [
-        { kataAsli: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ", kata: "بسم الله الرحمن الرحيم", arti: "Dengan menyebut nama Allah Yang Maha Pengasih lagi Maha Penyayang" },
-        { kataAsli: "الْحَمْدُ لِلَّهِ الَّذِي فَضَّلَ بَنِي آدَمَ بِالْعِلْمِ وَالْعَمَلِ عَلَى جَمِيعِ الْعَالَمِ", kata: "الحمد لله الذي فضل بني آدم بالعلم والعمل على جميع العالم", arti: "Segala puji bagi Allah yang telah melebihkan anak cucu Adam dengan ilmu dan amal atas seluruh alam" },
-        { kataAsli: "وَالصَّلَاةُ وَالسَّلَامُ عَلَى مُحَمَّدٍ سَيِّدِ الْعَرَبِ وَالْعَجَمِ", kata: "والصلاة والسلام على محمد سيد العرب والعجم", arti: "Dan selawat serta salam semoga tercurah kepada Nabi Muhammad, penghulu orang Arab dan Ajam" },
-        { kataAsli: "وَعَلَى آلِهِ وَأَصْحَابِهِ يَنَابِيعِ الْعُلُومِ وَالْحِكَمِ", kata: "وعلى آله وأصحابه ينابيع العلوم والحكم", arti: "Dan kepada keluarga serta sahabatnya yang merupakan sumber ilmu dan hikmah" }
+        { kataAsli: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ. الْحَمْدُ لِلَّهِ الَّذِي فَضَّلَ بَنِي آدَمَ بِالْعِلْمِ وَالْعَمَلِ عَلَى جَمِيعِ الْعَالَمِ", arti: "Dengan menyebut nama Allah Yang Maha Pengasih lagi Maha Penyayang. Segala puji bagi Allah yang melebihkan anak cucu Adam dengan ilmu dan amal atas seluruh alam" },
+        { kataAsli: "وَالصَّلَاةُ وَالسَّلَامُ عَلَى مُحَمَّدٍ سَيِّدِ الْعَرَبِ وَالْعَجَمِ، وَعَلَى آلِهِ وَأَصْحَابِهِ يَنَابِيعِ الْعُلُومِ وَالْحِكَمِ", arti: "Dan selawat serta salam tercurah kepada Nabi Muhammad, penghulu orang Arab dan Ajam, serta keluarga dan sahabatnya sumber ilmu dan hikmah" },
+        { kataAsli: "فَلَمَّا رَأَيْتُ كَثِيرًا مِنْ طُلَّابِ الْعِلْمِ فِي زَمَانِنَا يَجِدُّونَ إِلَى الْعِلْمِ وَلَا يَصِلُونَ إِلَيْهِ", arti: "Ketika aku melihat banyak penuntut ilmu di zaman kita ini bersungguh-sungguh mencari ilmu namun tidak sampai kepadanya" },
+        { kataAsli: "وَمِنْ مَنَافِعِهِ وَثَمَرَاتِهِ يُحْرَمُونَ، لِمَا أَنَّهُمْ أَخْطَأُوا طَرَائِقَهُ، وَتَرَكُوا شَرَائِطَهُ", arti: "Dan terhalang dari manfaat serta buahnya, karena mereka salah jalan dan meninggalkan syarat-syaratnya" },
+        { kataAsli: "وَكُلُّ مَنْ أَخْطَأَ الطَّرِيقَ ضَلَّ، وَلَا يَنَالُ الْمَقْصُودَ قَلَّ أَوْ جَلَّ", arti: "Barangsiapa yang salah jalan pasti tersesat, dan tidak akan mencapai tujuan baik sedikit maupun banyak" },
+        { kataAsli: "فَأَرَدْتُ وَأَحْبَبْتُ أَنْ أُبَيِّنَ لَهُمْ طَرِيقَ التَّعَلُّمِ عَلَى مَا رَأَيْتُ فِي الْكُتُبِ", arti: "Maka aku bermaksud dan suka untuk menjelaskan kepada mereka jalan belajar sesuai apa yang kulihat di kitab-kitab" },
+        { kataAsli: "وَسَمِعْتُ مِنْ أَسَاتِيذِي أُولِي الْعِلْمِ وَالْحِكَمِ", arti: "Dan dari yang kudengar dari guru-guruku yang memiliki ilmu dan hikmah" },
+        { kataAsli: "رَجَاءَ الدُّعَاءِ لِي مِنَ الرَّاغِبِينَ فِيهِ الْمُخْلِصِينَ بِالْفَوْزِ وَالْخَلَاصِ فِي يَوْمِ الدِّينِ", arti: "Dengan harapan doa dari mereka yang ikhlas mencarinya, agar mendapat kemenangan dan keselamatan di hari pembalasan" },
+        { kataAsli: "فَصْلٌ فِي مَاهِيَّةِ الْعِلْمِ وَالْفِقْهِ وَفَضْلِهِ", arti: "Pasal tentang hakikat ilmu, fiqih, dan keutamaannya" },
+        { kataAsli: "قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ وَمُسْلِمَةٍ", arti: "Rasulullah bersabda: Menuntut ilmu adalah kewajiban bagi setiap muslim dan muslimah" },
+        { kataAsli: "اعْلَمْ بِأَنَّهُ لَا يُفْتَرَضُ عَلَى كُلِّ مُسْلِمٍ وَمُسْلِمَةٍ طَلَبُ كُلِّ عِلْمٍ", arti: "Ketahuilah bahwa tidak diwajibkan atas setiap muslim dan muslimah menuntut semua ilmu" },
+        { kataAsli: "بَلْ يُفْتَرَضُ عَلَيْهِ طَلَبُ عِلْمِ الْحَالِ، كَمَا يُقَالُ: أَفْضَلُ الْعِلْمِ عِلْمُ الْحَالِ", arti: "Tetapi yang diwajibkan adalah ilmu hal (yang sedang dibutuhkan), seperti dikatakan: Seutama-utama ilmu adalah ilmu hal" },
+        { kataAsli: "وَيُفْتَرَضُ عَلَى الْمُسْلِمِ طَلَبُ مَا يَقَعُ لَهُ فِي حَالِهِ فِي أَيِّ حَالٍ كَانَ", arti: "Diwajibkan bagi muslim mencari ilmu yang terjadi pada keadaannya, dalam keadaan apa pun ia berada" },
+        { kataAsli: "فَإِنَّهُ لَا بُدَّ لَهُ مِنَ الصَّلَاةِ، فَيُفْتَرَضُ عَلَيْهِ عِلْمُ مَا يَقَعُ لَهُ فِي صَلَاتِهِ", arti: "Karena ia harus shalat, maka wajib baginya ilmu tentang apa yang terjadi dalam shalatnya" },
+        { kataAsli: "وَيُجِبُ عَلَيْهِ عِلْمُ مَا يَقَعُ لَهُ بِهِ الْوَاجِبُ، لِأَنَّ مَا يَتَوَسَّلُ بِهِ إِلَى إِقَامَةِ الْفَرْضِ يَكُونُ فَرْضًا", arti: "Dan wajib baginya mengetahui hal yang mengantarkan pada kewajiban, karena perantara kewajiban hukumnya wajib pula" }
       ],
       nidhom: [
-        { kataAsli: "يَنْهَضُ الإِنْسَانُ بِمَا عِنْدَهُ مِنْ فِكْرٍ عَنِ الْحَيَاةِ وَالْكَوْنِ وَالإِنْسَانِ", kata: "ينهض الإنسان بما عنده من فكر عن الحياة والكون والإنسان", arti: "Manusia bangkit dengan pemikiran yang dimilikinya tentang kehidupan, alam semesta, dan manusia" },
-        { kataAsli: "وَعَنْ عَلاقَتِهَا جَمِيعاً بِمَا قَبْلَ الْحَيَاةِ الدُّنْيَا وَمَا بَعْدَهَا", kata: "وعن علاقتها جميعاً بما قبل الحياة الدنيا وما بعدها", arti: "Dan tentang hubungannya semua itu dengan apa yang ada sebelum kehidupan dunia dan sesudahnya" },
-        { kataAsli: "لِذَلِكَ كَانَ لا بُدَّ مِنْ تَغْيِيرِ فِكْرِ الإِنْسَانِ تَغْيِيراً أَسَاسِيّاً شَامِلاً", kata: "لذلك كان لا بد من تغيير فكر الإنسان تغييراً أساسياً شاملاً", arti: "Oleh karena itu, mutlak diperlukan perubahan pemikiran manusia secara mendasar dan menyeluruh" }
+        { kataAsli: "يَنْهَضُ الإِنْسَانُ بِمَا عِنْدَهُ مِنْ فِكْرٍ عَنِ الْحَيَاةِ وَالْكَوْنِ وَالإِنْسَانِ", arti: "Manusia bangkit dengan pemikiran yang dimilikinya tentang kehidupan, alam semesta, dan manusia" },
+        { kataAsli: "وَعَنْ عَلاقَتِهَا جَمِيعاً بِمَا قَبْلَ الْحَيَاةِ الدُّنْيَا وَمَا بَعْدَهَا", arti: "Dan tentang hubungannya semua itu dengan apa yang ada sebelum kehidupan dunia dan sesudahnya" },
+        { kataAsli: "لِذَلِكَ كَانَ لا بُدَّ مِنْ تَغْيِيرِ فِكْرِ الإِنْسَانِ تَغْيِيراً أَسَاسِيّاً شَامِلاً حَتَّى يَنْهَضَ", arti: "Oleh karena itu, mutlak diperlukan perubahan pemikiran manusia secara mendasar dan menyeluruh agar bangkit" },
+        { kataAsli: "لأَنَّ الْفِكْرَ هُوَ الَّذِي يُوجِدُ الْمَفَاهِيمَ عَنِ الأَشْيَاءِ، وَيُرَكِّزُ هَذِهِ الْمَفَاهِيمَ", arti: "Karena pemikiranlah yang menciptakan konsep-konsep tentang berbagai hal dan memusatkannya" },
+        { kataAsli: "وَالإِنْسَانُ يُكَيِّفُ سُلُوكَهُ فِي الْحَيَاةِ بِحَسَبِ مَفَاهِيمِهِ عَنْهَا", arti: "Dan manusia menyesuaikan perilakunya dalam kehidupan berdasarkan konsep yang dimilikinya" },
+        { kataAsli: "فَالسُّلُوكُ الإِنْسَانِيُّ مُرْتَبِطٌ بِمَفَاهِيمِ الإِنْسَانِ ارْتِبَاطاً مُحْكَمًا", arti: "Maka perilaku manusia terikat kuat dengan konsep yang ada pada dirinya" },
+        { kataAsli: "فَإِذَا أَرَدْنَا أَنْ نُغَيِّرَ سُلُوكَ الإِنْسَانِ الْمُنْخَفِضِ وَنَجْعَلَهُ رَاقِيًا", arti: "Maka jika kita ingin mengubah perilaku manusia yang rendah menjadi berkelas" },
+        { kataAsli: "لا بُدَّ أَنْ نُغَيِّرَ مَفَاهِيمَهُ أَوَّلاً", arti: "Mutlak kita harus mengubah konsep pemikirannya terlebih dahulu" },
+        { kataAsli: "وَالطَّرِيقُ لِنَهْضَةِ الإِنْسَانِ هُوَ أَنْ يَحْصُلَ لَدَيْهِ تَغَيُّرٌ شَامِلٌ لِمَفَاهِيمِهِ السَّابِقَةِ", arti: "Jalan kebangkitan manusia adalah dengan terjadinya perubahan menyeluruh atas konsep sebelumnya" },
+        { kataAsli: "وَأَنْ تُوجَدَ لَدَيْهِ مَفَاهِيمُ جَدِيدَةٌ تُوجِدُ عِنْدَهُ هَذَا الْفِكْرَ", arti: "Dan mewujudkan konsep baru yang menumbuhkan pemikiran tersebut" },
+        { kataAsli: "وَلِكَيْ تُوجَدَ هَذِهِ الْمَفَاهِيمُ وَتَتَغَيَّرَ الْمَفَاهِيمُ السَّابِقَةُ", arti: "Agar konsep-konsep ini terwujud dan mengubah konsep masa lalu" },
+        { kataAsli: "لا بُدَّ أَنْ تُوجَدَ الْفِكْرَةُ الْكُلِّيَّةُ عَنِ الْحَيَاةِ وَالْكَوْنِ وَالإِنْسَانِ", arti: "Maka harus ada ide menyeluruh (fikrah kulliyah) mengenai kehidupan, alam semesta, dan manusia" },
+        { kataAsli: "لأَنَّهَا هِيَ الْقَاعِدَةُ الْفِكْرِيَّةُ الَّتِي تُبْنَى عَلَيْهَا جَمِيعُ الأَفْكَارِ", arti: "Karena hal itu adalah kaidah pemikiran yang di atasnya dibangun seluruh pemikiran lain" },
+        { kataAsli: "وَتَنْبَثِقُ عَنْهَا جَمِيعُ الْمَفَاهِيمِ عَنِ الْحَيَاةِ", arti: "Dan darinya terpancar seluruh konsep tentang kehidupan" },
+        { kataAsli: "وَإِعْطَاءُ هَذِهِ الْفِكْرَةِ الْكُلِّيَّةِ هُوَ إِيجَادُ الْعَقِيدَةِ الإِسْلامِيَّةِ عِنْدَهُ", arti: "Memberikan ide menyeluruh ini tidak lain adalah menanamkan Akidah Islam dalam dirinya" }
       ]
     };
 
@@ -220,18 +243,22 @@
       const isiKitab = dataKitab[kitab];
       const namaKitab = kitab === 'talim' ? "Ta'lim Muta'alim (Salaf Klasik)" : "Nidhomul Islam (Khalaf Modern)";
       
-      dataPelajaran = [
-        {
-          halaman: 1, judul: namaKitab,
-          penjelasan: "Fase 1: Latihan Membaca. Teks tampil 100% tanpa harokat. Klik kotak untuk mendengarkan contoh bacaan yang benar.", fase: 1,
-          kosakata: isiKitab.map(k => ({ kata: k.kata, arti: k.arti, kataAsli: k.kataAsli }))
-        },
-        {
-          halaman: 2, judul: namaKitab,
-          penjelasan: "Fase 2: Evaluasi AI. Uji kelancaran Anda! Baca teks gundul ini dan biarkan AI mengoreksi ketepatan bacaannya.", fase: 3,
-          kosakata: isiKitab.map(k => ({ kata: k.kata, arti: k.arti, kataAsli: k.kataAsli }))
-        }
-      ];
+      // Acak urutan kalimat agar tidak monoton setiap masuk (Fisher-Yates)
+      let arr = [...isiKitab];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      
+      dataPelajaran = [];
+      for(let i=0; i<15; i++) {
+        let item = arr[i % arr.length]; // Ambil 1 kalimat/paragraf per halaman
+        dataPelajaran.push({
+          halaman: i + 1, judul: namaKitab,
+          penjelasan: "Uji Kelancaran AI: Klik teks gundul di bawah ini, baca, dan biarkan AI mengoreksi.", fase: 3, // fase 3 = mode recording AI
+          kosakata: [ { kata: item.kataAsli.replace(/[\u064B-\u065F\u0670]/g, ''), arti: item.arti, kataAsli: item.kataAsli } ]
+        });
+      }
 
       indexSaatIni = 0;
       renderHalaman();
@@ -373,7 +400,7 @@
 
       document.getElementById('judul-h3').textContent = data.judul;
       document.getElementById('kotak-besar').textContent = data.penjelasan;
-      document.getElementById('halaman-teks').textContent = 'Fase ' + data.halaman + '/2';
+      document.getElementById('halaman-teks').textContent = 'Halaman ' + data.halaman + '/15';
 
       const grid = document.getElementById('grid-kotak');
       grid.innerHTML = ''; 
