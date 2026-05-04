@@ -26,10 +26,12 @@ if (!isset($kurikulum_gas[$jilid])) {
 }
 
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/config.php'; // Wajib dimuat untuk membaca config
 $status_akun = 'free';
 
 // --- VERIFIKASI SESI DAN ROLE DATABASE ---
-if ($data['session_token'] === 'SUPER_TOKEN') {
+// Pastikan hanya Bos (Super Admin) yang berhak memakai tiket SUPER_TOKEN
+if ($data['session_token'] === 'SUPER_TOKEN' && strtolower(trim($data['username'])) === SUPER_ADMIN_USER) {
     $status_akun = 'super_admin';
 } else {
     try {

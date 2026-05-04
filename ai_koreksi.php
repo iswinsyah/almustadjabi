@@ -10,6 +10,12 @@ if (!isset($_FILES['audio']) || !isset($_POST['target_text'])) {
     exit;
 }
 
+// --- PROTEKSI SERVER: Batasi Ukuran File (Maksimal 5MB) ---
+if ($_FILES['audio']['size'] > 5242880) { // 5 * 1024 * 1024 = 5MB
+    echo json_encode(["status" => "error", "pesan" => "Gagal: Ukuran rekaman terlalu besar. Maksimal 5MB."]);
+    exit;
+}
+
 $target_text = $_POST['target_text'];
 $audio_tmp_path = $_FILES['audio']['tmp_name'];
 

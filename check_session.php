@@ -7,8 +7,11 @@ if (!$data || empty($data['username']) || empty($data['session_token'])) {
     exit;
 }
 
+// Muat config rahasia untuk memeriksa nama SUPER_ADMIN
+require_once __DIR__ . '/config.php';
+
 // Bypass cek session khusus role Super Admin (karena memegang SUPER_TOKEN)
-if ($data['session_token'] === 'SUPER_TOKEN') {
+if ($data['session_token'] === 'SUPER_TOKEN' && strtolower(trim($data['username'])) === SUPER_ADMIN_USER) {
     echo json_encode(["status" => "valid"]);
     exit;
 }
