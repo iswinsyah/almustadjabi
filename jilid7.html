@@ -145,7 +145,7 @@
     
     <div class="grid-kotak" id="grid-kotak"></div>
 
-    <div class="halaman"><span id="halaman-teks">Halaman 1/15</span></div>
+    <div class="halaman"><span id="halaman-teks">Halaman 1/3</span></div>
 
     <footer>
       <button id="btnMundur">⬅ Halaman Sebelumnya</button>
@@ -251,12 +251,24 @@
       }
       
       dataPelajaran = [];
-      for(let i=0; i<15; i++) {
-        let item = arr[i % arr.length]; // Ambil 1 kalimat/paragraf per halaman
+      const ITEMS_PER_PAGE = 5;
+      const totalPages = Math.ceil(arr.length / ITEMS_PER_PAGE);
+
+      // Membagi array menjadi potongan-potongan kecil berisi 5 baris per halaman
+      for(let i=0; i<totalPages; i++) {
+        let pageKosakata = [];
+        for(let j=0; j<ITEMS_PER_PAGE; j++) {
+          let itemIndex = i * ITEMS_PER_PAGE + j;
+          if(itemIndex < arr.length) {
+            let item = arr[itemIndex];
+            pageKosakata.push({ kata: item.kataAsli.replace(/[\u064B-\u065F\u0670]/g, ''), arti: item.arti, kataAsli: item.kataAsli });
+          }
+        }
+
         dataPelajaran.push({
           halaman: i + 1, judul: namaKitab,
           penjelasan: "Uji Kelancaran AI: Klik teks gundul di bawah ini, baca, dan biarkan AI mengoreksi.", fase: 3, // fase 3 = mode recording AI
-          kosakata: [ { kata: item.kataAsli.replace(/[\u064B-\u065F\u0670]/g, ''), arti: item.arti, kataAsli: item.kataAsli } ]
+          kosakata: pageKosakata
         });
       }
 
@@ -400,7 +412,7 @@
 
       document.getElementById('judul-h3').textContent = data.judul;
       document.getElementById('kotak-besar').textContent = data.penjelasan;
-      document.getElementById('halaman-teks').textContent = 'Halaman ' + data.halaman + '/15';
+      document.getElementById('halaman-teks').textContent = 'Halaman ' + data.halaman + '/' + dataPelajaran.length;
 
       const grid = document.getElementById('grid-kotak');
       grid.innerHTML = ''; 
