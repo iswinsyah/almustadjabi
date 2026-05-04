@@ -249,60 +249,86 @@
     function cekBacaanAI(kataTargetAsli, gridItem, spanKata, totalSoal) {
       if (gridItem.classList.contains('terjawab')) { alert("Kalimat ini sudah dinilai! Silakan lanjut ke kalimat lain."); return; }
 
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) { alert("Browser Anda tidak mendukung AI Suara. Mohon gunakan Google Chrome."); return; }
-      
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'ar-SA'; recognition.interimResults = false;
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert("Browser Anda tidak mendukung fitur mikrofon.");
+        return;
+      }
       
       const micIndicator = document.createElement('div');
-      micIndicator.innerHTML = '🎙️';
+      micIndicator.innerHTML = '🔴 Merekam... (Klik kotak lagi untuk Stop)';
       micIndicator.style.position = 'absolute'; micIndicator.style.top = '5px'; micIndicator.style.right = '5px';
       micIndicator.style.fontSize = '1rem'; micIndicator.style.backgroundColor = 'rgba(0,0,0,0.5)';
-      micIndicator.style.color = 'white'; micIndicator.style.width = '24px'; micIndicator.style.height = '24px';
-      micIndicator.style.borderRadius = '50%'; micIndicator.style.display = 'flex';
+      micIndicator.style.color = 'white'; micIndicator.style.padding = '2px 8px';
+      micIndicator.style.borderRadius = '12px'; micIndicator.style.display = 'flex';
       micIndicator.style.alignItems = 'center'; micIndicator.style.justifyContent = 'center'; micIndicator.style.zIndex = '11';
+      micIndicator.style.animation = 'pulse 1s infinite';
 
       gridItem.style.backgroundColor = "#f39c12"; spanKata.style.color = "#000000";
       gridItem.style.transform = "scale(0.95)"; gridItem.appendChild(micIndicator);
 
-      const cleanupUI = () => {
-        if (gridItem.contains(micIndicator)) gridItem.removeChild(micIndicator);
-        gridItem.style.backgroundColor = ""; spanKata.style.color = ""; gridItem.style.transform = "";
-      };
+      // Mulai menyalakan mikrofon
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          const mediaRecorder = new MediaRecorder(stream);
+          const audioChunks = [];
 
-      recognition.onresult = (event) => {
-        cleanupUI();
-        const hasil = event.results[0][0].transcript;
-        const hasilGundul = hasil.replace(/[\u064B-\u065F\u0670]/g, '').trim();
-        const targetGundul = kataTargetAsli.replace(/[\u064B-\u065F\u0670]/g, '').trim();
-        
-        if (hasilGundul === targetGundul) {
-          gridItem.classList.add('benar', 'terjawab'); skorBenar++;
-        } else {
-          gridItem.classList.add('salah', 'terjawab'); skorSalah++;
-          
-          // AI mencari letak kesalahan secara spesifik (kata per kata)
-          let hasilArr = hasil.split(' ');
-          let targetArr = kataTargetAsli.split(' ');
-          let targetGundulArr = targetGundul.split(' ');
-          let hasilGundulArr = hasilGundul.split(' ');
-          
-          let diffMsg = "Ada bagian yang terlewat atau pengucapan kurang jelas.";
-          for(let i=0; i<targetGundulArr.length; i++) {
-             if(hasilGundulArr[i] !== targetGundulArr[i]) {
-                 diffMsg = `Coba perhatikan kata ke-${i+1} ("${targetArr[i]}").\nAnda membacanya: "${hasilArr[i] || '(kosong)'}"`;
-                 break;
-             }
-          }
-          
-          alert(`🤖 KOREKSI AI:\n\n${diffMsg}`);
-          gridItem.onclick = () => { spanKata.textContent = kataTargetAsli; bacaTeksArab(kataTargetAsli); };
-        }
-        updateSkor(totalSoal);
+          // Kumpulkan kepingan suara saat santri berbicara
+          mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
 
-        // Cek apakah seluruh baris di halaman ini sudah selesai dibaca
-        if (skorBenar + skorSalah === totalSoal) {
+          // Saat santri selesai dan menekan tombol stop
+          mediaRecorder.onstop = async () => {
+            stream.getTracks().forEach(track => track.stop()); // Matikan izin mikrofon
+            
+            micIndicator.innerHTML = '🤖 Mengirim ke Ustadz AI...';
+            micIndicator.style.backgroundColor = '#2563EB';
+            micIndicator.style.animation = 'none';
+            
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const formData = new FormData();
+            formData.append('audio', audioBlob, 'rekaman.webm');
+            formData.append('target_text', kataTargetAsli);
+            
+            try {
+              // Kirim ke PHP tanpa disimpan di database
+              const response = await fetch('ai_koreksi.php', { method: 'POST', body: formData });
+              if (!response.ok) throw new Error("Server error");
+              
+              const result = await response.json();
+              if (gridItem.contains(micIndicator)) gridItem.removeChild(micIndicator);
+              gridItem.style.backgroundColor = ""; spanKata.style.color = ""; gridItem.style.transform = "";
+              
+              if (result.status === 'benar') {
+                gridItem.classList.add('benar', 'terjawab'); skorBenar++;
+                alert(`✅ BACAAN BENAR!\n\nKomentar Ustadz AI:\n${result.pesan}`);
+              } else {
+                gridItem.classList.add('salah', 'terjawab'); skorSalah++;
+                alert(`🤖 KOREKSI AI:\n\n${result.pesan}`);
+                gridItem.onclick = () => { spanKata.textContent = kataTargetAsli; bacaTeksArab(kataTargetAsli); };
+              }
+              
+              updateSkor(totalSoal);
+              cekSelesaiHalaman(totalSoal);
+              
+            } catch (err) {
+              if (gridItem.contains(micIndicator)) gridItem.removeChild(micIndicator);
+              gridItem.style.backgroundColor = ""; spanKata.style.color = ""; gridItem.style.transform = "";
+              alert("Gagal menghubungi Ustadz AI. Pastikan file ai_koreksi.php berjalan.");
+            }
+          };
+
+          // Ketika diklik kedua kalinya, hentikan rekaman
+          gridItem.onclick = () => { if (mediaRecorder.state === 'recording') mediaRecorder.stop(); };
+          mediaRecorder.start();
+        })
+        .catch(err => {
+          if (gridItem.contains(micIndicator)) gridItem.removeChild(micIndicator);
+          gridItem.style.backgroundColor = ""; spanKata.style.color = ""; gridItem.style.transform = "";
+          alert("Akses mikrofon ditolak atau tidak tersedia di perangkat ini.");
+        });
+    }
+
+    function cekSelesaiHalaman(totalSoal) {
+      if (skorBenar + skorSalah === totalSoal) {
           setTimeout(() => {
             let predikat = "Aadi";
             let pesan = "Tetap semangat! Jangan menyerah, ulangi lagi pelan-pelan ya. ✊";
@@ -318,12 +344,7 @@
             }
             alert(`🎓 PENILAIAN AKHIR HALAMAN\n\nSkor: ${skorBenar}/${totalSoal}\nPredikat: ${predikat}\n\nKomentar AI: "${pesan}"`);
           }, 500); // Jeda setengah detik agar kotak sempat berubah warna
-        }
-      };
-
-      recognition.onerror = (event) => { cleanupUI(); alert("Gagal mendengarkan suara: " + event.error); };
-      recognition.onend = () => { cleanupUI(); };
-      recognition.start();
+      }
     }
 
     function bacaTeksArab(teks) {
