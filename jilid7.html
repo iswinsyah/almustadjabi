@@ -417,13 +417,16 @@
                 predikat = "Mumtaz 🌟";
                 pesan = "Masyaallah Luar Biasa! Sempurna tiada cacat. Pertahankan prestasimu! 🎉";
                 bertaburBintang(100);
+                new Audio('assets/sounds/alhamdulillah.mp3').play().catch(e => console.log('Audio belum ada'));
             } else if (skorBenar >= Math.ceil(totalSoal * 0.7)) {
                 predikat = "Jayyid 👍";
                 pesan = "Alhamdulillah Bagus Sekali! Sedikit lagi menuju kesempurnaan. Mantap! 🔥";
                 bertaburBintang(40);
+                new Audio('assets/sounds/alhamdulillah.mp3').play().catch(e => console.log('Audio belum ada'));
             } else if (skorBenar >= Math.ceil(totalSoal * 0.4)) {
                 predikat = "Aslaha 🙂";
                 pesan = "Kamu sudah berusaha dengan baik! Terus berlatih ya agar lebih lancar. 💪";
+                new Audio('assets/sounds/semangat.mp3').play().catch(e => console.log('Audio belum ada'));
             }
             alert(`🎓 PENILAIAN AKHIR HALAMAN\n\nSkor: ${skorBenar}/${totalSoal}\nPredikat: ${predikat}\n\nKomentar AI: "${pesan}"`);
           }, 500); // Jeda setengah detik agar kotak sempat berubah warna

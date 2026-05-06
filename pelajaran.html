@@ -448,11 +448,14 @@
             if (skorBenar === totalSoal) {
                 predikat = "Mumtaz 🌟";
                 bertaburBintang(100);
+                new Audio('assets/sounds/alhamdulillah.mp3').play().catch(e => console.log('Audio belum ada'));
             } else if (skorBenar >= Math.ceil(totalSoal * 0.7)) {
                 predikat = "Jayyid 👍";
                 bertaburBintang(40);
+                new Audio('assets/sounds/alhamdulillah.mp3').play().catch(e => console.log('Audio belum ada'));
             } else if (skorBenar >= Math.ceil(totalSoal * 0.4)) {
                 predikat = "Aslaha 🙂";
+                new Audio('assets/sounds/semangat.mp3').play().catch(e => console.log('Audio belum ada'));
             }
             showToast(`🎓 HALAMAN SELESAI<br>Skor: ${skorBenar}/${totalSoal}<br>Predikat: ${predikat}`, skorBenar >= Math.ceil(totalSoal * 0.7) ? 'benar' : 'salah', 5000);
           }, 500);
