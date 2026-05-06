@@ -441,8 +441,20 @@
         const hasil = event.results[0][0].transcript;
         
         const isStrict = (jilid === 1 || jilid === 2);
-        const hasilGundul = normalisasiArab(hasil, isStrict);
+        let hasilGundul = normalisasiArab(hasil, isStrict);
         const targetGundul = normalisasiArab(kataTargetAsli, isStrict);
+        
+        // --- TOLERANSI KESALAHAN PENDENGARAN AI ---
+        // Kata yang sering salah ditangkap oleh mikrofon/Google AI
+        const toleransiAI = [
+          { target: 'دليل', salahDengar: 'تعليل' }
+        ];
+        
+        toleransiAI.forEach(t => {
+          if (targetGundul.includes(t.target) && hasilGundul.includes(t.salahDengar)) {
+            hasilGundul = hasilGundul.replace(new RegExp(t.salahDengar, 'g'), t.target);
+          }
+        });
         
         if (hasilGundul === targetGundul) {
           gridItem.classList.add('benar', 'terjawab'); skorBenar++; 
