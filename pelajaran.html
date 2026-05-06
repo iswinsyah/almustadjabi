@@ -448,14 +448,14 @@
             if (skorBenar === totalSoal) {
                 predikat = "Mumtaz 🌟";
                 bertaburBintang(100);
-                new Audio('assets/sounds/alhamdulillah.mp3').play().catch(e => console.log('Audio belum ada'));
+                bacaTeksIndo("Alhamdulillah, Mumtaz!");
             } else if (skorBenar >= Math.ceil(totalSoal * 0.7)) {
                 predikat = "Jayyid 👍";
                 bertaburBintang(40);
-                new Audio('assets/sounds/alhamdulillah.mp3').play().catch(e => console.log('Audio belum ada'));
+                bacaTeksIndo("Alhamdulillah, Jayyid!");
             } else if (skorBenar >= Math.ceil(totalSoal * 0.4)) {
                 predikat = "Aslaha 🙂";
-                new Audio('assets/sounds/semangat.mp3').play().catch(e => console.log('Audio belum ada'));
+                bacaTeksIndo("Aslaha. Tetap semangat!");
             }
             showToast(`🎓 HALAMAN SELESAI<br>Skor: ${skorBenar}/${totalSoal}<br>Predikat: ${predikat}`, skorBenar >= Math.ceil(totalSoal * 0.7) ? 'benar' : 'salah', 5000);
           }, 500);
@@ -527,6 +527,17 @@
         if ('speechSynthesis' in window) {
           window.speechSynthesis.cancel();
           const utterance = new SpeechSynthesisUtterance(teks); utterance.lang = 'ar-SA';
+          window.speechSynthesis.speak(utterance);
+        }
+      });
+    }
+
+    function bacaTeksIndo(teks) {
+      const audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&tl=id&client=tw-ob&q=${encodeURIComponent(teks)}`);
+      audio.play().catch(e => {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(teks); utterance.lang = 'id-ID';
           window.speechSynthesis.speak(utterance);
         }
       });

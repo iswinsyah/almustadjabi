@@ -417,16 +417,16 @@
                 predikat = "Mumtaz 🌟";
                 pesan = "Masyaallah Luar Biasa! Sempurna tiada cacat. Pertahankan prestasimu! 🎉";
                 bertaburBintang(100);
-                new Audio('assets/sounds/alhamdulillah.mp3').play().catch(e => console.log('Audio belum ada'));
+                bacaTeksIndo("Alhamdulillah, Mumtaz!");
             } else if (skorBenar >= Math.ceil(totalSoal * 0.7)) {
                 predikat = "Jayyid 👍";
                 pesan = "Alhamdulillah Bagus Sekali! Sedikit lagi menuju kesempurnaan. Mantap! 🔥";
                 bertaburBintang(40);
-                new Audio('assets/sounds/alhamdulillah.mp3').play().catch(e => console.log('Audio belum ada'));
+                bacaTeksIndo("Alhamdulillah, Jayyid!");
             } else if (skorBenar >= Math.ceil(totalSoal * 0.4)) {
                 predikat = "Aslaha 🙂";
                 pesan = "Kamu sudah berusaha dengan baik! Terus berlatih ya agar lebih lancar. 💪";
-                new Audio('assets/sounds/semangat.mp3').play().catch(e => console.log('Audio belum ada'));
+                bacaTeksIndo("Aslaha. Tetap semangat!");
             }
             alert(`🎓 PENILAIAN AKHIR HALAMAN\n\nSkor: ${skorBenar}/${totalSoal}\nPredikat: ${predikat}\n\nKomentar AI: "${pesan}"`);
           }, 500); // Jeda setengah detik agar kotak sempat berubah warna
@@ -440,6 +440,18 @@
         if ('speechSynthesis' in window) {
           window.speechSynthesis.cancel();
           const utterance = new SpeechSynthesisUtterance(teks); utterance.lang = 'ar-SA'; utterance.rate = 0.8;
+          window.speechSynthesis.speak(utterance);
+        }
+      });
+    }
+
+    function bacaTeksIndo(teks) {
+      const urlAudio = `https://translate.google.com/translate_tts?ie=UTF-8&tl=id&client=tw-ob&q=${encodeURIComponent(teks)}`;
+      const audio = new Audio(urlAudio);
+      audio.play().catch(e => {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(teks); utterance.lang = 'id-ID'; utterance.rate = 1.0;
           window.speechSynthesis.speak(utterance);
         }
       });
