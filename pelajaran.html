@@ -123,6 +123,13 @@
       .hamburger-btn { display: flex; }
       .header-main { margin-left: 40px; }
     }
+
+    /* Aturan khusus saat HP diputar ke mode Landscape */
+    @media (max-width: 991px) and (orientation: landscape) {
+      .grid-kotak { grid-template-columns: var(--grid-cols-pc, repeat(3, 1fr)) !important; }
+      .grid-item { font-size: 1.5rem; padding: 10px; min-height: 60px; }
+      .kotak-besar { padding: 15px 20px; font-size: 1.1rem; }
+    }
   </style>
 </head>
 <body>
@@ -363,13 +370,6 @@
         [arr[i], arr[j]] = [arr[j], arr[i]];
       }
       return arr;
-    }
-
-    /* Aturan khusus saat HP diputar ke mode Landscape */
-    @media (max-width: 991px) and (orientation: landscape) {
-      .grid-kotak { grid-template-columns: var(--grid-cols-pc, repeat(3, 1fr)) !important; }
-      .grid-item { font-size: 1.5rem; padding: 10px; min-height: 60px; }
-      .kotak-besar { padding: 15px 20px; font-size: 1.1rem; }
     }
 
     // --- FUNGSI NORMALISASI TEKS ARAB (DENGAN MODE STRICT JILID 1 & 2) ---

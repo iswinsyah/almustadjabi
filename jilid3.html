@@ -295,6 +295,13 @@
       }
     }
 
+    /* Aturan khusus saat HP diputar ke mode Landscape */
+    @media (max-width: 991px) and (orientation: landscape) {
+      .grid-kotak { grid-template-columns: repeat(3, 1fr) !important; }
+      .grid-item { font-size: 1.5rem; padding: 10px; min-height: 60px; }
+      .kotak-besar { padding: 15px 20px; font-size: 1.1rem; }
+    }
+
   </style>
 </head>
 <body>
@@ -705,13 +712,6 @@
         div.appendChild(popup);
         grid.appendChild(div);
       });
-    }
-
-    /* Aturan khusus saat HP diputar ke mode Landscape */
-    @media (max-width: 991px) and (orientation: landscape) {
-      .grid-kotak { grid-template-columns: repeat(3, 1fr) !important; }
-      .grid-item { font-size: 1.5rem; padding: 10px; min-height: 60px; }
-      .kotak-besar { padding: 15px 20px; font-size: 1.1rem; }
     }
 
     // Tombol Navigasi
