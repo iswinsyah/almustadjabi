@@ -365,14 +365,23 @@
       return arr;
     }
 
-    // --- FUNGSI NORMALISASI TEKS ARAB (SOLUSI BUG Ta Marbutah & Alif) ---
-    function normalisasiArab(teks) {
+    // --- FUNGSI NORMALISASI TEKS ARAB (DENGAN MODE STRICT JILID 1 & 2) ---
+    function normalisasiArab(teks, isStrict = false) {
       if (!teks) return '';
-      return teks.replace(/[\u064B-\u065F\u0670]/g, '') // Hapus harokat
-                 .replace(/[أإآ]/g, 'ا') // Samakan semua jenis Alif
-                 .replace(/ة/g, 'ه') // Samakan Ta Marbutah dengan Ha
-                 .replace(/ى/g, 'ي') // Samakan Alif Maksura dengan Ya
-                 .trim();
+      
+      let t = teks.replace(/[أإآ]/g, 'ا') // Samakan semua jenis Alif
+                  .replace(/ى/g, 'ي'); // Samakan Alif Maksura dengan Ya
+                  
+      if (isStrict) {
+        // Jilid 1 & 2: Pertahankan Ta Marbutah & harokat akhir kata (agar bacaan akhir/mati terdeteksi)
+        // Hapus harokat HANYA jika setelahnya masih ada huruf Arab (berarti harokat di tengah)
+        t = t.replace(/[\u064B-\u065F\u0670]+(?=[\u0621-\u064A])/g, '');
+      } else {
+        // Jilid 3-6: Toleransi penuh (Gundul total)
+        t = t.replace(/[\u064B-\u065F\u0670]/g, '').replace(/ة/g, 'ه');
+      }
+      
+      return t.trim();
     }
 
     // --- FUNGSI TOAST NOTIFICATION (SOLUSI LAYAR BLUR) ---
@@ -424,8 +433,9 @@
         cleanupUI();
         const hasil = event.results[0][0].transcript;
         
-        const hasilGundul = normalisasiArab(hasil);
-        const targetGundul = normalisasiArab(kataTargetAsli);
+        const isStrict = (jilid === 1 || jilid === 2);
+        const hasilGundul = normalisasiArab(hasil, isStrict);
+        const targetGundul = normalisasiArab(kataTargetAsli, isStrict);
         
         if (hasilGundul === targetGundul) {
           gridItem.classList.add('benar', 'terjawab'); skorBenar++; 
