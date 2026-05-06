@@ -376,6 +376,16 @@
       toastTimer = setTimeout(() => { toast.style.display = 'none'; }, durasi);
     }
 
+    // --- FUNGSI NORMALISASI TEKS ARAB (MODE INSTAN TOLERANSI PENUH) ---
+    function normalisasiArab(teks) {
+      if (!teks) return '';
+      return teks.replace(/[\u064B-\u065F\u0670]/g, '') // Hapus SEMUA harokat
+                 .replace(/[أإآ]/g, 'ا') // Samakan semua jenis Alif
+                 .replace(/ة/g, 'ه') // Samakan Ta Marbutah dengan Ha
+                 .replace(/ى/g, 'ي') // Samakan Alif Maksura dengan Ya
+                 .trim();
+    }
+
     function updateSkor() {
       let predikat = "Aadi";
       if (skorBenar === TARGET_JUMLAH_KOTAK) predikat = "Mumtaz 🌟";
@@ -388,75 +398,65 @@
     function cekBacaanAI(kataTargetAsli, gridItem, spanKata, totalSoal) {
       if (gridItem.classList.contains('terjawab')) { showToast("Kotak ini sudah dinilai!", 'salah'); return; }
 
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alert("Browser Anda tidak mendukung fitur mikrofon.");
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Browser Anda tidak mendukung fitur mikrofon AI. Gunakan Chrome.");
         return;
       }
 
-      const micIndicator = document.createElement('div');
-      micIndicator.innerHTML = '🔴 Rekam (Klik Stop)';
-      micIndicator.style.position = 'absolute'; micIndicator.style.top = '5px'; micIndicator.style.right = '5px';
-      micIndicator.style.fontSize = '0.7rem'; micIndicator.style.backgroundColor = 'rgba(0,0,0,0.5)';
-      micIndicator.style.color = 'white'; micIndicator.style.padding = '3px 8px';
-      micIndicator.style.borderRadius = '12px'; micIndicator.style.display = 'flex';
-      micIndicator.style.alignItems = 'center'; micIndicator.style.justifyContent = 'center'; micIndicator.style.zIndex = '11';
-      micIndicator.style.animation = 'pulse 1s infinite';
+      const recognition = new SpeechRecognition();
+        if (!SpeechRecognition) {
+          alert("Browser Anda tidak mendukung fitur mikrofon AI. Gunakan Chrome.");
+          return;
+        }
 
-      gridItem.style.backgroundColor = "#f39c12"; spanKata.style.color = "#000000";
-      gridItem.style.transform = "scale(0.95)"; gridItem.appendChild(micIndicator);
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'ar-SA';
+        recognition.interimResults = false;
 
-      navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(stream => {
-          const mediaRecorder = new MediaRecorder(stream);
-          const audioChunks = [];
+        const micIndicator = document.createElement('div');
+        micIndicator.innerHTML = '🎙️';
+        micIndicator.style.position = 'absolute'; micIndicator.style.top = '5px'; micIndicator.style.right = '5px';
+        micIndicator.style.fontSize = '1rem'; micIndicator.style.backgroundColor = 'rgba(0,0,0,0.5)';
+        micIndicator.style.color = 'white'; micIndicator.style.width = '24px'; micIndicator.style.height = '24px';
+        micIndicator.style.borderRadius = '50%'; micIndicator.style.display = 'flex';
+        micIndicator.style.alignItems = 'center'; micIndicator.style.justifyContent = 'center'; micIndicator.style.zIndex = '11';
+        micIndicator.style.animation = 'pulse 1s infinite';
 
-          mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+        gridItem.style.backgroundColor = "#f39c12"; spanKata.style.color = "#000000";
+        gridItem.style.transform = "scale(0.95)"; gridItem.appendChild(micIndicator);
 
-          mediaRecorder.onstop = async () => {
-            stream.getTracks().forEach(track => track.stop()); // Matikan mikrofon
-            
-            micIndicator.innerHTML = '🤖 Koreksi...';
-            micIndicator.style.backgroundColor = '#2563EB';
-            micIndicator.style.animation = 'none';
-            
-            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-            const formData = new FormData();
-            formData.append('audio', audioBlob, 'rekaman.webm');
-            formData.append('target_text', kataTargetAsli);
-            
-            try {
-              const response = await fetch('ai_koreksi.php', { method: 'POST', body: formData });
-              if (!response.ok) throw new Error("Server error");
-              
-              const result = await response.json();
-              if (gridItem.contains(micIndicator)) gridItem.removeChild(micIndicator);
-              gridItem.style.backgroundColor = ""; spanKata.style.color = ""; gridItem.style.transform = "";
-              
-              if (result.status === 'benar') {
-                gridItem.classList.add('benar', 'terjawab'); skorBenar++;
-                showToast(`✅ BENAR!<br>${result.pesan}`, 'benar', 5000);
-                if (skorBenar === totalSoal) localStorage.setItem(`jilid_${jilid}_passed`, 'true');
-              } else {
-                gridItem.classList.add('salah', 'terjawab'); skorSalah++;
-                showToast(`🤖 KOREKSI:<br>${result.pesan}`, 'salah', 6000);
-                gridItem.onclick = () => { spanKata.textContent = kataTargetAsli; bacaTeksArab(kataTargetAsli); };
-              }
-              updateSkor();
-            } catch (err) {
-              if (gridItem.contains(micIndicator)) gridItem.removeChild(micIndicator);
-              gridItem.style.backgroundColor = ""; spanKata.style.transform = "";
-              showToast("❌ Gagal menghubungi Ustadz AI.", 'salah');
-            }
-          };
-
-          gridItem.onclick = () => { if (mediaRecorder.state === 'recording') mediaRecorder.stop(); };
-          mediaRecorder.start();
-        })
-        .catch(err => {
+        const cleanupUI = () => {
           if (gridItem.contains(micIndicator)) gridItem.removeChild(micIndicator);
           gridItem.style.backgroundColor = ""; spanKata.style.color = ""; gridItem.style.transform = "";
-          alert("Akses mikrofon ditolak.");
-        });
+        };
+
+        recognition.onresult = (event) => {
+          cleanupUI();
+          const hasil = event.results[0][0].transcript;
+          let hasilGundul = normalisasiArab(hasil);
+          const targetGundul = normalisasiArab(kataTargetAsli);
+          
+          if (hasilGundul === targetGundul) {
+            gridItem.classList.add('benar', 'terjawab'); skorBenar++;
+            showToast(`✅ BENAR!<br>Anda: ${hasil}`, 'benar');
+            if (skorBenar === totalSoal) localStorage.setItem(`jilid_${jilid}_passed`, 'true');
+          } else {
+            gridItem.classList.add('salah', 'terjawab'); skorSalah++;
+            showToast(`🤖 KURANG TEPAT.<br>Anda: ${hasil}<br>Harusnya: ${kataTargetAsli}`, 'salah');
+            gridItem.onclick = () => { spanKata.textContent = kataTargetAsli; bacaTeksArab(kataTargetAsli); };
+          }
+          updateSkor();
+        };
+
+        recognition.onerror = (event) => {
+          cleanupUI();
+          let pesanError = event.error === 'network' ? 'Koneksi terputus.' : event.error;
+          showToast("❌ Gagal mendengarkan AI: " + pesanError, 'salah');
+        };
+
+        recognition.onend = () => { cleanupUI(); };
+        recognition.start();
     }
 
     function bacaTeksArab(teks) {
