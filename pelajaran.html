@@ -387,6 +387,9 @@
       if (['خبير', 'خبر', 'كبر', 'عبر', 'هبر'].includes(t)) {
         t = 'حبر';
       }
+      if (['امنية', 'امنيه', 'أمنية', 'أمنيه', 'انيه', 'أنية', 'أنيه', 'النيا', 'نية', 'نيه', 'اننيه'].includes(t)) {
+        t = 'النية';
+      }
       
       // 3. Normalisasi Makhorijul Huruf (Toleransi lidah orang Indonesia)
       return t.replace(/[أإآع]/g, 'ا') // Samakan Alif dan Ain
