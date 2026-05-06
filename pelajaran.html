@@ -376,14 +376,28 @@
       toastTimer = setTimeout(() => { toast.style.display = 'none'; }, durasi);
     }
 
-    // --- FUNGSI NORMALISASI TEKS ARAB (MODE INSTAN TOLERANSI PENUH) ---
+    // --- FUNGSI NORMALISASI TEKS ARAB (MODE TOLERANSI LOGAT INDONESIA) ---
     function normalisasiArab(teks) {
       if (!teks) return '';
-      return teks.replace(/[\u064B-\u065F\u0670]/g, '') // Hapus SEMUA harokat
-                 .replace(/[أإآ]/g, 'ا') // Samakan semua jenis Alif
-                 .replace(/ة/g, 'ه') // Samakan Ta Marbutah dengan Ha
-                 .replace(/ى/g, 'ي') // Samakan Alif Maksura dengan Ya
-                 .trim();
+      
+      // 1. Hapus semua harokat dari teks STT Google
+      let t = teks.replace(/[\u064B-\u065F\u0670]/g, '');
+      
+      // 2. Koreksi khusus kata 'حبر' yang sangat sering salah ditangkap oleh sensor Google
+      if (['خبير', 'خبر', 'كبر', 'عبر', 'هبر'].includes(t)) {
+        t = 'حبر';
+      }
+      
+      // 3. Normalisasi Makhorijul Huruf (Toleransi lidah orang Indonesia)
+      return t.replace(/[أإآع]/g, 'ا') // Samakan Alif dan Ain
+              .replace(/[ةحخ]/g, 'ه') // Samakan Ta Marbutah, Ha (ح), dan Kha (خ) dengan Ha (ه)
+              .replace(/[صث]/g, 'س') // Samakan Shad dan Tsa dengan Sin
+              .replace(/[ذظ]/g, 'ز') // Samakan Dzal dan Zha dengan Zai
+              .replace(/[ض]/g, 'د') // Samakan Dhad dengan Dal
+              .replace(/[ط]/g, 'ت') // Samakan Tha dengan Ta
+              .replace(/[ق]/g, 'ك') // Samakan Qaf dengan Kaf
+              .replace(/ى/g, 'ي') // Samakan Alif Maksura dengan Ya
+              .trim();
     }
 
     function updateSkor() {
