@@ -376,22 +376,38 @@
       toastTimer = setTimeout(() => { toast.style.display = 'none'; }, durasi);
     }
 
-    // --- FUNGSI NORMALISASI TEKS ARAB (MODE TOLERANSI LOGAT INDONESIA) ---
+    // --- FUNGSI NORMALISASI TEKS ARAB (MODE TOLERANSI LOGAT INDONESIA & I'ROB) ---
     function normalisasiArab(teks) {
       if (!teks) return '';
       
-      // 1. Hapus semua harokat dari teks STT Google
-      let t = teks.replace(/[\u064B-\u065F\u0670]/g, '');
+      // 1. Hapus semua harokat dan spasi (agar kebal dari kesalahan pemisahan kata STT)
+      let t = teks.replace(/[\u064B-\u065F\u0670]/g, '').replace(/\s+/g, '');
       
-      // 2. Koreksi khusus kata 'حبر' yang sangat sering salah ditangkap oleh sensor Google
-      if (['خبير', 'خبر', 'كبر', 'عبر', 'هبر'].includes(t)) {
+      // 2. Koreksi khusus kata 'حبر'
+      if (['خبير', 'خبر', 'كبر', 'عبر', 'هبر', 'حبر'].includes(t)) {
         t = 'حبر';
       }
-      if (['امنية', 'امنيه', 'أمنية', 'أمنيه', 'انيه', 'أنية', 'أنيه', 'النيا', 'نية', 'نيه', 'اننيه'].includes(t)) {
+
+      // 3. Koreksi khusus kata 'النية' (sering dibaca Anniyatu/Anniyata sehingga STT menulis 'تو' atau 'ت')
+      const variasiNiyyah = [
+        'امنية', 'امنيه', 'أمنية', 'أمنيه', 'انيه', 'أنية', 'أنيه', 'النيا', 'نية', 'نيه', 'اننيه',
+        'النيتو', 'انيتو', 'نيتو', 'امنيتو', 'عنيتو', 'النيات', 'انيات', 'نيات',
+        'النيت', 'انيت', 'نيت', 'عنيت', 'امنيت', 'اننيتو', 'اننيت',
+        'النيتا', 'انيتا', 'نيتا', 'النيتي', 'انيتي', 'نيتي', 'النية'
+      ];
+      if (variasiNiyyah.includes(t)) {
         t = 'النية';
       }
       
-      // 3. Normalisasi Makhorijul Huruf (Toleransi lidah orang Indonesia)
+      // 4. Koreksi khusus kata 'المدرسة' & 'مدرسة' (Al-Madrasatu / Madrasatun)
+      if (['المدرستو', 'المدرست', 'المدرسات', 'المدرسه', 'مدراسه', 'المدرستا', 'المدرستي', 'المدرسة'].includes(t)) {
+        t = 'المدرسة';
+      }
+      if (['مدرستون', 'مدرستن', 'مدرستو', 'مدرست', 'مدرسات', 'مدرسه', 'مدرستان', 'مدرستين', 'مدرستا', 'مدرستي', 'مدرسة'].includes(t)) {
+        t = 'مدرسة';
+      }
+      
+      // 5. Normalisasi Makhorijul Huruf (Toleransi lidah orang Indonesia)
       return t.replace(/[أإآع]/g, 'ا') // Samakan Alif dan Ain
               .replace(/[ةحخ]/g, 'ه') // Samakan Ta Marbutah, Ha (ح), dan Kha (خ) dengan Ha (ه)
               .replace(/[صث]/g, 'س') // Samakan Shad dan Tsa dengan Sin
