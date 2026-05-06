@@ -8,8 +8,8 @@ if (!$data || empty($data['username']) || empty($data['nominal'])) {
 }
 
 $nominal = (int)$data['nominal'];
-if ($nominal < 10000) { // Batas minimal transaksi Duitku
-    echo json_encode(['status' => 'error', 'message' => 'Nominal sedekah minimal Rp 10.000']);
+if ($nominal < 100000) { // Batas minimal transaksi Duitku
+    echo json_encode(['status' => 'error', 'message' => 'Berikan Infaq terbaik minimal Rp 100.000 berlaku seumur hidup. Dana Infaq akan dialokasikan untuk biaya operasional aplikasi dan pembangunan pesantren tahfidz Villa Quran di Malang.']);
     exit;
 }
 

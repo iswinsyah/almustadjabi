@@ -198,7 +198,7 @@
 
           <p style="font-size: 0.85rem; text-align: center; color: #4B5563; margin-bottom: 10px;">Pilih nominal sedekah terbaik Anda:</p>
           <div style="margin-bottom: 15px;">
-            <input type="number" id="nominal-sedekah" placeholder="Contoh: 50000" min="10000" style="width: 100%; padding: 12px; border: 1px solid #D1D5DB; border-radius: 8px; font-family: 'Poppins'; box-sizing: border-box; font-size:1.1rem; text-align:center;">
+            <input type="number" id="nominal-sedekah" placeholder="Contoh: 100000" min="100000" style="width: 100%; padding: 12px; border: 1px solid #D1D5DB; border-radius: 8px; font-family: 'Poppins'; box-sizing: border-box; font-size:1.1rem; text-align:center;">
           </div>
           
           <button class="btn-primary" id="btn-duitku" onclick="bayarDuitku()" style="background: #10B981; margin-bottom: 10px;">💳 Bayar Otomatis (Akses Langsung Terbuka)</button>
@@ -385,7 +385,7 @@
       const nom = document.getElementById('nominal-sedekah').value;
       const usr = localStorage.getItem('username');
       
-      if (!nom || nom < 10000) return alert("Minimal sedekah Rp 10.000 ya bos untuk menggunakan gateway otomatis.");
+      if (!nom || nom < 100000) return alert("Berikan Infaq terbaik minimal Rp 100.000 berlaku seumur hidup. Dana Infaq akan dialokasikan untuk biaya operasional aplikasi dan pembangunan pesantren tahfidz Villa Quran  di Malang.");
       if (!usr) return alert("Gagal mengidentifikasi pengguna. Silakan login ulang.");
       
       const btn = document.getElementById('btn-duitku');
