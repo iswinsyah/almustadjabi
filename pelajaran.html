@@ -151,6 +151,16 @@
   </div>
 
   <div class="overlay" id="overlay"></div>
+  
+  <!-- TOAST NOTIFICATION MENGGANTIKAN ALERT BAWAAN AGAR LAYAR TIDAK BLUR -->
+  <div id="toast-notif" style="display:none; position:fixed; top:80px; left:50%; transform:translateX(-50%); padding:12px 25px; border-radius:10px; color:white; font-weight:bold; z-index:100000; box-shadow:0 4px 15px rgba(0,0,0,0.3); text-align:center; width:max-content; max-width:90%; font-size:0.95rem; animation: fadeInDown 0.3s ease;"></div>
+
+  <style>
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translate(-50%, -20px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+  </style>
 
   <div class="page-container">
     <header class="app-header">
@@ -355,6 +365,27 @@
       return arr;
     }
 
+    // --- FUNGSI NORMALISASI TEKS ARAB (SOLUSI BUG Ta Marbutah & Alif) ---
+    function normalisasiArab(teks) {
+      if (!teks) return '';
+      return teks.replace(/[\u064B-\u065F\u0670]/g, '') // Hapus harokat
+                 .replace(/[أإآ]/g, 'ا') // Samakan semua jenis Alif
+                 .replace(/ة/g, 'ه') // Samakan Ta Marbutah dengan Ha
+                 .replace(/ى/g, 'ي') // Samakan Alif Maksura dengan Ya
+                 .trim();
+    }
+
+    // --- FUNGSI TOAST NOTIFICATION (SOLUSI LAYAR BLUR) ---
+    let toastTimer;
+    function showToast(pesan, tipe) {
+      const toast = document.getElementById('toast-notif');
+      toast.innerHTML = pesan;
+      toast.style.backgroundColor = tipe === 'benar' ? '#10B981' : '#EF4444';
+      toast.style.display = 'block';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    }
+
     function updateSkor() {
       let predikat = "Aadi";
       if (skorBenar === TARGET_JUMLAH_KOTAK) predikat = "Mumtaz 🌟";
@@ -392,17 +423,19 @@
       recognition.onresult = (event) => {
         cleanupUI();
         const hasil = event.results[0][0].transcript;
-        const hasilGundul = hasil.replace(/[\u064B-\u065F\u0670]/g, '').trim();
-        const targetGundul = kataTargetAsli.replace(/[\u064B-\u065F\u0670]/g, '').trim();
+        
+        const hasilGundul = normalisasiArab(hasil);
+        const targetGundul = normalisasiArab(kataTargetAsli);
         
         if (hasilGundul === targetGundul) {
-          gridItem.classList.add('benar', 'terjawab'); skorBenar++; alert(`✅ BENAR!\nAnda: ${hasil}`);
+          gridItem.classList.add('benar', 'terjawab'); skorBenar++; 
+          showToast(`✅ BENAR!<br>Anda: ${hasil}`, 'benar');
           if (dataPelajaran[indexSaatIni] && dataPelajaran[indexSaatIni].fase === 3 && skorBenar === TARGET_JUMLAH_KOTAK) {
               localStorage.setItem(`jilid_${jilid}_passed`, 'true');
           }
         } else {
           gridItem.classList.add('salah', 'terjawab'); skorSalah++;
-          alert(`🤖 KURANG TEPAT.\nAnda: ${hasil}\nHarusnya: ${kataTargetAsli}`);
+          showToast(`🤖 KURANG TEPAT.<br>Anda: ${hasil}<br>Harusnya: ${kataTargetAsli}`, 'salah');
           gridItem.onclick = () => { spanKata.textContent = kataTargetAsli; bacaTeksArab(kataTargetAsli); };
         }
         updateSkor();
@@ -411,7 +444,7 @@
       recognition.onerror = (event) => { 
         cleanupUI(); 
         let pesanError = event.error === 'network' ? 'Koneksi internet terputus atau tidak stabil. Silakan periksa jaringan Anda.' : event.error;
-        alert("Gagal mendengarkan suara AI: " + pesanError); 
+        showToast("❌ Gagal mendengarkan AI: " + pesanError, 'salah');
       };
       recognition.onend = () => { cleanupUI(); };
       recognition.start();
