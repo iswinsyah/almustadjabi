@@ -40,20 +40,40 @@ $params = array(
     'callbackUrl' => $callbackUrl,
     'returnUrl' => $returnUrl,
     'signature' => $signature,
-    'expiryPeriod' => 1440 // Tagihan kadaluarsa dalam 24 jam
+    'expiryPeriod' => 1440, // Tagihan kadaluarsa dalam 24 jam
+    'itemDetails' => array(
+        array(
+            'name' => 'Sedekah Qiroatul Kutub',
+            'price' => $nominal,
+            'quantity' => 1
+        )
+    )
 );
 
 $url = $isSandbox ? 'https://api-sandbox.duitku.com/api/merchant/v2/inquiry' : 'https://api-prod.duitku.com/api/merchant/v2/inquiry';
 
+$payload = json_encode($params);
 $ch = curl_init($url);
-curl_setopt($ch, CURLOPT_POST, true); curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
-curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen(json_encode($params))));
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); $responseStr = curl_exec($ch); curl_close($ch);
+curl_setopt($ch, CURLOPT_POST, true); 
+curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($payload)));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Mencegah cURL ditolak karena masalah SSL lokal/Hostinger
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+$responseStr = curl_exec($ch); 
+$curlErr = curl_error($ch);
+curl_close($ch);
 
 $response = json_decode($responseStr, true);
-if (isset($response['statusCode']) && $response['statusCode'] == '00') {
+if ($response && isset($response['statusCode']) && $response['statusCode'] == '00') {
     echo json_encode(['status' => 'success', 'paymentUrl' => $response['paymentUrl']]);
 } else {
-    echo json_encode(['status' => 'error', 'message' => $response['statusMessage'] ?? 'Sistem Duitku sedang gangguan']);
+    // Tangkap pesan error asli dari Duitku atau cURL agar tidak tebak-tebakan
+    $pesanError = isset($response['statusMessage']) ? $response['statusMessage'] : 'Gagal Konek ke Server Duitku';
+    if ($curlErr) $pesanError .= ' (cURL: ' . $curlErr . ')';
+    if (!$response && !$curlErr) $pesanError .= ' (Data: ' . strip_tags($responseStr) . ')';
+    
+    echo json_encode(['status' => 'error', 'message' => $pesanError]);
 }
 ?>
