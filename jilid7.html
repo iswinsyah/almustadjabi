@@ -367,6 +367,7 @@
               
               if (result.status === 'benar') {
                 gridItem.classList.add('benar', 'terjawab'); skorBenar++;
+                gridItem.onclick = () => { alert("Kalimat ini sudah dinilai! Silakan lanjut ke kalimat lain."); };
                 alert(`✅ BACAAN BENAR!\n\nKomentar Ustadz AI:\n${result.pesan}`);
                 if (skorBenar >= Math.ceil(totalSoal * 0.8)) {
                     localStorage.setItem('jilid_7_passed', 'true');
@@ -383,7 +384,20 @@
               } else {
                 gridItem.classList.add('salah', 'terjawab'); skorSalah++;
                 alert(`🤖 KOREKSI AI:\n\n${result.pesan}`);
-                gridItem.onclick = () => { spanKata.textContent = kataTargetAsli; bacaTeksArab(kataTargetAsli); };
+                gridItem.onclick = () => { 
+                  const mauUlang = confirm("Bacaan kurang tepat.\n\nKlik 'OK' untuk MENGULANGI bacaan.\nKlik 'Batal' (Cancel) untuk MENDENGARKAN cara baca yang benar.");
+                  if (mauUlang) {
+                    gridItem.classList.remove('salah', 'terjawab');
+                    skorSalah--;
+                    spanKata.textContent = kataTargetAsli.replace(/[\u064B-\u065F\u0670]/g, '');
+                    updateSkor(totalSoal);
+                    gridItem.onclick = () => { cekBacaanAI(kataTargetAsli, gridItem, spanKata, totalSoal); };
+                    setTimeout(() => { cekBacaanAI(kataTargetAsli, gridItem, spanKata, totalSoal); }, 300);
+                  } else {
+                    spanKata.textContent = kataTargetAsli; 
+                    bacaTeksArab(kataTargetAsli); 
+                  }
+                };
               }
               
               updateSkor(totalSoal);
