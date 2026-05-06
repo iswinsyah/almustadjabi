@@ -375,6 +375,9 @@
                     if (!passedPages.includes(curHalaman)) {
                         passedPages.push(curHalaman);
                         localStorage.setItem('jilid_7_passed_pages', JSON.stringify(passedPages));
+                        
+                        const isAllPassed = dataPelajaran.every(p => passedPages.includes(p.halaman));
+                        if (isAllPassed) window.tuntasJilidIni = true;
                     }
                 }
               } else {
@@ -444,6 +447,16 @@
                 bacaTeksIndo("Aslaha. Tetap semangat!");
             }
             alert(`🎓 PENILAIAN AKHIR HALAMAN\n\nSkor: ${skorBenar}/${totalSoal}\nPredikat: ${predikat}\n\nKomentar AI: "${pesan}"`);
+            
+            // Jika user baru saja mengkhatamkan kitab
+            if (window.tuntasJilidIni) {
+                window.tuntasJilidIni = false;
+                setTimeout(() => {
+                    bacaTeksIndo("Alhamdulillah, luar biasa! Anda telah menuntaskan seluruh latihan kitab ini.");
+                    alert(`🎉 ALHAMDULILLAH! KHATAM KITAB 🎉\n\nMasyaallah, Luar biasa! Anda telah menaklukkan seluruh teks pada latihan kitab ini.\n\nSemoga menjadi ilmu yang bermanfaat dan barakah!`);
+                    window.location.href = 'menu.html';
+                }, 1500);
+            }
           }, 500); // Jeda setengah detik agar kotak sempat berubah warna
       }
     }

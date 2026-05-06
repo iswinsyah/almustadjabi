@@ -458,6 +458,22 @@
                 bacaTeksIndo("Aslaha. Tetap semangat!");
             }
             showToast(`🎓 HALAMAN SELESAI<br>Skor: ${skorBenar}/${totalSoal}<br>Predikat: ${predikat}`, skorBenar >= Math.ceil(totalSoal * 0.8) ? 'benar' : 'salah', 5000);
+            
+            // Jika user baru saja menuntaskan seluruh Jilid, berikan kejutan!
+            if (window.tuntasJilidIni) {
+                window.tuntasJilidIni = false; // Reset
+                setTimeout(() => {
+                    bacaTeksIndo(`Alhamdulillah! Anda telah menuntaskan jilid ${jilid}. Mari lanjut ke jilid berikutnya.`);
+                    const lanjut = confirm(`🎉 ALHAMDULILLAH! TUNTAS JILID ${jilid} 🎉\n\nMasyaallah, Luar biasa! Anda telah menaklukkan SEMUA HALAMAN di Jilid ${jilid} ini.\n\nKlik OK untuk naik kelas ke pelajaran di Jilid berikutnya!`);
+                    if (lanjut) {
+                        if (jilid < 6) {
+                            window.location.href = `pelajaran.html?jilid=${jilid + 1}`;
+                        } else {
+                            window.location.href = `jilid7.html`;
+                        }
+                    }
+                }, 2500); // Jeda agar animasi bintang selesai dulu
+            }
           }, 500);
       }
     }
@@ -508,6 +524,10 @@
               if (!passedPages.includes(curHalaman)) {
                 passedPages.push(curHalaman);
                 localStorage.setItem(`jilid_${jilid}_passed_pages`, JSON.stringify(passedPages));
+                
+                // Cek apakah seluruh halaman di Jilid ini sudah berhasil dilewati semua
+                const isAllPassed = dataPelajaran.every(p => passedPages.includes(p.halaman));
+                if (isAllPassed) window.tuntasJilidIni = true;
               }
             }
           } else {
