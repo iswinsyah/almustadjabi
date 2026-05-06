@@ -389,6 +389,25 @@
         });
     }
 
+    // --- FUNGSI BERTABUR BINTANG (ANIMASI) ---
+    function bertaburBintang(jumlah) {
+      for (let i = 0; i < jumlah; i++) {
+        const star = document.createElement('div');
+        star.innerHTML = '⭐';
+        star.style.position = 'fixed';
+        star.style.left = Math.random() * 100 + 'vw';
+        star.style.top = '-50px';
+        star.style.fontSize = (Math.random() * 20 + 15) + 'px';
+        star.style.zIndex = '100000';
+        star.style.pointerEvents = 'none';
+        star.style.transition = 'transform 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 2.5s ease-in';
+        document.body.appendChild(star);
+
+        setTimeout(() => { star.style.transform = `translateY(100vh) rotate(${Math.random() * 720}deg)`; star.style.opacity = '0'; }, 50);
+        setTimeout(() => star.remove(), 2600);
+      }
+    }
+
     function cekSelesaiHalaman(totalSoal) {
       if (skorBenar + skorSalah === totalSoal) {
           setTimeout(() => {
@@ -397,9 +416,11 @@
             if (skorBenar === totalSoal) {
                 predikat = "Mumtaz 🌟";
                 pesan = "Masyaallah Luar Biasa! Sempurna tiada cacat. Pertahankan prestasimu! 🎉";
+                bertaburBintang(100);
             } else if (skorBenar >= Math.ceil(totalSoal * 0.7)) {
                 predikat = "Jayyid 👍";
                 pesan = "Alhamdulillah Bagus Sekali! Sedikit lagi menuju kesempurnaan. Mantap! 🔥";
+                bertaburBintang(40);
             } else if (skorBenar >= Math.ceil(totalSoal * 0.4)) {
                 predikat = "Aslaha 🙂";
                 pesan = "Kamu sudah berusaha dengan baik! Terus berlatih ya agar lebih lancar. 💪";
