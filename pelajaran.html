@@ -405,12 +405,6 @@
       }
 
       const recognition = new SpeechRecognition();
-        if (!SpeechRecognition) {
-          alert("Browser Anda tidak mendukung fitur mikrofon AI. Gunakan Chrome.");
-          return;
-        }
-
-        const recognition = new SpeechRecognition();
         recognition.lang = 'ar-SA';
         recognition.interimResults = false;
 
