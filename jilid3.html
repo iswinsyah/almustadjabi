@@ -367,8 +367,9 @@
   <script>
   document.addEventListener('DOMContentLoaded', async () => {
     // --- CEK STATUS PREMIUM / GEMBOK ---
-    const statusAkun = localStorage.getItem('status_akun');
-    if (statusAkun !== 'premium' && statusAkun !== 'super_admin') {
+    // Gunakan normalisasi string agar kebal terhadap salah ketik (huruf besar/spasi)
+    const statusAkun = String(localStorage.getItem('status_akun') || '').trim().toLowerCase();
+    if (statusAkun !== 'premium' && statusAkun !== 'super_admin' && statusAkun !== 'super admin' && statusAkun !== 'admin') {
       document.getElementById('premium-lock').style.display = 'flex';
       return; // Hentikan script, cegah halaman memuat pelajaran
     }

@@ -106,6 +106,21 @@
       text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
     }
 
+    /* PWA Install Popup */
+    .install-popup {
+      position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%);
+      background: white; padding: 15px 20px; border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 15px;
+      z-index: 100000; transition: bottom 0.4s ease-in-out; width: 90%; max-width: 400px;
+      border: 1px solid #BFDBFE;
+    }
+    .install-popup.show { bottom: 90px; } /* Ditinggikan agar tidak tertutup bottom nav */
+    .install-icon { width: 45px; height: 45px; background: #EFF6FF; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+    .install-text { flex: 1; }
+    .install-text h4 { margin: 0 0 3px 0; color: #1E3A8A; font-size: 0.95rem; }
+    .install-text p { margin: 0; font-size: 0.75rem; color: #6B7280; }
+    .install-btn { background: #10B981; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Poppins', sans-serif; }
+    .close-install { position: absolute; top: 5px; right: 10px; background: none; border: none; font-size: 1.2rem; color: #9CA3AF; cursor: pointer; padding: 0; }
   </style>
 </head>
 <body>
@@ -234,6 +249,17 @@
         <span>Profil</span>
       </div>
     </nav>
+  </div>
+
+  <!-- PWA Install Popup -->
+  <div id="install-popup" class="install-popup">
+    <button class="close-install" onclick="closeInstallPopup()">×</button>
+    <div class="install-icon">📱</div>
+    <div class="install-text">
+      <h4>Install Aplikasi</h4>
+      <p>Akses lebih cepat dan mudah dari Home Screen Anda</p>
+    </div>
+    <button class="install-btn" id="btn-install">Install</button>
   </div>
 
   <script>
@@ -406,6 +432,33 @@
           .catch(err => console.log('PWA Service Worker gagal:', err));
       });
     }
+
+    // --- LOGIKA POPUP INSTALL PWA ---
+    let deferredPrompt;
+    const installPopup = document.getElementById('install-popup');
+    const btnInstall = document.getElementById('btn-install');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault(); // Mencegah mini-infobar browser muncul
+      deferredPrompt = e; // Simpan event agar bisa dipanggil oleh tombol custom
+      
+      // Tampilkan popup hanya jika user belum pernah melihat (atau belum menutupnya)
+      if (!localStorage.getItem('hasSeenInstallPopup')) {
+        setTimeout(() => { installPopup.classList.add('show'); }, 2000); // Tampilkan popup setelah jeda 2 detik
+      }
+    });
+
+    btnInstall.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        installPopup.classList.remove('show');
+        localStorage.setItem('hasSeenInstallPopup', 'true'); // Tandai agar tidak muncul lagi
+        deferredPrompt.prompt(); // Panggil prompt asli dari sistem Android/Chrome
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+      }
+    });
+
+    function closeInstallPopup() { installPopup.classList.remove('show'); localStorage.setItem('hasSeenInstallPopup', 'true'); }
   </script>
   <script src="security.js"></script>
 </body>

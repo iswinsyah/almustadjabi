@@ -1,7 +1,7 @@
 <?php
 // --- KONFIGURASI DUITKU (HARUS SAMA DENGAN FILE REQUEST) ---
-$merchantCode = "KODE_MERCHANT_DUITKU_BOS"; 
-$apiKey = "API_KEY_DUITKU_BOS";
+$merchantCode = "DS30340"; 
+$apiKey = "32fec46926469cc28b13b4986308e770";
 
 $amount = isset($_POST['amount']) ? $_POST['amount'] : null;
 $merchantOrderId = isset($_POST['merchantOrderId']) ? $_POST['merchantOrderId'] : null;

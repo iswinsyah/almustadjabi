@@ -35,7 +35,12 @@ $userRow = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($userRow && password_verify($data['password'], $userRow['password'])) {
     // SISTEM ROLE: super_admin, premium, atau free
-    $status_akun = !empty($userRow['status_akun']) ? $userRow['status_akun'] : 'free';
+    $status_akun = !empty($userRow['status_akun']) ? strtolower(trim($userRow['status_akun'])) : 'free';
+    
+    // Normalisasi jika admin menuliskan role dengan format berbeda di database
+    if (in_array($status_akun, ['admin', 'super admin', 'administrator'])) {
+        $status_akun = 'super_admin';
+    }
     
     // Generate Token Unik untuk perangkat ini
     $session_token = bin2hex(random_bytes(16));

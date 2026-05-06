@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donasi & Buka Akses Premium</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; max-width: 400px; margin: auto; background: #f4f7f6; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 15px; }
+        input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        button:hover { background-color: #218838; }
+        .msg { margin-top: 10px; font-size: 14px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2 style="text-align: center; margin-top:0;">Upgrade Premium</h2>
+        <p style="text-align: center; color: #666; font-size: 14px;">Beri sedekah terbaik Anda untuk membuka semua akses materi.</p>
+        
+        <div class="form-group">
+            <label>Username Anda:</label>
+            <input type="text" id="username" placeholder="Masukkan username" required>
+        </div>
+        <div class="form-group">
+            <label>Nominal Sedekah (Rp):</label>
+            <input type="number" id="nominal" placeholder="Minimal 10000" min="10000" required>
+        </div>
+        <button onclick="bayarDonasi()">Bayar Sekarang</button>
+        <div id="pesan" class="msg"></div>
+    </div>
+
+    <script>
+        function bayarDonasi() {
+            const username = document.getElementById('username').value.trim();
+            const nominal = document.getElementById('nominal').value;
+            const pesanEl = document.getElementById('pesan');
+
+            if (!username || nominal < 10000) {
+                pesanEl.style.color = "red";
+                pesanEl.innerText = "Username wajib diisi & nominal minimal Rp 10.000";
+                return;
+            }
+
+            pesanEl.style.color = "blue";
+            pesanEl.innerText = "Memproses ke sistem Duitku...";
+
+            fetch('duitku_request.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username, nominal: nominal })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Alihkan ke link asli dari Duitku
+                    window.location.href = data.paymentUrl;
+                } else {
+                    pesanEl.style.color = "red";
+                    pesanEl.innerText = data.message || "Gagal memproses.";
+                }
+            })
+            .catch(err => {
+                pesanEl.style.color = "red";
+                pesanEl.innerText = "Gagal menghubungi server.";
+            });
+        }
+    </script>
+</body>
+</html>

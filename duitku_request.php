@@ -14,8 +14,8 @@ if ($nominal < 10000) { // Batas minimal transaksi Duitku
 }
 
 // --- KONFIGURASI DUITKU BOS (GANTI DENGAN MILIK BOS) ---
-$merchantCode = "KODE_MERCHANT_DUITKU_BOS"; 
-$apiKey = "API_KEY_DUITKU_BOS";
+$merchantCode = "DS30340"; 
+$apiKey = "32fec46926469cc28b13b4986308e770";
 $isSandbox = true; // Ubah ke 'false' jika nanti mau diaktifkan ke Production (Live)
 
 // Persiapkan data transaksi

@@ -33,3 +33,11 @@ jobs:
           
           # Folder tujuan di Hostinger.
           server-dir: ./
+          
+          # Cegah robot GitHub menghapus file rahasia & data admin di server!
+          exclude: |
+            **/.git*
+            **/.git*/**
+            config.php
+            assets/images/**
+            assets/settings.json
