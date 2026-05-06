@@ -388,17 +388,11 @@
         t = 'حبر';
       }
 
-      // 3. Koreksi khusus kata 'النية' (sering dibaca Anniyatu/Anniyata sehingga STT menulis 'تو' atau 'ت')
-      const variasiNiyyah = [
-        'امنية', 'امنيه', 'أمنية', 'أمنيه', 'انيه', 'أنية', 'أنيه', 'النيا', 'نية', 'نيه', 'اننيه',
-        'النيتو', 'انيتو', 'نيتو', 'امنيتو', 'عنيتو', 'النيات', 'انيات', 'نيات',
-        'النيت', 'انيت', 'نيت', 'عنيت', 'امنيت', 'اننيتو', 'اننيت',
-        'النيتا', 'انيتا', 'نيتا', 'النيتي', 'انيتي', 'نيتي', 'النية'
-      ];
-      if (variasiNiyyah.includes(t)) {
+      // 3. Koreksi super mudah untuk kata 'النية' (Toleransi Sapu Jagat untuk semua variasi bunyi An-ni-ya-tu)
+      if (t.includes('نيت') || t.includes('نية') || t.includes('نيه') || t.includes('امني') || t.includes('عني') || t.includes('النيا')) {
         t = 'النية';
       }
-      
+
       // 4. Koreksi khusus kata 'المدرسة' & 'مدرسة' (Al-Madrasatu / Madrasatun)
       if (['المدرستو', 'المدرست', 'المدرسات', 'المدرسه', 'مدراسه', 'المدرستا', 'المدرستي', 'المدرسة'].includes(t)) {
         t = 'المدرسة';
