@@ -416,8 +416,8 @@
     function updateSkor() {
       let predikat = "Aadi";
       if (skorBenar === TARGET_JUMLAH_KOTAK) predikat = "Mumtaz 🌟";
-      else if (skorBenar >= Math.ceil(TARGET_JUMLAH_KOTAK * 0.7)) predikat = "Jayyid 👍";
-      else if (skorBenar >= Math.ceil(TARGET_JUMLAH_KOTAK * 0.4)) predikat = "Aslaha 🙂";
+      else if (skorBenar >= Math.ceil(TARGET_JUMLAH_KOTAK * 0.8)) predikat = "Jayyid 👍";
+      else if (skorBenar >= Math.ceil(TARGET_JUMLAH_KOTAK * 0.6)) predikat = "Aslaha 🙂";
       
       document.getElementById('skor-papan').innerHTML = `Skor Benar: <span style="color:#10B981">${skorBenar}</span>/${TARGET_JUMLAH_KOTAK} | Predikat: <span style="color:#2563EB">${predikat}</span>`;
     }
@@ -449,15 +449,15 @@
                 predikat = "Mumtaz 🌟";
                 bertaburBintang(100);
                 bacaTeksIndo("Alhamdulillah, Mumtaz!");
-            } else if (skorBenar >= Math.ceil(totalSoal * 0.7)) {
+            } else if (skorBenar >= Math.ceil(totalSoal * 0.8)) {
                 predikat = "Jayyid 👍";
                 bertaburBintang(40);
                 bacaTeksIndo("Alhamdulillah, Jayyid!");
-            } else if (skorBenar >= Math.ceil(totalSoal * 0.4)) {
+            } else if (skorBenar >= Math.ceil(totalSoal * 0.6)) {
                 predikat = "Aslaha 🙂";
                 bacaTeksIndo("Aslaha. Tetap semangat!");
             }
-            showToast(`🎓 HALAMAN SELESAI<br>Skor: ${skorBenar}/${totalSoal}<br>Predikat: ${predikat}`, skorBenar >= Math.ceil(totalSoal * 0.7) ? 'benar' : 'salah', 5000);
+            showToast(`🎓 HALAMAN SELESAI<br>Skor: ${skorBenar}/${totalSoal}<br>Predikat: ${predikat}`, skorBenar >= Math.ceil(totalSoal * 0.8) ? 'benar' : 'salah', 5000);
           }, 500);
       }
     }
@@ -501,7 +501,15 @@
           if (hasilGundul === targetGundul) {
             gridItem.classList.add('benar', 'terjawab'); skorBenar++;
             showToast(`✅ BENAR!<br>Anda: ${hasil}`, 'benar');
-            if (skorBenar >= Math.ceil(totalSoal * 0.7)) localStorage.setItem(`jilid_${jilid}_passed`, 'true');
+            if (skorBenar >= Math.ceil(totalSoal * 0.8)) {
+              localStorage.setItem(`jilid_${jilid}_passed`, 'true');
+              let passedPages = JSON.parse(localStorage.getItem(`jilid_${jilid}_passed_pages`) || '[]');
+              const curHalaman = dataPelajaran[indexSaatIni].halaman;
+              if (!passedPages.includes(curHalaman)) {
+                passedPages.push(curHalaman);
+                localStorage.setItem(`jilid_${jilid}_passed_pages`, JSON.stringify(passedPages));
+              }
+            }
           } else {
             gridItem.classList.add('salah', 'terjawab'); skorSalah++;
             showToast(`🤖 KURANG TEPAT.<br>Anda: ${hasil}<br>Harusnya: ${kataTargetAsli}`, 'salah');
@@ -600,7 +608,20 @@
       const btn = document.getElementById('btnImtihan');
       if (modeImtihan) { btn.innerHTML = "🎓 Mode Imtihan: ON"; btn.classList.add('active'); } 
       else { btn.innerHTML = "🎓 Mode Imtihan: OFF"; btn.classList.remove('active'); }
-      indexSaatIni = 0; if (dataBabGlobal.length > 0) { prosesDataBab(dataBabGlobal); renderHalaman(); }
+      
+      if (dataBabGlobal.length > 0) { 
+        prosesDataBab(dataBabGlobal); 
+        if (modeImtihan) {
+          let passedPages = JSON.parse(localStorage.getItem(`jilid_${jilid}_passed_pages`) || '[]');
+          if (passedPages.length > 0) {
+            let maxPassed = Math.max(...passedPages);
+            indexSaatIni = dataPelajaran.findIndex(p => p.halaman === maxPassed + 1); // Lanjut halaman berikutnya
+            if (indexSaatIni === -1) indexSaatIni = dataPelajaran.findIndex(p => p.halaman === maxPassed); // Mentok jika sudah tamat semua
+            if (indexSaatIni === -1) indexSaatIni = 0;
+          } else { indexSaatIni = 0; }
+        } else { indexSaatIni = 0; }
+        renderHalaman(); 
+      }
     };
 
     muatDataPelajaran();

@@ -292,15 +292,24 @@
         });
       }
 
-      indexSaatIni = 0;
+      let passedPages = JSON.parse(localStorage.getItem('jilid_7_passed_pages') || '[]');
+      if (passedPages.length > 0) {
+        let maxPassed = Math.max(...passedPages);
+        indexSaatIni = dataPelajaran.findIndex(p => p.halaman === maxPassed + 1);
+        if (indexSaatIni === -1) indexSaatIni = dataPelajaran.findIndex(p => p.halaman === maxPassed);
+        if (indexSaatIni === -1) indexSaatIni = 0;
+      } else {
+        indexSaatIni = 0;
+      }
+
       renderHalaman();
     };
 
     function updateSkor(totalSoal) {
       let predikat = "Aadi";
       if (skorBenar === totalSoal) predikat = "Mumtaz 🌟";
-      else if (skorBenar >= Math.ceil(totalSoal * 0.7)) predikat = "Jayyid 👍";
-      else if (skorBenar >= Math.ceil(totalSoal * 0.4)) predikat = "Aslaha 🙂";
+      else if (skorBenar >= Math.ceil(totalSoal * 0.8)) predikat = "Jayyid 👍";
+      else if (skorBenar >= Math.ceil(totalSoal * 0.6)) predikat = "Aslaha 🙂";
       
       document.getElementById('skor-papan').innerHTML = `Skor Benar: <span style="color:#10B981">${skorBenar}</span>/${totalSoal} | Predikat: <span style="color:#2563EB">${predikat}</span>`;
     }
@@ -359,8 +368,14 @@
               if (result.status === 'benar') {
                 gridItem.classList.add('benar', 'terjawab'); skorBenar++;
                 alert(`✅ BACAAN BENAR!\n\nKomentar Ustadz AI:\n${result.pesan}`);
-                if (skorBenar >= Math.ceil(totalSoal * 0.7)) {
+                if (skorBenar >= Math.ceil(totalSoal * 0.8)) {
                     localStorage.setItem('jilid_7_passed', 'true');
+                    let passedPages = JSON.parse(localStorage.getItem('jilid_7_passed_pages') || '[]');
+                    const curHalaman = dataPelajaran[indexSaatIni].halaman;
+                    if (!passedPages.includes(curHalaman)) {
+                        passedPages.push(curHalaman);
+                        localStorage.setItem('jilid_7_passed_pages', JSON.stringify(passedPages));
+                    }
                 }
               } else {
                 gridItem.classList.add('salah', 'terjawab'); skorSalah++;
@@ -418,12 +433,12 @@
                 pesan = "Masyaallah Luar Biasa! Sempurna tiada cacat. Pertahankan prestasimu! 🎉";
                 bertaburBintang(100);
                 bacaTeksIndo("Alhamdulillah, Mumtaz!");
-            } else if (skorBenar >= Math.ceil(totalSoal * 0.7)) {
+            } else if (skorBenar >= Math.ceil(totalSoal * 0.8)) {
                 predikat = "Jayyid 👍";
                 pesan = "Alhamdulillah Bagus Sekali! Sedikit lagi menuju kesempurnaan. Mantap! 🔥";
                 bertaburBintang(40);
                 bacaTeksIndo("Alhamdulillah, Jayyid!");
-            } else if (skorBenar >= Math.ceil(totalSoal * 0.4)) {
+            } else if (skorBenar >= Math.ceil(totalSoal * 0.6)) {
                 predikat = "Aslaha 🙂";
                 pesan = "Kamu sudah berusaha dengan baik! Terus berlatih ya agar lebih lancar. 💪";
                 bacaTeksIndo("Aslaha. Tetap semangat!");

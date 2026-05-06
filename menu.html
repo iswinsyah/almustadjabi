@@ -218,7 +218,7 @@
 
         <div class="card">
           <h3 class="card-title">Progress Belajar</h3>
-          <p style="font-size: 0.85rem; color: #6B7280; margin-top: -10px; margin-bottom: 15px;">Dapatkan minimal predikat <b>Jayyid 👍</b> (Skor 70%) di <i>Mode Imtihan</i> untuk lulus jilid.</p>
+          <p style="font-size: 0.85rem; color: #6B7280; margin-top: -10px; margin-bottom: 15px;">Dapatkan minimal predikat <b>Jayyid 👍</b> (Skor 80%) di <i>Mode Imtihan</i> untuk lulus jilid.</p>
           <div id="progress-container"></div>
         </div>
 
@@ -351,10 +351,20 @@
            rowClass = 'border-color: #FCD34D; background: #FFFBEB;';
         }
 
+        const passedPages = JSON.parse(localStorage.getItem(`jilid_${i}_passed_pages`) || '[]');
+        let detailPages = '';
+        if (passedPages.length > 0) {
+            passedPages.sort((a, b) => a - b);
+            detailPages = `<div style="margin-top: 8px; font-size: 0.8rem; color: #4B5563;">Halaman Lulus: <span style="color: #2563EB; font-weight: 600;">${passedPages.join(', ')}</span></div>`;
+        }
+
         html += `
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border: 1px solid #E5E7EB; border-radius: 10px; margin-bottom: 10px; ${rowClass}">
-            <div style="font-weight: bold; font-size: 0.95rem; color: #1E3A8A;">Jilid ${i}</div>
-            <div>${statusBadge}</div>
+          <div style="padding: 12px 15px; border: 1px solid #E5E7EB; border-radius: 10px; margin-bottom: 10px; ${rowClass}">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="font-weight: bold; font-size: 0.95rem; color: #1E3A8A;">Jilid ${i}</div>
+              <div>${statusBadge}</div>
+            </div>
+            ${detailPages}
           </div>
         `;
 

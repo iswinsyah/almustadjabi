@@ -519,8 +519,8 @@
     function updateSkor() {
       let predikat = "Aadi";
       if (skorBenar === TARGET_JUMLAH_KOTAK) predikat = "Mumtaz 🌟";
-      else if (skorBenar >= Math.ceil(TARGET_JUMLAH_KOTAK * 0.7)) predikat = "Jayyid 👍"; // Di atas 70%
-      else if (skorBenar >= Math.ceil(TARGET_JUMLAH_KOTAK * 0.4)) predikat = "Aslaha 🙂"; // Di atas 40%
+      else if (skorBenar >= Math.ceil(TARGET_JUMLAH_KOTAK * 0.8)) predikat = "Jayyid 👍"; // Di atas 80%
+      else if (skorBenar >= Math.ceil(TARGET_JUMLAH_KOTAK * 0.6)) predikat = "Aslaha 🙂"; // Di atas 60%
       
       document.getElementById('skor-papan').innerHTML = `Skor Benar: <span style="color:#10B981">${skorBenar}</span>/${TARGET_JUMLAH_KOTAK} | Predikat: <span style="color:#2563EB">${predikat}</span>`;
     }
