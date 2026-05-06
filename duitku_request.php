@@ -43,7 +43,7 @@ $params = array(
     'expiryPeriod' => 1440 // Tagihan kadaluarsa dalam 24 jam
 );
 
-$url = $isSandbox ? 'https://sandbox.duitku.com/webapi/api/merchant/v2/inquiry' : 'https://passport.duitku.com/webapi/api/merchant/v2/inquiry';
+$url = $isSandbox ? 'https://api-sandbox.duitku.com/api/merchant/v2/inquiry' : 'https://api-prod.duitku.com/api/merchant/v2/inquiry';
 
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_POST, true); curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
