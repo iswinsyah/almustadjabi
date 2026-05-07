@@ -56,7 +56,10 @@
     <div class="container">
         <div class="header-flex">
             <h2>Bank Kosakata 📚</h2>
-            <button class="btn" onclick="openModal()">+ Tambah Kosakata</button>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-warning" onclick="openModalBulk()">📋 Paste dari Excel</button>
+                <button class="btn" onclick="openModal()">+ Tambah 1 Kata</button>
+            </div>
         </div>
         
         <input type="text" id="searchInput" class="search-box" placeholder="🔍 Cari berdasarkan kata arab atau maknanya..." onkeyup="filterTable()">
@@ -68,10 +71,10 @@
                 <thead>
                     <tr>
                         <th width="5%">No</th>
-                        <th width="25%">Kata Arab</th>
-                        <th width="30%">Arti / Makna</th>
-                        <th width="15%">Jenis Kata</th>
-                        <th width="10%">Jilid Min.</th>
+                        <th width="20%">Harokat Penuh</th>
+                        <th width="20%">Harokat Sebagian</th>
+                        <th width="20%">Tanpa Harokat</th>
+                        <th width="20%">Arti</th>
                         <th width="15%" style="text-align: right;">Aksi</th>
                     </tr>
                 </thead>
@@ -82,7 +85,7 @@
         </div>
     </div>
 
-    <!-- Modal Tambah/Edit Kosakata -->
+    <!-- Modal Tambah/Edit 1 Kosakata -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
             <h3 id="modalTitle" style="margin-top: 0; color: #1E3A8A;">Tambah Kosakata</h3>
@@ -90,27 +93,23 @@
                 <input type="hidden" id="kata_id">
                 
                 <div class="form-group">
-                    <label>Kata Arab (Gunakan Harokat Lengkap)</label>
-                    <input type="text" id="kata_arab" class="form-control arab-text" dir="rtl" placeholder="Contoh: مَدْرَسَةٌ" required>
+                    <label>Kata Berharokat Penuh</label>
+                    <input type="text" id="kata_penuh" class="form-control arab-text" dir="rtl" required>
                 </div>
                 
                 <div class="form-group">
-                    <label>Arti / Makna</label>
-                    <input type="text" id="arti" class="form-control" placeholder="Contoh: Sekolah" required>
+                    <label>Kata Berharokat Sebagian (Boleh dikosongkan)</label>
+                    <input type="text" id="kata_sebagian" class="form-control arab-text" dir="rtl">
                 </div>
                 
                 <div class="form-group">
-                    <label>Jenis Kata</label>
-                    <select id="jenis_kata" class="form-control" required>
-                        <option value="isim">Isim (Kata Benda/Sifat)</option>
-                        <option value="fiil">Fi'il (Kata Kerja)</option>
-                        <option value="huruf">Huruf (Kata Tugas/Sambung)</option>
-                    </select>
+                    <label>Kata Tanpa Harokat (Gundul)</label>
+                    <input type="text" id="kata_gundul" class="form-control arab-text" dir="rtl" required>
                 </div>
                 
                 <div class="form-group">
-                    <label>Jilid Minimal (Akan keluar mulai jilid keberapa?)</label>
-                    <input type="number" id="jilid_minimal" class="form-control" min="1" max="6" value="1" required>
+                    <label>Arti / Makna (Bahasa Indonesia)</label>
+                    <input type="text" id="arti" class="form-control" required>
                 </div>
                 
                 <div class="modal-actions">
@@ -118,6 +117,24 @@
                     <button type="submit" class="btn" id="btnSubmit">Simpan Kosakata</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal Paste Massal -->
+    <div class="modal-overlay" id="modalOverlayBulk">
+        <div class="modal" style="max-width: 700px;">
+            <h3 style="margin-top: 0; color: #1E3A8A;">Paste Massal dari Excel</h3>
+            <div style="background: #EFF6FF; padding: 15px; border-radius: 8px; font-size: 0.9rem; margin-bottom: 15px; color: #1E3A8A; border: 1px solid #BFDBFE;">
+                <strong>⚠️ Cara Pakai:</strong> Copy 4 kolom data dari Excel secara berurutan, lalu Paste (Tempel) di kotak bawah ini:<br><br>
+                <span style="font-weight: bold; color: #2563EB;">1. Harokat Penuh &nbsp;|&nbsp; 2. Harokat Sebagian &nbsp;|&nbsp; 3. Tanpa Harokat &nbsp;|&nbsp; 4. Arti</span><br><br>
+                <em>*Abaikan Nomor Urut dari Excel, sistem ini akan otomatis memberikan nomornya sendiri.</em>
+            </div>
+            <textarea id="bulkData" rows="10" class="form-control" placeholder="Paste (Ctrl+V) data dari Excel Anda di sini..."></textarea>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn btn-warning" onclick="closeModalBulk()" style="background: #E5E7EB; color: #333;">Batal</button>
+                <button type="button" class="btn" id="btnSubmitBulk" onclick="submitBulk()">Simpan Massal</button>
+            </div>
         </div>
     </div>
 
@@ -183,22 +200,21 @@
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             
-            if(data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 30px; color: #6B7280;">Bank kosakata masih kosong. Mulai menabung kata sekarang!</td></tr>';
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 30px; color: #6B7280;">Bank kosakata masih kosong. Import dari Excel sekarang!</td></tr>';
                 return;
             }
 
             data.forEach((item, index) => {
-                const badgeClass = 'badge-' + item.jenis_kata;
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${index + 1}</td>
-                    <td class="arab-text" dir="rtl">${item.kata_arab}</td>
+                    <td class="arab-text" dir="rtl">${item.kata_penuh}</td>
+                    <td class="arab-text" dir="rtl">${item.kata_sebagian}</td>
+                    <td class="arab-text" dir="rtl">${item.kata_gundul}</td>
                     <td>${item.arti}</td>
-                    <td><span class="badge ${badgeClass}">${item.jenis_kata.toUpperCase()}</span></td>
-                    <td>Jilid ${item.jilid_minimal}</td>
                     <td style="text-align: right;">
-                        <button class="btn btn-warning" onclick='editKata(${JSON.stringify(item)})' style="padding: 6px 12px; font-size: 0.85rem; margin-right: 5px;">Edit</button>
+                        <button class="btn btn-warning" onclick='editKata(${JSON.stringify(item).replace(/'/g, "&#39;")})' style="padding: 6px 12px; font-size: 0.85rem; margin-right: 5px;">Edit</button>
                         <button class="btn btn-danger" onclick="deleteKata(${item.id})" style="padding: 6px 12px; font-size: 0.85rem;">Hapus</button>
                     </td>
                 `;
@@ -210,7 +226,8 @@
         function filterTable() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const filtered = kosakataData.filter(item => 
-                item.kata_arab.toLowerCase().includes(query) || 
+                item.kata_penuh.toLowerCase().includes(query) || 
+                item.kata_gundul.toLowerCase().includes(query) ||
                 item.arti.toLowerCase().includes(query)
             );
             renderTable(filtered);
@@ -230,10 +247,10 @@
 
         function editKata(item) {
             document.getElementById('kata_id').value = item.id;
-            document.getElementById('kata_arab').value = item.kata_arab;
+            document.getElementById('kata_penuh').value = item.kata_penuh;
+            document.getElementById('kata_sebagian').value = item.kata_sebagian;
+            document.getElementById('kata_gundul').value = item.kata_gundul;
             document.getElementById('arti').value = item.arti;
-            document.getElementById('jenis_kata').value = item.jenis_kata;
-            document.getElementById('jilid_minimal').value = item.jilid_minimal;
             
             document.getElementById('modalTitle').textContent = 'Edit Kosakata';
             modal.style.display = 'flex';
@@ -247,10 +264,10 @@
 
             const payload = {
                 id: document.getElementById('kata_id').value,
-                kata_arab: document.getElementById('kata_arab').value,
-                arti: document.getElementById('arti').value,
-                jenis_kata: document.getElementById('jenis_kata').value,
-                jilid_minimal: document.getElementById('jilid_minimal').value
+                kata_penuh: document.getElementById('kata_penuh').value,
+                kata_sebagian: document.getElementById('kata_sebagian').value,
+                kata_gundul: document.getElementById('kata_gundul').value,
+                arti: document.getElementById('arti').value
             };
 
             const res = await apiRequest('save_kosakata', payload);
@@ -261,6 +278,38 @@
             
             btn.textContent = 'Simpan Kosakata'; btn.disabled = false;
         });
+
+        // --- LOGIKA PASTE MASSAL (EXCEL) ---
+        const modalBulk = document.getElementById('modalOverlayBulk');
+        function openModalBulk() { document.getElementById('bulkData').value = ''; modalBulk.style.display = 'flex'; }
+        function closeModalBulk() { modalBulk.style.display = 'none'; }
+
+        async function submitBulk() {
+            const btn = document.getElementById('btnSubmitBulk');
+            const rawData = document.getElementById('bulkData').value.trim();
+            
+            if (!rawData) {
+                alert("Kotak data masih kosong! Silakan paste (Ctrl+V) data dari Excel terlebih dahulu.");
+                return;
+            }
+
+            btn.textContent = 'Menyimpan...'; btn.disabled = true;
+
+            // Pecah berdasarkan baris, lalu pecah tiap baris berdasarkan spasi Tab (\t) bawaan Excel
+            const rows = rawData.split('\\n').map(row => {
+                const cols = row.split('\\t').map(c => c.trim());
+                return [ cols[0]||'', cols[1]||'', cols[2]||'', cols[3]||'' ]; // Penuh, Sebagian, Gundul, Arti
+            });
+
+            const res = await apiRequest('save_bulk_kosakata', { rows: rows });
+            if (res) {
+                alert(res.message);
+                closeModalBulk();
+                loadData();
+            }
+            
+            btn.textContent = 'Simpan Massal'; btn.disabled = false;
+        }
 
         // Aksi Hapus Data
         async function deleteKata(id) {

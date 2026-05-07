@@ -155,13 +155,24 @@ if ($action === 'get_kosakata') {
         // Self-healing: Buat tabel bank_kosakata secara otomatis jika belum ada
         $pdo->exec("CREATE TABLE IF NOT EXISTS bank_kosakata (
             id INT AUTO_INCREMENT PRIMARY KEY,
-            kata_arab VARCHAR(100) NOT NULL,
-            arti VARCHAR(100) NOT NULL,
-            jenis_kata ENUM('isim', 'fiil', 'huruf') NOT NULL,
-            jilid_minimal INT DEFAULT 1
+            kata_penuh VARCHAR(100) DEFAULT '',
+            kata_sebagian VARCHAR(100) DEFAULT '',
+            kata_gundul VARCHAR(100) DEFAULT '',
+            arti VARCHAR(200) DEFAULT ''
         )");
+        
+        // Upgrade struktur tabel jika berasal dari versi lama
+        try { $pdo->exec("ALTER TABLE bank_kosakata ADD COLUMN kata_penuh VARCHAR(100) DEFAULT ''"); } catch (PDOException $e) {}
+        try { $pdo->exec("ALTER TABLE bank_kosakata ADD COLUMN kata_sebagian VARCHAR(100) DEFAULT ''"); } catch (PDOException $e) {}
+        try { $pdo->exec("ALTER TABLE bank_kosakata ADD COLUMN kata_gundul VARCHAR(100) DEFAULT ''"); } catch (PDOException $e) {}
+        // Migrasi data lama (jika ada) ke kata_penuh
+        try { $pdo->exec("UPDATE bank_kosakata SET kata_penuh = kata_arab WHERE kata_arab IS NOT NULL AND kata_penuh = ''"); } catch (PDOException $e) {}
+        // Bersihkan kolom lama agar tidak menyebabkan error saat input baru
+        try { $pdo->exec("ALTER TABLE bank_kosakata DROP COLUMN kata_arab"); } catch (PDOException $e) {}
+        try { $pdo->exec("ALTER TABLE bank_kosakata DROP COLUMN jenis_kata"); } catch (PDOException $e) {}
+        try { $pdo->exec("ALTER TABLE bank_kosakata DROP COLUMN jilid_minimal"); } catch (PDOException $e) {}
 
-        $stmt = $pdo->query("SELECT * FROM bank_kosakata ORDER BY id DESC");
+        $stmt = $pdo->query("SELECT id, kata_penuh, kata_sebagian, kata_gundul, arti FROM bank_kosakata ORDER BY id DESC");
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode(["status" => "success", "data" => $data]);
     } catch(PDOException $e) {
@@ -172,30 +183,44 @@ if ($action === 'get_kosakata') {
 
 if ($action === 'save_kosakata') {
     $id = $data['id'] ?? null;
-    $kata_arab = $data['kata_arab'] ?? '';
+    $kata_penuh = $data['kata_penuh'] ?? '';
+    $kata_sebagian = $data['kata_sebagian'] ?? '';
+    $kata_gundul = $data['kata_gundul'] ?? '';
     $arti = $data['arti'] ?? '';
-    $jenis_kata = $data['jenis_kata'] ?? 'isim';
-    $jilid_minimal = (int)($data['jilid_minimal'] ?? 1);
 
-    if (empty($kata_arab) || empty($arti)) {
-        echo json_encode(["status" => "error", "message" => "Kata Arab dan Arti wajib diisi."]);
+    if (empty($kata_penuh) || empty($arti)) {
+        echo json_encode(["status" => "error", "message" => "Kata Penuh dan Arti wajib diisi."]);
         exit;
     }
 
     try {
         if ($id) {
-            $stmt = $pdo->prepare("UPDATE bank_kosakata SET kata_arab=?, arti=?, jenis_kata=?, jilid_minimal=? WHERE id=?");
-            $stmt->execute([$kata_arab, $arti, $jenis_kata, $jilid_minimal, $id]);
+            $stmt = $pdo->prepare("UPDATE bank_kosakata SET kata_penuh=?, kata_sebagian=?, kata_gundul=?, arti=? WHERE id=?");
+            $stmt->execute([$kata_penuh, $kata_sebagian, $kata_gundul, $arti, $id]);
             $msg = "Kosakata berhasil diperbarui!";
         } else {
-            $stmt = $pdo->prepare("INSERT INTO bank_kosakata (kata_arab, arti, jenis_kata, jilid_minimal) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$kata_arab, $arti, $jenis_kata, $jilid_minimal]);
+            $stmt = $pdo->prepare("INSERT INTO bank_kosakata (kata_penuh, kata_sebagian, kata_gundul, arti) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$kata_penuh, $kata_sebagian, $kata_gundul, $arti]);
             $msg = "Kosakata berhasil ditambahkan!";
         }
         echo json_encode(["status" => "success", "message" => $msg]);
     } catch(PDOException $e) {
         echo json_encode(["status" => "error", "message" => $e->getMessage()]);
     }
+    exit;
+}
+
+if ($action === 'save_bulk_kosakata') {
+    $rows = $data['rows'] ?? [];
+    if (empty($rows)) { echo json_encode(["status" => "error", "message" => "Data kosong atau format salah."]); exit; }
+    try {
+        $stmt = $pdo->prepare("INSERT INTO bank_kosakata (kata_penuh, kata_sebagian, kata_gundul, arti) VALUES (?, ?, ?, ?)");
+        $count = 0;
+        foreach ($rows as $r) {
+            if (!empty($r[0]) && !empty($r[3])) { $stmt->execute([$r[0], $r[1], $r[2], $r[3]]); $count++; }
+        }
+        echo json_encode(["status" => "success", "message" => "$count Kosakata berhasil diimpor dari Excel!"]);
+    } catch(PDOException $e) { echo json_encode(["status" => "error", "message" => "Gagal impor: " . $e->getMessage()]); }
     exit;
 }
 
