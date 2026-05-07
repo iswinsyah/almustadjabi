@@ -149,6 +149,68 @@ if ($action === 'update_role') {
     exit;
 }
 
+// FITUR 6: Manajemen Kosakata (Bank Kosakata)
+if ($action === 'get_kosakata') {
+    try {
+        // Self-healing: Buat tabel bank_kosakata secara otomatis jika belum ada
+        $pdo->exec("CREATE TABLE IF NOT EXISTS bank_kosakata (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            kata_arab VARCHAR(100) NOT NULL,
+            arti VARCHAR(100) NOT NULL,
+            jenis_kata ENUM('isim', 'fiil', 'huruf') NOT NULL,
+            jilid_minimal INT DEFAULT 1
+        )");
+
+        $stmt = $pdo->query("SELECT * FROM bank_kosakata ORDER BY id DESC");
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode(["status" => "success", "data" => $data]);
+    } catch(PDOException $e) {
+        echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+    }
+    exit;
+}
+
+if ($action === 'save_kosakata') {
+    $id = $data['id'] ?? null;
+    $kata_arab = $data['kata_arab'] ?? '';
+    $arti = $data['arti'] ?? '';
+    $jenis_kata = $data['jenis_kata'] ?? 'isim';
+    $jilid_minimal = (int)($data['jilid_minimal'] ?? 1);
+
+    if (empty($kata_arab) || empty($arti)) {
+        echo json_encode(["status" => "error", "message" => "Kata Arab dan Arti wajib diisi."]);
+        exit;
+    }
+
+    try {
+        if ($id) {
+            $stmt = $pdo->prepare("UPDATE bank_kosakata SET kata_arab=?, arti=?, jenis_kata=?, jilid_minimal=? WHERE id=?");
+            $stmt->execute([$kata_arab, $arti, $jenis_kata, $jilid_minimal, $id]);
+            $msg = "Kosakata berhasil diperbarui!";
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO bank_kosakata (kata_arab, arti, jenis_kata, jilid_minimal) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$kata_arab, $arti, $jenis_kata, $jilid_minimal]);
+            $msg = "Kosakata berhasil ditambahkan!";
+        }
+        echo json_encode(["status" => "success", "message" => $msg]);
+    } catch(PDOException $e) {
+        echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+    }
+    exit;
+}
+
+if ($action === 'delete_kosakata') {
+    $id = $data['id'] ?? null;
+    try {
+        $stmt = $pdo->prepare("DELETE FROM bank_kosakata WHERE id=?");
+        $stmt->execute([$id]);
+        echo json_encode(["status" => "success", "message" => "Kosakata berhasil dihapus!"]);
+    } catch(PDOException $e) {
+        echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+    }
+    exit;
+}
+
 try {
     
     // 1. Dapatkan Total User

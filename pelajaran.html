@@ -519,7 +519,6 @@
             gridItem.onclick = () => { showToast("Kotak ini sudah dinilai!", 'salah'); };
             showToast(`✅ BENAR!<br>Anda: ${hasil}`, 'benar');
             if (skorBenar >= Math.ceil(totalSoal * 0.8)) {
-              localStorage.setItem(`jilid_${jilid}_passed`, 'true');
               let passedPages = JSON.parse(localStorage.getItem(`jilid_${jilid}_passed_pages`) || '[]');
               const curHalaman = dataPelajaran[indexSaatIni].halaman;
               if (!passedPages.includes(curHalaman)) {
@@ -528,7 +527,10 @@
                 
                 // Cek apakah seluruh halaman di Jilid ini sudah berhasil dilewati semua
                 const isAllPassed = dataPelajaran.every(p => passedPages.includes(p.halaman));
-                if (isAllPassed) window.tuntasJilidIni = true;
+                if (isAllPassed) {
+                  localStorage.setItem(`jilid_${jilid}_passed`, 'true');
+                  window.tuntasJilidIni = true;
+                }
               }
             }
           } else {

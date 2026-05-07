@@ -370,7 +370,6 @@
                 gridItem.onclick = () => { alert("Kalimat ini sudah dinilai! Silakan lanjut ke kalimat lain."); };
                 alert(`✅ BACAAN BENAR!\n\nKomentar Ustadz AI:\n${result.pesan}`);
                 if (skorBenar >= Math.ceil(totalSoal * 0.8)) {
-                    localStorage.setItem('jilid_7_passed', 'true');
                     let passedPages = JSON.parse(localStorage.getItem('jilid_7_passed_pages') || '[]');
                     const curHalaman = dataPelajaran[indexSaatIni].halaman;
                     if (!passedPages.includes(curHalaman)) {
@@ -378,7 +377,10 @@
                         localStorage.setItem('jilid_7_passed_pages', JSON.stringify(passedPages));
                         
                         const isAllPassed = dataPelajaran.every(p => passedPages.includes(p.halaman));
-                        if (isAllPassed) window.tuntasJilidIni = true;
+                        if (isAllPassed) {
+                            localStorage.setItem('jilid_7_passed', 'true');
+                            window.tuntasJilidIni = true;
+                        }
                     }
                 }
               } else {
