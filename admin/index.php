@@ -35,7 +35,10 @@
 <body>
     <div class="navbar">
         <div style="font-size: 1.2rem; font-weight: bold;">Qiroatul Kutub Admin</div>
-        <a href="../index.html" style="color: #BFDBFE; text-decoration: none;" onclick="sessionStorage.clear()">Keluar (Logout)</a>
+        <div>
+            <a href="kosakata.php" style="color: white; font-weight: bold; background: #10B981; padding: 5px 15px; border-radius: 6px; text-decoration: none; margin-right: 15px;">📚 Bank Kosakata</a>
+            <a href="../index.html" style="color: #BFDBFE; text-decoration: none;" onclick="sessionStorage.clear()">Keluar</a>
+        </div>
     </div>
 
     <div class="container">

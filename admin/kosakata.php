@@ -50,7 +50,10 @@
 <body>
     <div class="navbar">
         <div style="font-size: 1.2rem; font-weight: bold;">Qiroatul Kutub Admin</div>
-        <a href="index.php">← Kembali ke Dashboard</a>
+        <div>
+            <a href="index.php" style="color: white; font-weight: bold; background: #2563EB; padding: 5px 15px; border-radius: 6px; text-decoration: none; margin-right: 15px; border: 1px solid white;">🏠 Dashboard Admin</a>
+            <a href="../index.html" style="color: #BFDBFE; text-decoration: none;" onclick="sessionStorage.clear()">Keluar</a>
+        </div>
     </div>
 
     <div class="container">
